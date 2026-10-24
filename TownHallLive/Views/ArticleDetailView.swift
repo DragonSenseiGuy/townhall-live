@@ -15,12 +15,14 @@ struct WarrantsView: View {
                         .foregroundStyle(Theme.inkSecondary)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, Theme.pagePadding)
+            .padding(.top, 8)
+            .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
         .background(Theme.parchment.ignoresSafeArea())
         .navigationTitle("Warrants")
+        .toolbarBackground(Theme.parchment, for: .navigationBar)
     }
 
     @ViewBuilder
@@ -28,7 +30,7 @@ struct WarrantsView: View {
         let articles = store.articles.filter { $0.meetingID == meeting.id }.sorted { $0.number < $1.number }
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(meeting.title)
                         .font(Theme.headlineFont)
                         .foregroundStyle(Theme.navy)
@@ -39,41 +41,12 @@ struct WarrantsView: View {
                 Spacer()
                 if meeting.status == "live" { LiveBadge() }
             }
+            .padding(.bottom, 2)
             ForEach(articles) { article in
                 NavigationLink(value: article.id) {
-                    HStack(alignment: .top, spacing: 12) {
-                        VStack(spacing: 2) {
-                            Text("\(article.number)")
-                                .font(.subheadline.weight(.bold))
-                                .monospacedDigit()
-                                .foregroundStyle(Theme.gold)
-                            Text("ART")
-                                .font(.system(size: 8, weight: .bold))
-                                .tracking(1)
-                                .foregroundStyle(Theme.inkSecondary.opacity(0.7))
-                        }
-                        .frame(width: 40)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(article.title)
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(Theme.navy)
-                                .multilineTextAlignment(.leading)
-                            HStack(spacing: 6) {
-                                CategoryChip(text: article.category)
-                                if let outcome = article.officialOutcome {
-                                    OutcomeChip(result: outcome.result)
-                                }
-                            }
-                        }
-                        Spacer(minLength: 0)
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Theme.divider)
-                    }
-                    .padding(12)
-                    .card()
+                    ArticleRow(article: article, isCurrent: false)
                 }
-                .buttonStyle(.plain)
+                .pressable()
             }
         }
     }
@@ -114,24 +87,14 @@ struct ArticleDetailView: View {
         .background(Theme.parchment.ignoresSafeArea())
         .navigationTitle(article?.displayNumber ?? "Article")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.parchment, for: .navigationBar)
         .onDisappear { if aiState.isLoading { aiState = .idle } }
     }
 
     @ViewBuilder
     private func content(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    CategoryChip(text: article.category)
-                    if let outcome = article.officialOutcome {
-                        OutcomeChip(result: outcome.result)
-                    }
-                }
-                Text(article.title)
-                    .font(Theme.titleFont)
-                    .foregroundStyle(Theme.navy)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            heroCard(article)
 
             plainEnglishCard(article.plainEnglish)
 
@@ -151,13 +114,50 @@ struct ArticleDetailView: View {
 
             originalTextCard(article)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 32)
+        .padding(.horizontal, Theme.pagePadding)
+        .padding(.top, 8)
+        .padding(.bottom, 40)
+    }
+
+    private func heroCard(_ article: WarrantArticle) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 12) {
+                NumberSeal(number: article.number, highlighted: true)
+                    .frame(width: 44, height: 44)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("WARRANT ARTICLE")
+                        .font(.caption2.weight(.bold))
+                        .tracking(1.2)
+                        .foregroundStyle(Theme.gold)
+                    Text(meetingDate)
+                        .font(.footnote)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+                Spacer()
+            }
+            Text(article.title)
+                .font(Theme.titleFont)
+                .foregroundStyle(Theme.navy)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 8) {
+                CategoryChip(text: article.category)
+                if let outcome = article.officialOutcome {
+                    OutcomeChip(result: outcome.result)
+                }
+            }
+        }
+        .padding(Theme.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
+    }
+
+    private var meetingDate: String {
+        article.flatMap { store.meeting(id: $0.meetingID)?.date } ?? ""
     }
 
     private func plainEnglishCard(_ plain: PlainEnglish) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionLabel(text: "In plain English")
+            SectionHeader(text: "In plain English")
             Text(aiState.isLoading ? "Translating with AI…" : plain.summary)
                 .font(.body)
                 .foregroundStyle(Theme.ink)
@@ -177,7 +177,7 @@ struct ArticleDetailView: View {
 
             Divider().overlay(Theme.divider)
 
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .top, spacing: 14) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("VOTE YES")
                         .font(.caption2.weight(.bold))
@@ -186,6 +186,7 @@ struct ArticleDetailView: View {
                     Text(plain.votingYesMeans)
                         .font(.footnote)
                         .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -199,11 +200,12 @@ struct ArticleDetailView: View {
                     Text(plain.votingNoMeans)
                         .font(.footnote)
                         .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .card()
     }
 
@@ -225,7 +227,7 @@ struct ArticleDetailView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
@@ -256,11 +258,11 @@ struct ArticleDetailView: View {
                     Label("Translate with AI", systemImage: "sparkles")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 9)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
                         .background(Theme.navy, in: Capsule())
                 }
-                .buttonStyle(PressableButtonStyle())
+                .pressable()
                 .disabled(!AppSettings.shared.hasAPIKey)
                 .opacity(AppSettings.shared.hasAPIKey ? 1 : 0.5)
             case .loading:
@@ -280,6 +282,7 @@ struct ArticleDetailView: View {
                     Text(plain.keyTakeaways.joined(separator: " · "))
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             case .failed(let message):
                 Text(message)
@@ -287,7 +290,7 @@ struct ArticleDetailView: View {
                     .foregroundStyle(Theme.burgundy)
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .card()
     }
 
@@ -305,7 +308,7 @@ struct ArticleDetailView: View {
 
     private func outcomeCard(_ outcome: OfficialOutcome) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            SectionLabel(text: "Official outcome")
+            SectionHeader(text: "Official outcome")
             HStack(spacing: 8) {
                 OutcomeChip(result: outcome.result)
                 if let tally = outcome.tally {
@@ -313,20 +316,22 @@ struct ArticleDetailView: View {
                         .font(.subheadline)
                         .monospacedDigit()
                         .foregroundStyle(Theme.navy)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             Text(outcome.sourceNote)
                 .font(.caption)
                 .foregroundStyle(Theme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
 
     private func historyCard(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionLabel(text: "Synced with history")
+            SectionHeader(text: "Synced with history")
             ForEach(article.relatedHistoricalVoteIDs, id: \.self) { id in
                 if let vote = store.history(id: id) {
                     NavigationLink(value: vote.id) {
@@ -341,6 +346,7 @@ struct ArticleDetailView: View {
                                     .font(.footnote.weight(.medium))
                                     .foregroundStyle(Theme.navy)
                                     .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
                                 Text("Town meeting voted to \(vote.outcome)")
                                     .font(.caption2)
                                     .foregroundStyle(Theme.inkSecondary)
@@ -351,24 +357,24 @@ struct ArticleDetailView: View {
                         .padding(10)
                         .background(Theme.parchment, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
-                    .buttonStyle(.plain)
+                    .pressable()
                 }
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
 
     private func originalTextCard(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            SectionLabel(text: "Original warrant text")
+            SectionHeader(text: "Original warrant text")
             Text(article.originalText)
                 .font(.caption.leading(.loose))
                 .foregroundStyle(Theme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }

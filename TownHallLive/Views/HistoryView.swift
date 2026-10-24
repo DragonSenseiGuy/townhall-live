@@ -45,22 +45,22 @@ struct HistoryView: View {
         .scrollIndicators(.hidden)
         .background(Theme.parchment.ignoresSafeArea())
         .navigationTitle("History")
+        .toolbarBackground(Theme.parchment, for: .navigationBar)
         .searchable(text: $searchText, prompt: "Search past town decisions")
     }
 
     private func yearBanner(_ year: Int) -> some View {
         HStack(spacing: 10) {
             Text(String(year))
-                .font(.title2)
+                .font(.system(.title2, design: .serif, weight: .semibold))
                 .monospacedDigit()
-                .bold()
                 .foregroundStyle(Theme.navy)
             Rectangle()
-                .fill(Theme.gold)
-                .frame(height: 2)
+                .fill(Theme.gold.opacity(0.6))
+                .frame(height: 1)
             Spacer(minLength: 8)
         }
-        .padding(.top, 18)
+        .padding(.top, 20)
     }
 }
 
@@ -194,5 +194,6 @@ struct HistoryDetailView: View {
         .background(Theme.parchment.ignoresSafeArea())
         .navigationTitle("Decision")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.parchment, for: .navigationBar)
     }
 }

@@ -8,8 +8,11 @@ struct DemoSessionCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                SectionLabel(text: "Simulated live feed")
+            HStack(alignment: .firstTextBaseline) {
+                Text("SIMULATED LIVE FEED")
+                    .font(.caption.weight(.semibold))
+                    .tracking(1.1)
+                    .foregroundStyle(Theme.inkSecondary)
                 Spacer()
                 Text("\(session.stepIndex + 1) of \(session.steps.count)")
                     .font(.caption)
@@ -22,64 +25,83 @@ struct DemoSessionCard: View {
                     Text(step.headline)
                         .font(Theme.headlineFont)
                         .foregroundStyle(Theme.navy)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(step.caption)
                         .font(.subheadline)
                         .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .id(step.id)
-                .transition(.opacity)
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
 
                 progressDots
 
                 if let article = store.article(id: step.articleID) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "doc.text.magnifyingglass")
-                            .font(.footnote)
-                        Text("Read Article \(article.number)")
-                            .font(.footnote.weight(.medium))
+                    NavigationLink(value: article.id) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.text.magnifyingglass")
+                                .font(.footnote)
+                            Text("Read Article \(article.number)")
+                                .font(.footnote.weight(.medium))
+                        }
+                        .foregroundStyle(Theme.gold)
                     }
-                    .foregroundStyle(Theme.gold)
+                    .pressable()
                 }
 
                 controls
             } else {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 10) {
                     Text("Watch the meeting as it happens")
                         .font(Theme.headlineFont)
                         .foregroundStyle(Theme.navy)
                     Text("A simulated playback of a recent Town Meeting so you can see how a remote session feels.")
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Button {
                         session.start()
                     } label: {
                         Label("Play demo session", systemImage: "play.fill")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 9)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
                             .background(Theme.navy, in: Capsule())
                     }
-                    .buttonStyle(PressableButtonStyle())
+                    .pressable()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .card()
+        .animation(.easeOut(duration: 0.3), value: session.current?.id)
+        .sensoryFeedback(.impact(weight: .light), trigger: session.current?.id)
     }
 
+    // Progress only moves forward like the meeting does; completed steps fill gold.
     private var progressDots: some View {
         HStack(spacing: 5) {
             ForEach(session.steps) { step in
                 Capsule()
-                    .fill(step.id <= session.current?.id ?? 0 ? Theme.gold : Theme.divider)
-                    .frame(width: step.id == session.current?.id ? 18 : 5, height: 5)
-                    .animation(.spring(response: 0.35, dampingFraction: 0.85), value: session.current?.id)
+                    .fill(fill(for: step))
+                    .frame(width: width(for: step), height: 5)
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: session.current?.id)
+    }
+
+    private func fill(for step: DemoStep) -> Color {
+        guard let current = session.current else { return Theme.divider }
+        if step.id == current.id { return Theme.gold }
+        return step.id < current.id ? Theme.gold.opacity(0.45) : Theme.parchmentDeep
+    }
+
+    private func width(for step: DemoStep) -> CGFloat {
+        session.current?.id == step.id ? 18 : 5
     }
 
     private var controls: some View {
@@ -87,66 +109,79 @@ struct DemoSessionCard: View {
             Button {
                 session.isRunning ? session.pause() : session.start()
             } label: {
-                Image(systemName: session.isRunning ? "pause.fill" : "play.fill")
-                    .font(.callout)
-                    .frame(width: 34, height: 34)
-                    .foregroundStyle(Theme.navy)
-                    .background(Theme.goldSoft.opacity(0.6), in: Circle())
+                iconControl(session.isRunning ? "pause.fill" : "play.fill", filled: true)
             }
-            .buttonStyle(PressableButtonStyle())
+            .pressable()
             Button {
                 session.next()
             } label: {
-                Image(systemName: "forward.end.fill")
-                    .font(.callout)
-                    .frame(width: 34, height: 34)
-                    .foregroundStyle(Theme.navy)
-                    .background(Theme.goldSoft.opacity(0.6), in: Circle())
+                iconControl("forward.end.fill", filled: false)
             }
-            .buttonStyle(PressableButtonStyle())
+            .pressable()
             Button {
                 session.stop()
             } label: {
-                Text("End")
+                Text("End demo")
                     .font(.footnote.weight(.medium))
                     .foregroundStyle(Theme.inkSecondary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 9)
                     .overlay(Capsule().strokeBorder(Theme.divider, lineWidth: 1))
             }
-            .buttonStyle(PressableButtonStyle())
+            .pressable()
             Spacer()
         }
     }
+
+    private func iconControl(_ symbol: String, filled: Bool) -> some View {
+        Image(systemName: symbol)
+            .font(.callout)
+            .foregroundStyle(filled ? .white : Theme.navy)
+            .frame(width: 38, height: 38)
+            .background(filled ? Theme.navy : Theme.goldSoft.opacity(0.7), in: Circle())
+            .overlay(
+                Circle().strokeBorder(filled ? Theme.navy : Theme.divider, lineWidth: 1)
+            )
+    }
 }
 
-// Mock voting: the user can't vote officially — this is a clearly-labeled
-// simulated poll so remote constituents can make their voice feel heard.
+// Mock voting: the user can't vote officially — a clearly-labeled simulated
+// poll so remote constituents can make their voice feel heard.
 struct MockVoteCard: View {
     let article: WarrantArticle
     var votes: MockVoteController
 
     private var myVote: VoteChoice? { votes.myVote(for: article.id) }
+
+    private var counts: (yay: Int, nay: Int, abstain: Int) {
+        let add: (VoteChoice) -> Int = { myVote == $0 ? 1 : 0 }
+        return (
+            article.simulatedTally.yay + add(.yay),
+            article.simulatedTally.nay + add(.nay),
+            (article.simulatedTally.abstain ?? 0) + add(.abstain)
+        )
+    }
+
     private var maxCount: Int {
-        let base = [article.simulatedTally.yay, article.simulatedTally.nay, article.simulatedTally.abstain ?? 0].max() ?? 0
-        let mine = myVote == nil ? 0 : 1
-        return base + mine
+        max(counts.yay, counts.nay, counts.abstain)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                SectionLabel(text: "How would you vote?")
-                Spacer()
+                SectionHeader(text: "How would you vote?")
                 Text("SIMULATED")
                     .font(.caption2.weight(.bold))
                     .tracking(0.8)
                     .foregroundStyle(Theme.inkSecondary)
             }
-            Text(article.displayNumber + ": " + article.title)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Theme.navy)
-                .fixedSize(horizontal: false, vertical: true)
+            HStack(alignment: .top, spacing: 10) {
+                NumberSeal(number: article.number)
+                Text(article.title)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(Theme.navy)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             HStack(spacing: 8) {
                 ForEach(VoteChoice.allCases) { choice in
@@ -156,60 +191,59 @@ struct MockVoteCard: View {
 
             if let vote = myVote {
                 results(vote)
+                    .transition(.opacity)
+            } else {
+                Text("Your vote is recorded locally as a simulation — real voting happens in person at the meeting.")
+                    .font(.caption2)
+                    .foregroundStyle(Theme.inkSecondary.opacity(0.8))
             }
         }
-        .padding(16)
+        .padding(Theme.cardPadding)
         .card()
+        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: myVote)
     }
 
     private func voteButton(_ choice: VoteChoice) -> some View {
         let selected = myVote == choice
         let color: Color = choice == .yay ? Theme.green : (choice == .nay ? Theme.burgundy : Theme.inkSecondary)
         return Button {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                votes.cast(choice, for: article.id)
-            }
+            votes.cast(choice, for: article.id)
         } label: {
-            Text(choice.rawValue)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(selected ? .white : color)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(selected ? color : color.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(selected ? color : color.opacity(0.35), lineWidth: 1)
-                )
+            VStack(spacing: 3) {
+                Image(systemName: choice == .yay ? "checkmark" : (choice == .nay ? "xmark" : "minus"))
+                    .font(.footnote.weight(.bold))
+                Text(choice.rawValue)
+                    .font(.subheadline.weight(.semibold))
+            }
+            .foregroundStyle(selected ? .white : color)
+            .frame(maxWidth: .infinity)
+            .frame(height: 46)
+            .background(selected ? color : color.opacity(0.08), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 11, style: .continuous)
+                    .strokeBorder(selected ? color : color.opacity(0.4), lineWidth: 1)
+            )
         }
-        .buttonStyle(PressableButtonStyle())
+        .pressable()
+        .sensoryFeedback(.impact(weight: .medium), trigger: votes.votes[article.id])
     }
 
     private func results(_ vote: VoteChoice) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 4) {
-                Image(systemName: "checkmark.circle")
-                    .font(.footnote)
-                    .foregroundStyle(Theme.gold)
-                Text("You voted \(vote.rawValue.lowercased()) — official voting happens in person at the meeting.")
+                Image(systemName: "checkmark.circle.fill")
                     .font(.caption)
-                    .foregroundStyle(Theme.inkSecondary)
+                    .foregroundStyle(Theme.gold)
+                Text("You voted \(vote.rawValue.lowercased())")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.navy)
             }
-            TallyRow(label: "Yay", count: article.simulatedTally.yay + (vote == .yay ? 1 : 0), maxCount: maxCount, color: Theme.green, highlight: vote == .yay)
-            TallyRow(label: "Nay", count: article.simulatedTally.nay + (vote == .nay ? 1 : 0), maxCount: maxCount, color: Theme.burgundy, highlight: vote == .nay)
-            TallyRow(label: "Abstain", count: (article.simulatedTally.abstain ?? 0) + (vote == .abstain ? 1 : 0), maxCount: maxCount, color: Theme.inkSecondary, highlight: vote == .abstain)
+            TallyRow(label: "Yay", count: counts.yay, maxCount: maxCount, color: Theme.green, highlight: vote == .yay)
+            TallyRow(label: "Nay", count: counts.nay, maxCount: maxCount, color: Theme.burgundy, highlight: vote == .nay)
+            TallyRow(label: "Abstain", count: counts.abstain, maxCount: maxCount, color: Theme.inkSecondary, highlight: vote == .abstain)
             Text("Community numbers are simulated demo data.")
                 .font(.caption2)
                 .foregroundStyle(Theme.inkSecondary.opacity(0.75))
         }
-        .transition(.opacity)
-    }
-}
-
-// Press feedback: the UI answers the finger immediately, commit lands on release.
-struct PressableButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.96 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: configuration.isPressed)
     }
 }

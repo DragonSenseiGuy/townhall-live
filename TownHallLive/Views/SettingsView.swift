@@ -78,6 +78,7 @@ struct SettingsView: View {
         .background(Theme.parchment.ignoresSafeArea())
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.parchment, for: .navigationBar)
         .onAppear {
             draftURL = settings.baseURL
             draftModel = settings.model

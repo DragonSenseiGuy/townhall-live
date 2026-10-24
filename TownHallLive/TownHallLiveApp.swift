@@ -13,6 +13,13 @@ struct RootView: View {
     @State private var store = DataStore()
     @State private var session = DemoSessionController()
     @State private var votes = MockVoteController()
+    // Dev hook: `simctl launch <udid> <bundle> -thl.startTab 1` opens a specific
+    // tab for CLI screenshots/videos.
+    @State private var tab: Int
+
+    init() {
+        _tab = State(initialValue: UserDefaults.standard.integer(forKey: "thl.startTab"))
+    }
 
     /// Article ids, historical-vote ids, and meeting ids share the String
     /// navigation namespace; resolve by precedence.
@@ -28,27 +35,30 @@ struct RootView: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $tab) {
             NavigationStack {
                 LiveView(store: store, session: session, votes: votes)
                     .navigationDestination(for: String.self, destination: destination)
             }
             .tabItem { Label("Live", systemImage: "dot.radiowaves.right") }
+            .tag(0)
 
             NavigationStack {
                 WarrantsView(store: store)
                     .navigationDestination(for: String.self, destination: destination)
             }
             .tabItem { Label("Warrants", systemImage: "doc.text") }
+            .tag(1)
 
             NavigationStack {
                 HistoryView(store: store)
                     .navigationDestination(for: String.self, destination: destination)
             }
             .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
+            .tag(2)
         }
         .tint(Theme.navy)
-        .environment(\.colorScheme, .light)
+        .preferredColorScheme(.light)
         .task {
             store.load()
             session.configure(with: store.data?.demoSession ?? [])

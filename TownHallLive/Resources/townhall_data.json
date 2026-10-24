@@ -1,0 +1,269 @@
+{
+  "town": { "name": "Town", "state": "Massachusetts" },
+  "meetings": [
+    {
+      "id": "atm-2026",
+      "title": "Annual Town Meeting",
+      "date": "Monday, April 6, 2026 · 7:00 PM · Junior High Auditorium",
+      "status": "live",
+      "streamURL": "https://www.youtube.com/@Town TV"
+    },
+    {
+      "id": "atm-2025",
+      "title": "Annual Town Meeting",
+      "date": "Monday, April 7, 2025",
+      "status": "recent",
+      "streamURL": "https://www.youtube.com/@Town TV"
+    },
+    {
+      "id": "stm-2024",
+      "title": "Special Town Meeting",
+      "date": "Monday, November 18, 2024",
+      "status": "past",
+      "streamURL": "https://www.youtube.com/@Town TV"
+    }
+  ],
+  "articles": [
+    {
+      "id": "a12",
+      "meetingID": "atm-2026",
+      "number": 12,
+      "title": "Regional School District operating budget assessment",
+      "category": "School Budget",
+      "originalText": "To see if the Town will vote to raise and appropriate, transfer from available funds, or otherwise provide the sum of Fifty-Two Million, Four Hundred Forty Thousand Dollars ($52,440,000) to fund the Town's assessment of the operating budget of the Regional School District for the fiscal year commencing July first, two thousand twenty-six, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This article pays the town's yearly share of the joint Town-Boxborough school district's operating budget — the money that runs the elementary, junior high, and high school for the school year starting July 1, 2026.",
+        "keyTakeaways": [
+          "The town's share of the regional school budget comes to about $52.4 million, the single largest warrant line every year",
+          "Assessments to member towns are set by the regional district agreement and student enrollment, not by this Town Meeting vote directly",
+          "Rejecting an operating-budget assessment does not erase the bill; state law requires the towns to fund it"
+        ],
+        "votingYesMeans": "You approve funding the operational costs of the regional schools as assessed.",
+        "votingNoMeans": "You vote not to appropriate this amount, kicking the shortfall to later action that state law will likely still require."
+      },
+      "financialImpact": {
+        "amount": "$52,440,000",
+        "explanation": "Approximately 55% of everything Town residents pay in property tax at the annual meeting is decided in this one article, because the regional school assessment formula dominates the levy."
+      },
+      "officialOutcome": null,
+      "simulatedTally": { "yay": 842, "nay": 213 },
+      "relatedHistoricalVoteIDs": []
+    },
+    {
+      "id": "a18",
+      "meetingID": "atm-2026",
+      "number": 18,
+      "title": "Community Preservation Act funds for the Douglas East conservation restriction",
+      "category": "Land Preservation",
+      "originalText": "To see if the Town will vote to authorize the Conservation Commission to acquire, on such terms and for such consideration as the Commission deems appropriate, a conservation restriction over a portion of land known as Assessor's Parcel 105-118 (the 'Douglas East parcel'), together with the appropriation of One Million, Eight Hundred Fifty Thousand Dollars ($1,850,000) from FY2027 Community Preservation Act annual budget reserved funds for open space and from the CPA open space reserve, all contingent on receiving matching grants committed by the Commonwealth, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This article uses Community Preservation Act (CPA) money to permanently protect a large undeveloped parcel from being built on, by buying a conservation restriction on the Douglas East land.",
+        "keyTakeaways": [
+          "The town would spend $1.85 million in CPA funds, which are raised only from the CPA property-tax surcharge and matching state money — not the general budget",
+          "The landowner keeps owning and paying taxes on the land; the restriction only removes development rights forever",
+          "The deal only closes if the state commits matching grant funds, so the town is not exposed if the grant falls through"
+        ],
+        "votingYesMeans": "You direct the town to buy the development rights in perpetuity so the land can never be subdivided or built on.",
+        "votingNoMeans": "You decline to spend CPA funds on this parcel; the owner retains full rights to develop or sell the land later."
+      },
+      "financialImpact": {
+        "amount": "$1,850,000",
+        "explanation": "Paid from the CPA open space reserve, which comes from the 3% CPA surcharge on property tax bills and annual state match — no money is taken from the general levy."
+      },
+      "officialOutcome": null,
+      "simulatedTally": { "yay": 901, "nay": 154 },
+      "relatedHistoricalVoteIDs": ["h2022-trail", "h2011-nara"]
+    },
+    {
+      "id": "a24",
+      "meetingID": "atm-2026",
+      "number": 24,
+      "title": "Zoning bylaw amendment: accessory dwelling units by right",
+      "category": "Zoning",
+      "originalText": "To see if the Town will vote to amend the Zoning Bylaw by striking Section 4.2.4 'Accessory Apartment' in its entirety and replacing it with a new section permitting, by Site Plan Review, accessory dwelling units containing up to nine hundred square feet of gross floor area, attached or detached, on lots meeting the minimum dimensional requirements of Section 3.2, with no minimum lot size requirement beyond Section 3.2 and a requirement that the unit remain deed-restricted for owner occupancy, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This rewrite of the accessory apartment rules would let homeowners build small backyard or in-home units (“ADUs”) up to 900 square feet without the old special-permit hearing maze, as long as the unit stays owner-occupied by deed.",
+        "keyTakeaways": [
+          "Previous rules required a full special permit for any second unit, which took months and legal fees; the new path is a one-look Site Plan Review",
+          "The unit must be deed-restricted to owner occupancy to prevent buy-and-rent investor conversions",
+          "This is the first substantive change to the accessory-unit rules since the 40R multifamily overlay debates"
+        ],
+        "votingYesMeans": "You allow small second units on qualifying lots with a streamlined review, aimed at seniors downsizing and multigenerational families.",
+        "votingNoMeans": "You keep the current stricter special-permit process for any accessory apartment."
+      },
+      "financialImpact": null,
+      "officialOutcome": null,
+      "simulatedTally": { "yay": 612, "nay": 439 },
+      "relatedHistoricalVoteIDs": ["h2018-zoning", "h2019-40r"]
+    },
+    {
+      "id": "a31",
+      "meetingID": "atm-2026",
+      "number": 31,
+      "title": "Water PFAS filtration upgrades at the East Town well",
+      "category": "Water Infrastructure",
+      "originalText": "To see if the Town will vote to raise and appropriate, borrow, or otherwise provide the sum of Six Million, Two Hundred Thousand Dollars ($6,200,000), to be expended by the Department of Health & Public Safety, for the design and construction of granular activated carbon drinking water filtration upgrades at the East Town groundwater facility in order to comply with the Massachusetts PFAS public drinking water standards, and to meet the town's share of any procured grants, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This article pays to install carbon-filter water treatment at one of the town's wells so the drinking water meets the state's strict limits on PFAS “forever chemicals.”",
+        "keyTakeaways": [
+          "The town would spend $6.2 million, mostly funded through water-enterprise borrowing, repaid over time through water rates rather than property tax",
+          "The filters remove PFAS compounds that the state began regulating after they were found above limits at several Massachusetts wells",
+          "Grant pre-approval from the state revolving fund is already secured, so the town's net cost may be lower than the headline amount"
+        ],
+        "votingYesMeans": "You fund the filtration plant so the East Town well stays online and compliant.",
+        "votingNoMeans": "You defer the upgrade, and the town would ship in water or take the well offline until it funds treatment later."
+      },
+      "financialImpact": {
+        "amount": "$6,200,000",
+        "explanation": "Water enterprise borrowing repaid through water bills, not property tax; state revolving-fund loans and grants are expected to offset part of the principal."
+      },
+      "officialOutcome": null,
+      "simulatedTally": { "yay": 1017, "nay": 88 },
+      "relatedHistoricalVoteIDs": []
+    },
+    {
+      "id": "b3",
+      "meetingID": "atm-2025",
+      "number": 3,
+      "title": "FY2026 annual operating budget",
+      "category": "Town Budget",
+      "originalText": "To see if the Town will vote to raise and appropriate the sum of One Hundred Eighteen Million, Five Hundred Thousand Dollars ($118,500,000) to defray specific charges and expenses of the town for the fiscal year beginning July first, two thousand twenty-five, including the costs of salaries, wages and expenses of the several departments, boards, committees and commissions of the Town, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This was the annual catch-all appropriation funding every town department — police, fire, highway, library, and general government — for fiscal 2026.",
+        "keyTakeaways": [
+          "The budget continued the town's practice of funding services at level-service levels worked out with both budget task forces",
+          "It absorbed the post-2024 operational override constraints on the overall levy limit"
+        ],
+        "votingYesMeans": "Fund town operations for the year as presented.",
+        "votingNoMeans": "A no vote would have forced emergency budget hearings and possibly service cuts."
+      },
+      "financialImpact": {
+        "amount": "$118,500,000",
+        "explanation": "The overall town-side operating budget for the fiscal year, excluding the regional school assessment voted separately."
+      },
+      "officialOutcome": {
+        "result": "passed",
+        "tally": "Passed by a large majority on a voice vote.",
+        "sourceNote": "Per Annual Town Meeting minutes, April 2025. Replace with the exact figure from the town clerk's record."
+      },
+      "simulatedTally": { "yay": 788, "nay": 96 },
+      "relatedHistoricalVoteIDs": []
+    },
+    {
+      "id": "c7",
+      "meetingID": "stm-2024",
+      "number": 7,
+      "title": "Junior high building committee charge and feasibility funding",
+      "category": "Facilities",
+      "originalText": "To see if the Town will vote to raise and appropriate the sum of One Million, Two Hundred Thousand Dollars ($1,200,000) for design and feasibility studies relative to the renovation or replacement of the Raymond J. Fitzpatrick Middle School, and to establish a Building Committee consisting of [members] to oversee such work, or take any other action relative thereto.",
+      "plainEnglish": {
+        "summary": "This article funded the architecture and feasibility work that decides whether Town renovates or replaces its junior high building before asking voters for construction money.",
+        "keyTakeaways": [
+          "Studies were needed before the town could apply for state School Building Authority reimbursement",
+          "Without state reimbursement, the eventual project would be far more expensive locally"
+        ],
+        "votingYesMeans": "Pay for the study so the town can pursue state money before committing to a project.",
+        "votingNoMeans": "Postpone even the planning work until the following year."
+      },
+      "financialImpact": {
+        "amount": "$1,200,000",
+        "explanation": "Seed study funding; state School Building Authority eligibility was the strategic reason to spend it now."
+      },
+      "officialOutcome": {
+        "result": "passed",
+        "tally": "Passed on a counted vote.",
+        "sourceNote": "Per Special Town Meeting minutes, November 2024. Replace with exact tally from the town clerk's record."
+      },
+      "simulatedTally": { "yay": 640, "nay": 210 },
+      "relatedHistoricalVoteIDs": ["h2022-sba", "h2015-fire"]
+    }
+  ],
+  "historicalVotes": [
+    {
+      "id": "h2022-trail",
+      "year": 2022,
+      "meetingName": "Annual Town Meeting",
+      "title": "CPA funds for the Assabet River Rail Trail linkage and conservation land trail network",
+      "category": "Land Preservation",
+      "summary": "Town meeting voted to spend CPA open space funds to build connected trail access across several conservation parcels and the rail trail spur.",
+      "outcome": "passed",
+      "tally": "Passed by a wide margin.",
+      "relevanceNote": "The Douglas East CPA article follows the same spending pattern Town residents have approved repeatedly: CPA surcharge money for land access and protection."
+    },
+    {
+      "id": "h2011-nara",
+      "year": 2011,
+      "meetingName": "Annual Town Meeting",
+      "title": "North Town Recreation Area improvements and conservation parcel acquisition",
+      "category": "Land Preservation",
+      "summary": "A land-acquisition and recreation-area funding article, one of the town's earliest large CPA open space votes.",
+      "outcome": "passed",
+      "tally": "Passed.",
+      "relevanceNote": "Established the template for pooled CPA open-space acquisitions like Douglas East: buy rights now, protect land permanently."
+    },
+    {
+      "id": "h2018-zoning",
+      "year": 2018,
+      "meetingName": "Annual Town Meeting",
+      "title": "Housing production plan zoning amendments",
+      "category": "Zoning",
+      "summary": "A package of zoning amendments aimed at increasing housing options; a version of the package reached the floor after two hours of debate.",
+      "outcome": "failed",
+      "tally": "Failed after extensive floor debate.",
+      "relevanceNote": "The accessory-dwelling article reintroduces pieces of this failed housing package in a narrower, deed-restricted form."
+    },
+    {
+      "id": "h2019-40r",
+      "year": 2019,
+      "meetingName": "Special Town Meeting",
+      "title": "Smart growth overlay district (Chapter 40R) acceptances",
+      "category": "Zoning",
+      "summary": "The town accepted a 40R smart-growth overlay creating higher-density, mixed-use zoning near the commuter-rail corridors.",
+      "outcome": "passed",
+      "tally": "Passed.",
+      "relevanceNote": "After the 2018 failure, zoning reform succeeded with a corridor-targeted scope; Article 24 borrows the same narrow-scope strategy."
+    },
+    {
+      "id": "h2015-fire",
+      "year": 2015,
+      "meetingName": "Annual Town Meeting",
+      "title": "Fire station debt exclusion for reconstruction and renovation",
+      "category": "Facilities",
+      "summary": "A Proposition 2½ debt exclusion to fund major fire station work.",
+      "outcome": "failed",
+      "tally": "Failed on the counted vote.",
+      "relevanceNote": "Facilities money without a state rebate has a much harder history in Town than CPA or school projects — worth knowing before the junior high studies ask for more."
+    },
+    {
+      "id": "h2022-sba",
+      "year": 2022,
+      "meetingName": "Annual Town Meeting",
+      "title": "School project feasibility appropriation for state School Building Authority submission",
+      "category": "Facilities",
+      "summary": "Funded a district school feasibility study specifically to earn Massachusetts School Building authority cost-share eligibility.",
+      "outcome": "passed",
+      "tally": "Passed.",
+      "relevanceNote": "The junior high article on the current warrant follows this winning playbook exactly: pay for the study first, then the state pays part of the construction."
+    },
+    {
+      "id": "h2024-override",
+      "year": 2024,
+      "meetingName": "Annual Town Meeting",
+      "title": "Operational override and budget sustainability articles",
+      "category": "Town Budget",
+      "summary": "The town approved a limited operational override to stabilize services, following a multi-year budget squeeze.",
+      "outcome": "passed",
+      "tally": "Passed after a sustained public campaign.",
+      "relevanceNote": "Every budget article since has to be explained against the tax-levy expectations this override reset."
+    }
+  ],
+  "demoSession": [
+    { "id": 1, "articleID": "a12", "headline": "Article 12 called to the floor", "caption": "Moderator reads Article 12: the regional school district operating budget assessment. Floor opens for discussion." },
+    { "id": 2, "articleID": "a12", "headline": "Debate begins on Article 12", "caption": "Budget task force member explains the assessment formula. Questions from the floor queue for remote attendees as well." },
+    { "id": 3, "articleID": "a12", "headline": "Motion to move the question", "caption": "Debate concludes; the moderator calls for a voice vote in the hall and logs the mock votes from remote residents on TownHall Live." },
+    { "id": 4, "articleID": "a12", "headline": "Article 12: voice vote taken", "caption": "\"All in favor…\" — the article carries. Official tally goes to the town clerk's record; the mock poll result is displayed as simulated public sentiment." },
+    { "id": 5, "articleID": "a18", "headline": "Article 18 called to the floor", "caption": "The Douglas East conservation restriction is presented with the matching-grant condition, and floor discussion opens." },
+    { "id": 6, "articleID": "a18", "headline": "Motion to amend Article 18", "caption": "A floor motion would add a public-access easement. Remote viewers can follow the motion line-by-line and cast a mock vote." },
+    { "id": 7, "articleID": "a31", "headline": "Late session: Article 31 enters", "caption": "After 9 PM the PFAS filtration upgrade for the East Town well returns to the floor for final action." }
+  ]
+}

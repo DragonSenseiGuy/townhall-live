@@ -1,0 +1,34 @@
+name: TownHallLive
+options:
+  bundleIdPrefix: com.townhalllive
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+targets:
+  TownHallLive:
+    type: application
+    platform: iOS
+    sources:
+      - path: TownHallLive
+        excludes:
+          - "Resources/**"
+      - path: TownHallLive/Resources
+        buildPhase: resources
+    info:
+      path: TownHallLive/Info.plist
+      properties:
+        CFBundleDisplayName: TownHall Live
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoadsInWebContent: true

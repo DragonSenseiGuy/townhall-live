@@ -68,46 +68,53 @@ struct LiveBadge: View {
     }
 }
 
-// Election-night share bar: one tall capsule split by community share —
-// yay, abstain, nay — rather than three separate rows. Zero shares simply
-// don't appear; the roll count lives in the legend next to it.
-struct VoteShareBar: View {
-    let yay: Int
-    let abstain: Int
-    let nay: Int
-
-    private var total: Int { yay + abstain + nay }
-    private var segmentCount: Int { [yay, abstain, nay].filter { $0 > 0 }.count }
-    private let gap: CGFloat = 3
+// Numeric results where comparisons matter. Bars spring; numbers count.
+struct TallyRow: View {
+    let label: String
+    let count: Int
+    let maxCount: Int
+    let color: Color
+    let highlight: Bool
 
     var body: some View {
-        GeometryReader { geo in
-            HStack(spacing: segmentCount > 1 ? gap : 0) {
-                if total == 0 {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(label)
+                    .font(.subheadline.weight(highlight ? .semibold : .regular))
+                    .foregroundStyle(highlight ? Theme.ink : Theme.inkSecondary)
+                Spacer()
+                Text("\(Int(rubberCount))")
+                    .font(.subheadline.weight(highlight ? .bold : .regular))
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: Double(count)))
+                    .foregroundStyle(highlight ? Theme.ink : Theme.inkSecondary)
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
                     Capsule().fill(Theme.tile)
-                        .frame(maxWidth: .infinity)
-                }
-                if yay > 0 {
-                    segment(Theme.green, count: yay, width: geo.size.width)
-                }
-                if abstain > 0 {
-                    segment(Theme.inkSecondary, count: abstain, width: geo.size.width)
-                }
-                if nay > 0 {
-                    segment(Theme.red, count: nay, width: geo.size.width)
+                    Capsule()
+                        .fill(color)
+                        // A zero count shows nothing — no ghost dot.
+                        .frame(width: count == 0 ? 0 : max(6, geo.size.width * ratio))
+                        .animation(.spring(response: 0.45, dampingFraction: 0.9), value: count)
                 }
             }
-            .animation(.spring(response: 0.5, dampingFraction: 0.85), value: [yay, abstain, nay])
+            .frame(height: 6)
+            .clipShape(Capsule())
         }
-        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .animation(.spring(response: 0.5, dampingFraction: 0.95), value: count)
+        .onAppear { rubberCount = Double(count) }
+        .onChange(of: count) { _, newValue in
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.95)) {
+                rubberCount = Double(newValue)
+            }
+        }
     }
 
-    private func segment(_ color: Color, count: Int, width: CGFloat) -> some View {
-        let usable = width - gap * CGFloat(segmentCount - 1)
-        let share = total == 0 ? 0 : CGFloat(count) / CGFloat(total)
-        return Capsule()
-            .fill(color)
-            .frame(width: max(8, usable * share))
-            .animation(.spring(response: 0.5, dampingFraction: 0.85), value: count)
+    // Visible digit rolls with the same spring as the bar.
+    @State private var rubberCount: Double = 0
+
+    private var ratio: CGFloat {
+        maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
     }
 }

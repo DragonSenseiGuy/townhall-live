@@ -31,22 +31,12 @@ struct HistoryView: View {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(grouped, id: \.year) { group in
                     yearBanner(group.year, count: group.votes.count)
-                    VStack(spacing: 0) {
-                        ForEach(group.votes) { vote in
-                            NavigationLink(value: vote.id) {
-                                HistoryRow(vote: vote)
-                                    .padding(.horizontal, Theme.cardPadding)
-                            }
-                            .pressable()
-                            if vote.id != group.votes.last?.id {
-                                Rectangle()
-                                    .fill(Theme.divider)
-                                    .frame(height: 1)
-                                    .padding(.leading, Theme.cardPadding)
-                            }
+                    ForEach(group.votes) { vote in
+                        NavigationLink(value: vote.id) {
+                            HistoryRow(vote: vote)
                         }
+                        .pressable()
                     }
-                    .card()
                 }
             }
             .padding(.horizontal, Theme.pagePadding)
@@ -83,37 +73,31 @@ struct HistoryRow: View {
     let vote: HistoricalVote
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             Image(systemName: vote.outcome == "passed" ? "checkmark.circle.fill" : "xmark.circle.fill")
                 .font(.subheadline)
                 .foregroundStyle(vote.outcome == "passed" ? Theme.green : Theme.red)
-            VStack(alignment: .leading, spacing: 4) {
+                .padding(.top, 3)
+            VStack(alignment: .leading, spacing: 5) {
                 Text(vote.title)
-                    .font(.footnote.weight(.medium))
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
-                Text(vote.category.uppercased())
-                    .font(Theme.recordFont)
-                    .foregroundStyle(Theme.inkSecondary.opacity(0.6))
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    CategoryChip(text: vote.category)
+                    Text(vote.tally)
+                        .font(.caption)
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.inkSecondary)
+                }
             }
-            Spacer(minLength: 10)
-            // Tally in the record register, trailing like a ledger column.
-            Text(verbatim: vote.tally)
-                .font(Theme.recordFont)
-                .monospacedDigit()
-                .foregroundStyle(Theme.inkSecondary.opacity(0.85))
-                .lineLimit(2)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 128, alignment: .trailing)
+            Spacer(minLength: 0)
             Image(systemName: "chevron.right")
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Theme.inkSecondary.opacity(0.45))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.5))
         }
-        .padding(.vertical, 12)
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .combine)
+        .padding(.vertical, 10)
     }
 }
 

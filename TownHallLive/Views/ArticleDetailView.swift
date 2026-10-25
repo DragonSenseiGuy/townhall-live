@@ -28,43 +28,25 @@ struct WarrantsView: View {
     @ViewBuilder
     private func meetingSection(_ meeting: Meeting) -> some View {
         let articles = store.articles.filter { $0.meetingID == meeting.id }.sorted { $0.number < $1.number }
-        VStack(alignment: .leading, spacing: 10) {
-            // Warrant header — the printed sheet: heavy stub rule, big black
-            // title, record-register meta line.
-            VStack(alignment: .leading, spacing: 6) {
-                Rectangle().fill(Theme.ink).frame(width: 34, height: 3)
-                HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(meeting.title)
-                        .font(.system(size: 22, weight: .black))
+                        .font(Theme.headlineFont)
                         .foregroundStyle(Theme.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if meeting.status == "live" { LiveBadge() }
-                    Spacer(minLength: 0)
+                    Text(meeting.date)
+                        .font(.footnote)
+                        .foregroundStyle(Theme.inkSecondary)
                 }
-                Text("\(meeting.date) · \(articles.count) article\(articles.count == 1 ? "" : "s")")
-                    .textCase(.uppercase)
-                    .font(Theme.recordFont)
-                    .foregroundStyle(Theme.inkSecondary.opacity(0.8))
+                Spacer()
+                if meeting.status == "live" { LiveBadge() }
             }
-
-            // Ledger: all rows in one surface, separated by hairline rules
-            // inset to the text column — a document, not a stack of cards.
-            VStack(spacing: 0) {
-                ForEach(articles) { article in
-                    NavigationLink(value: article.id) {
-                        ArticleRow(article: article, isCurrent: false)
-                            .padding(.horizontal, Theme.cardPadding)
-                    }
-                    .pressable()
-                    if article.id != articles.last?.id {
-                        Rectangle()
-                            .fill(Theme.divider)
-                            .frame(height: 1)
-                            .padding(.leading, Theme.cardPadding + ArticleRow.gutter + 12)
-                    }
+            ForEach(articles) { article in
+                NavigationLink(value: article.id) {
+                    ArticleRow(article: article, isCurrent: false)
                 }
+                .pressable()
             }
-            .card()
         }
     }
 }

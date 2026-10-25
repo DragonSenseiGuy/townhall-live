@@ -15,22 +15,13 @@ struct LiveView: View {
 
                     if !session.steps.isEmpty { DemoSessionCard(session: session, store: store) }
 
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(text: "Agenda")
-                        VStack(spacing: 0) {
-                            ForEach(liveArticles) { article in
-                                NavigationLink(value: article.id) {
-                                    ArticleRow(article: article, isCurrent: session.currentArticleID == article.id)
-                                        .padding(.horizontal, Theme.cardPadding)
-                                }
-                                .pressable()
-                                if article.id != liveArticles.last?.id {
-                                    Rectangle()
-                                        .fill(Theme.divider)
-                                        .frame(height: 1)
-                                        .padding(.leading, Theme.cardPadding + ArticleRow.gutter + 12)
-                                }
+                        ForEach(liveArticles) { article in
+                            NavigationLink(value: article.id) {
+                                ArticleRow(article: article, isCurrent: session.currentArticleID == article.id)
                             }
+                            .pressable()
                         }
                         if liveArticles.isEmpty {
                             Text("The agenda appears here once a meeting goes live.")
@@ -44,40 +35,30 @@ struct LiveView: View {
                             .id("thl-vote-card")
                     }
 
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(text: "Recent sessions")
-                        VStack(spacing: 0) {
-                            ForEach(store.meetings.filter { $0.status != "live" }) { meeting in
-                                NavigationLink(value: meeting.id) {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(meeting.title)
-                                                .font(.subheadline.weight(.semibold))
-                                                .foregroundStyle(Theme.ink)
-                                                .multilineTextAlignment(.leading)
-                                            Text(meeting.date)
-                                                .font(.footnote)
-                                                .foregroundStyle(Theme.inkSecondary)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .font(.footnote.weight(.semibold))
-                                            .foregroundStyle(Theme.inkSecondary.opacity(0.5))
+                        ForEach(store.meetings.filter { $0.status != "live" }) { meeting in
+                            NavigationLink(value: meeting.id) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(meeting.title)
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(Theme.ink)
+                                            .multilineTextAlignment(.leading)
+                                        Text(meeting.date)
+                                            .font(.footnote)
+                                            .foregroundStyle(Theme.inkSecondary)
                                     }
-                                    .padding(.horizontal, Theme.cardPadding)
-                                    .padding(.vertical, 12)
-                                    .contentShape(Rectangle())
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.footnote.weight(.semibold))
+                                        .foregroundStyle(Theme.inkSecondary.opacity(0.5))
                                 }
-                                .pressable()
-                                if meeting.id != store.meetings.filter({ $0.status != "live" }).last?.id {
-                                    Rectangle()
-                                        .fill(Theme.divider)
-                                        .frame(height: 1)
-                                        .padding(.leading, Theme.cardPadding)
-                                }
+                                .padding(13)
+                                .card()
                             }
+                            .pressable()
                         }
-                        .card()
                     }
                 }
                 .padding(.horizontal, Theme.pagePadding)

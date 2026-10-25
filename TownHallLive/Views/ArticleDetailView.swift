@@ -5,7 +5,7 @@ struct WarrantsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 24) {
                 ForEach(store.meetings) { meeting in
                     meetingSection(meeting)
                 }
@@ -16,24 +16,24 @@ struct WarrantsView: View {
                 }
             }
             .padding(.horizontal, Theme.pagePadding)
-            .padding(.top, 8)
+            .padding(.top, 4)
             .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Warrants")
-        .toolbarBackground(Theme.parchment, for: .navigationBar)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
     }
 
     @ViewBuilder
     private func meetingSection(_ meeting: Meeting) -> some View {
         let articles = store.articles.filter { $0.meetingID == meeting.id }.sorted { $0.number < $1.number }
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(meeting.title)
                         .font(Theme.headlineFont)
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
                     Text(meeting.date)
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
@@ -41,7 +41,6 @@ struct WarrantsView: View {
                 Spacer()
                 if meeting.status == "live" { LiveBadge() }
             }
-            .padding(.bottom, 2)
             ForEach(articles) { article in
                 NavigationLink(value: article.id) {
                     ArticleRow(article: article, isCurrent: false)
@@ -84,10 +83,10 @@ struct ArticleDetailView: View {
             }
         }
         .scrollIndicators(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle(article?.displayNumber ?? "Article")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.parchment, for: .navigationBar)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
         .onDisappear { if aiState.isLoading { aiState = .idle } }
     }
 
@@ -115,20 +114,20 @@ struct ArticleDetailView: View {
             originalTextCard(article)
         }
         .padding(.horizontal, Theme.pagePadding)
-        .padding(.top, 8)
+        .padding(.top, 4)
         .padding(.bottom, 40)
     }
 
     private func heroCard(_ article: WarrantArticle) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center, spacing: 12) {
-                NumberSeal(number: article.number, highlighted: true)
+                NumberTile(number: article.number, highlighted: true)
                     .frame(width: 44, height: 44)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("WARRANT ARTICLE")
-                        .font(.caption2.weight(.bold))
-                        .tracking(1.2)
-                        .foregroundStyle(Theme.gold)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Warrant article")
+                        .font(.caption2.weight(.semibold))
+                        .tracking(0.7)
+                        .foregroundStyle(Theme.accent)
                     Text(meetingDate)
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
@@ -137,7 +136,7 @@ struct ArticleDetailView: View {
             }
             Text(article.title)
                 .font(Theme.titleFont)
-                .foregroundStyle(Theme.navy)
+                .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 8) {
                 CategoryChip(text: article.category)
@@ -166,7 +165,7 @@ struct ArticleDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 ForEach(Array(plain.keyTakeaways.enumerated()), id: \.offset) { _, takeaway in
                     HStack(alignment: .top, spacing: 8) {
-                        Circle().fill(Theme.gold).frame(width: 5, height: 5).padding(.top, 8)
+                        Circle().fill(Theme.accent).frame(width: 5, height: 5).padding(.top, 8)
                         Text(takeaway)
                             .font(.subheadline)
                             .foregroundStyle(Theme.ink)
@@ -179,10 +178,14 @@ struct ArticleDetailView: View {
 
             HStack(alignment: .top, spacing: 14) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("VOTE YES")
-                        .font(.caption2.weight(.bold))
-                        .tracking(0.8)
-                        .foregroundStyle(Theme.green)
+                    HStack(spacing: 5) {
+                        Image(systemName: "checkmark")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(Theme.green)
+                        Text("Vote yes")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Theme.green)
+                    }
                     Text(plain.votingYesMeans)
                         .font(.footnote)
                         .foregroundStyle(Theme.ink)
@@ -193,10 +196,14 @@ struct ArticleDetailView: View {
                 Rectangle().fill(Theme.divider).frame(width: 1)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("VOTE NO")
-                        .font(.caption2.weight(.bold))
-                        .tracking(0.8)
-                        .foregroundStyle(Theme.burgundy)
+                    HStack(spacing: 5) {
+                        Image(systemName: "xmark")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(Theme.red)
+                        Text("Vote no")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(Theme.red)
+                    }
                     Text(plain.votingNoMeans)
                         .font(.footnote)
                         .foregroundStyle(Theme.ink)
@@ -213,14 +220,14 @@ struct ArticleDetailView: View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: "banknote.fill")
                 .font(.title3)
-                .foregroundStyle(Theme.gold)
+                .foregroundStyle(Theme.accent)
                 .padding(.top, 2)
             VStack(alignment: .leading, spacing: 4) {
                 SectionLabel(text: "Financial impact")
                 Text(impact.amount)
                     .font(.title3)
                     .monospacedDigit()
-                    .foregroundStyle(Theme.navy)
+                    .foregroundStyle(Theme.ink)
                 Text(impact.explanation)
                     .font(.footnote)
                     .foregroundStyle(Theme.inkSecondary)
@@ -242,8 +249,8 @@ struct ArticleDetailView: View {
                         SettingsView()
                     } label: {
                         Text("Add a free key")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(Theme.gold)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Theme.accent)
                     }
                 }
             }
@@ -255,12 +262,16 @@ struct ArticleDetailView: View {
                 Button {
                     regenerate(article)
                 } label: {
-                    Label("Translate with AI", systemImage: "sparkles")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .background(Theme.navy, in: Capsule())
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .font(.footnote.weight(.semibold))
+                        Text("Translate with AI")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 11)
+                    .background(Theme.ink, in: Capsule())
                 }
                 .pressable()
                 .disabled(!AppSettings.shared.hasAPIKey)
@@ -268,7 +279,7 @@ struct ArticleDetailView: View {
             case .loading:
                 HStack(spacing: 10) {
                     ProgressView()
-                        .tint(Theme.gold)
+                        .tint(Theme.accent)
                     Text("Asking the model for a plain-English rewrite…")
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
@@ -287,7 +298,7 @@ struct ArticleDetailView: View {
             case .failed(let message):
                 Text(message)
                     .font(.footnote)
-                    .foregroundStyle(Theme.burgundy)
+                    .foregroundStyle(Theme.red)
             }
         }
         .padding(Theme.cardPadding)
@@ -315,7 +326,7 @@ struct ArticleDetailView: View {
                     Text(tally)
                         .font(.subheadline)
                         .monospacedDigit()
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -340,11 +351,11 @@ struct ArticleDetailView: View {
                                 .font(.subheadline)
                                 .monospacedDigit()
                                 .bold()
-                                .foregroundStyle(Theme.gold)
+                                .foregroundStyle(Theme.accent)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(vote.title)
                                     .font(.footnote.weight(.medium))
-                                    .foregroundStyle(Theme.navy)
+                                    .foregroundStyle(Theme.ink)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
                                 Text("Town meeting voted to \(vote.outcome)")
@@ -355,7 +366,7 @@ struct ArticleDetailView: View {
                             OutcomeChip(result: vote.outcome)
                         }
                         .padding(10)
-                        .background(Theme.parchment, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(Theme.canvas, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
                     .pressable()
                 }
@@ -368,7 +379,7 @@ struct ArticleDetailView: View {
 
     private func originalTextCard(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            SectionHeader(text: "Original warrant text")
+            SectionLabel(text: "Original warrant text")
             Text(article.originalText)
                 .font(.caption.leading(.loose))
                 .foregroundStyle(Theme.inkSecondary)

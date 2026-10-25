@@ -43,24 +43,18 @@ struct HistoryView: View {
             .padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("History")
-        .toolbarBackground(Theme.parchment, for: .navigationBar)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
         .searchable(text: $searchText, prompt: "Search past town decisions")
     }
 
     private func yearBanner(_ year: Int) -> some View {
-        HStack(spacing: 10) {
-            Text(String(year))
-                .font(.system(.title2, design: .serif, weight: .semibold))
-                .monospacedDigit()
-                .foregroundStyle(Theme.navy)
-            Rectangle()
-                .fill(Theme.gold.opacity(0.6))
-                .frame(height: 1)
-            Spacer(minLength: 8)
-        }
-        .padding(.top, 20)
+        Text(String(year))
+            .font(.system(.title2, design: .default, weight: .bold))
+            .monospacedDigit()
+            .foregroundStyle(Theme.ink)
+            .padding(.top, 20)
     }
 }
 
@@ -69,15 +63,16 @@ struct HistoryRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Circle()
-                .strokeBorder(vote.outcome == "passed" ? Theme.green : Theme.burgundy, lineWidth: 2)
-                .frame(width: 10, height: 10)
-                .padding(.top, 8)
-            VStack(alignment: .leading, spacing: 4) {
+            Image(systemName: vote.outcome == "passed" ? "checkmark.circle.fill" : "xmark.circle.fill")
+                .font(.subheadline)
+                .foregroundStyle(vote.outcome == "passed" ? Theme.green : Theme.red)
+                .padding(.top, 3)
+            VStack(alignment: .leading, spacing: 5) {
                 Text(vote.title)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Theme.navy)
+                    .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 6) {
                     CategoryChip(text: vote.category)
                     Text(vote.tally)
@@ -88,10 +83,10 @@ struct HistoryRow: View {
             }
             Spacer(minLength: 0)
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Theme.divider)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.5))
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
     }
 }
 
@@ -116,7 +111,7 @@ struct HistoryDetailView: View {
                         }
                         Text(vote.title)
                             .font(Theme.titleFont)
-                            .foregroundStyle(Theme.navy)
+                            .foregroundStyle(Theme.ink)
                             .fixedSize(horizontal: false, vertical: true)
                         Text("\(vote.meetingName) · \(vote.year)")
                             .font(.footnote)
@@ -125,7 +120,7 @@ struct HistoryDetailView: View {
 
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "clock.arrow.circlepath")
-                            .foregroundStyle(Theme.gold)
+                            .foregroundStyle(Theme.accent)
                             .padding(.top, 2)
                         VStack(alignment: .leading, spacing: 4) {
                             SectionLabel(text: "Why it matters today")
@@ -135,7 +130,7 @@ struct HistoryDetailView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    .padding(16)
+                    .padding(Theme.cardPadding)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .card()
 
@@ -148,9 +143,9 @@ struct HistoryDetailView: View {
                         Text("Result: \(vote.outcome) · \(vote.tally)")
                             .font(.subheadline)
                             .monospacedDigit()
-                            .foregroundStyle(Theme.navy)
+                            .foregroundStyle(Theme.ink)
                     }
-                    .padding(16)
+                    .padding(Theme.cardPadding)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .card()
 
@@ -164,36 +159,36 @@ struct HistoryDetailView: View {
                                             Text(article.displayNumber)
                                                 .font(.caption2.weight(.bold))
                                                 .tracking(0.5)
-                                                .foregroundStyle(Theme.gold)
+                                                .foregroundStyle(Theme.accent)
                                             Text(article.title)
                                                 .font(.footnote.weight(.medium))
-                                                .foregroundStyle(Theme.navy)
+                                                .foregroundStyle(Theme.ink)
                                                 .multilineTextAlignment(.leading)
                                         }
                                         Spacer()
                                         Image(systemName: "chevron.right")
-                                            .font(.caption.weight(.semibold))
-                                            .foregroundStyle(Theme.divider)
+                                            .font(.footnote.weight(.semibold))
+                                            .foregroundStyle(Theme.inkSecondary.opacity(0.5))
                                     }
                                     .padding(10)
-                                    .background(Theme.parchment, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    .background(Theme.canvas, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                                 }
-                                .buttonStyle(.plain)
+                                .pressable()
                             }
                         }
-                        .padding(16)
+                        .padding(Theme.cardPadding)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .card()
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, Theme.pagePadding)
+            .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Decision")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.parchment, for: .navigationBar)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
     }
 }

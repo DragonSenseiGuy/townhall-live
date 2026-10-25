@@ -9,10 +9,7 @@ struct DemoSessionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("SIMULATED LIVE FEED")
-                    .font(.caption.weight(.semibold))
-                    .tracking(1.1)
-                    .foregroundStyle(Theme.inkSecondary)
+                SectionLabel(text: "Simulated live feed")
                 Spacer()
                 Text("\(session.stepIndex + 1) of \(session.steps.count)")
                     .font(.caption)
@@ -24,7 +21,7 @@ struct DemoSessionCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(step.headline)
                         .font(Theme.headlineFont)
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(step.caption)
                         .font(.subheadline)
@@ -43,9 +40,9 @@ struct DemoSessionCard: View {
                             Image(systemName: "doc.text.magnifyingglass")
                                 .font(.footnote)
                             Text("Read Article \(article.number)")
-                                .font(.footnote.weight(.medium))
+                                .font(.footnote.weight(.semibold))
                         }
-                        .foregroundStyle(Theme.gold)
+                        .foregroundStyle(Theme.accent)
                     }
                     .pressable()
                 }
@@ -55,7 +52,8 @@ struct DemoSessionCard: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Watch the meeting as it happens")
                         .font(Theme.headlineFont)
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text("A simulated playback of a recent Town Meeting so you can see how a remote session feels.")
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
@@ -63,12 +61,7 @@ struct DemoSessionCard: View {
                     Button {
                         session.start()
                     } label: {
-                        Label("Play demo session", systemImage: "play.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Theme.navy, in: Capsule())
+                        pillLabel("Play demo session", systemImage: "play.fill", filled: true)
                     }
                     .pressable()
                 }
@@ -81,13 +74,13 @@ struct DemoSessionCard: View {
         .sensoryFeedback(.impact(weight: .light), trigger: session.current?.id)
     }
 
-    // Progress only moves forward like the meeting does; completed steps fill gold.
+    // Progress only moves forward like the meeting does.
     private var progressDots: some View {
         HStack(spacing: 5) {
             ForEach(session.steps) { step in
                 Capsule()
                     .fill(fill(for: step))
-                    .frame(width: width(for: step), height: 5)
+                    .frame(width: width(for: step), height: 4)
             }
             Spacer(minLength: 0)
         }
@@ -95,13 +88,13 @@ struct DemoSessionCard: View {
     }
 
     private func fill(for step: DemoStep) -> Color {
-        guard let current = session.current else { return Theme.divider }
-        if step.id == current.id { return Theme.gold }
-        return step.id < current.id ? Theme.gold.opacity(0.45) : Theme.parchmentDeep
+        guard let current = session.current else { return Theme.tile }
+        if step.id == current.id { return Theme.accent }
+        return step.id < current.id ? Theme.accent.opacity(0.4) : Theme.tile
     }
 
     private func width(for step: DemoStep) -> CGFloat {
-        session.current?.id == step.id ? 18 : 5
+        session.current?.id == step.id ? 18 : 4
     }
 
     private var controls: some View {
@@ -122,11 +115,11 @@ struct DemoSessionCard: View {
                 session.stop()
             } label: {
                 Text("End demo")
-                    .font(.footnote.weight(.medium))
+                    .font(.footnote.weight(.semibold))
                     .foregroundStyle(Theme.inkSecondary)
                     .padding(.horizontal, 14)
-                    .padding(.vertical, 9)
-                    .overlay(Capsule().strokeBorder(Theme.divider, lineWidth: 1))
+                    .padding(.vertical, 10)
+                    .background(Theme.tile, in: Capsule())
             }
             .pressable()
             Spacer()
@@ -136,12 +129,22 @@ struct DemoSessionCard: View {
     private func iconControl(_ symbol: String, filled: Bool) -> some View {
         Image(systemName: symbol)
             .font(.callout)
-            .foregroundStyle(filled ? .white : Theme.navy)
+            .foregroundStyle(filled ? .white : Theme.ink)
             .frame(width: 38, height: 38)
-            .background(filled ? Theme.navy : Theme.goldSoft.opacity(0.7), in: Circle())
-            .overlay(
-                Circle().strokeBorder(filled ? Theme.navy : Theme.divider, lineWidth: 1)
-            )
+            .background(filled ? Theme.ink : Theme.tile, in: Circle())
+    }
+
+    private func pillLabel(_ text: String, systemImage: String, filled: Bool) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.footnote.weight(.semibold))
+            Text(text)
+                .font(.subheadline.weight(.semibold))
+        }
+        .foregroundStyle(filled ? .white : Theme.ink)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(filled ? Theme.ink : Theme.tile, in: Capsule())
     }
 }
 
@@ -170,16 +173,15 @@ struct MockVoteCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 SectionHeader(text: "How would you vote?")
-                Text("SIMULATED")
-                    .font(.caption2.weight(.bold))
-                    .tracking(0.8)
+                Text("Simulated")
+                    .font(.caption.weight(.bold))
                     .foregroundStyle(Theme.inkSecondary)
             }
-            HStack(alignment: .top, spacing: 10) {
-                NumberSeal(number: article.number)
+            HStack(alignment: .top, spacing: 12) {
+                NumberTile(number: article.number)
                 Text(article.title)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Theme.navy)
+                    .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -205,11 +207,11 @@ struct MockVoteCard: View {
 
     private func voteButton(_ choice: VoteChoice) -> some View {
         let selected = myVote == choice
-        let color: Color = choice == .yay ? Theme.green : (choice == .nay ? Theme.burgundy : Theme.inkSecondary)
+        let color: Color = choice == .yay ? Theme.green : (choice == .nay ? Theme.red : Theme.inkSecondary)
         return Button {
             votes.cast(choice, for: article.id)
         } label: {
-            VStack(spacing: 3) {
+            HStack(spacing: 6) {
                 Image(systemName: choice == .yay ? "checkmark" : (choice == .nay ? "xmark" : "minus"))
                     .font(.footnote.weight(.bold))
                 Text(choice.rawValue)
@@ -218,11 +220,7 @@ struct MockVoteCard: View {
             .foregroundStyle(selected ? .white : color)
             .frame(maxWidth: .infinity)
             .frame(height: 46)
-            .background(selected ? color : color.opacity(0.08), in: RoundedRectangle(cornerRadius: 11, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 11, style: .continuous)
-                    .strokeBorder(selected ? color : color.opacity(0.4), lineWidth: 1)
-            )
+            .background(selected ? color : color.opacity(0.1), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
         .pressable()
         .sensoryFeedback(.impact(weight: .medium), trigger: votes.votes[article.id])
@@ -233,13 +231,13 @@ struct MockVoteCard: View {
             HStack(spacing: 4) {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.caption)
-                    .foregroundStyle(Theme.gold)
+                    .foregroundStyle(Theme.accent)
                 Text("You voted \(vote.rawValue.lowercased())")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.navy)
+                    .foregroundStyle(Theme.ink)
             }
             TallyRow(label: "Yay", count: counts.yay, maxCount: maxCount, color: Theme.green, highlight: vote == .yay)
-            TallyRow(label: "Nay", count: counts.nay, maxCount: maxCount, color: Theme.burgundy, highlight: vote == .nay)
+            TallyRow(label: "Nay", count: counts.nay, maxCount: maxCount, color: Theme.red, highlight: vote == .nay)
             TallyRow(label: "Abstain", count: counts.abstain, maxCount: maxCount, color: Theme.inkSecondary, highlight: vote == .abstain)
             Text("Community numbers are simulated demo data.")
                 .font(.caption2)

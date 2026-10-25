@@ -57,7 +57,7 @@ struct RootView: View {
             .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
             .tag(2)
         }
-        .tint(Theme.navy)
+        .tint(Theme.ink)
         .preferredColorScheme(.light)
         .task {
             store.load()

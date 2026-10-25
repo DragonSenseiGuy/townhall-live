@@ -27,7 +27,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Uses any OpenAI-compatible chat-completions endpoint. Default is Hack Club AI — free API keys for students at ai.hackclub.com.")
                     Link("Get a Hack Club AI key", destination: URL(string: "https://ai.hackclub.com")!)
-                        .foregroundStyle(Theme.gold)
+                        .foregroundStyle(Theme.accent)
                 }
             }
 
@@ -75,10 +75,10 @@ struct SettingsView: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.parchment, for: .navigationBar)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
         .onAppear {
             draftURL = settings.baseURL
             draftModel = settings.model
@@ -121,7 +121,7 @@ struct MeetingDetailView: View {
                     }
                     Text(meeting?.title ?? "Meeting")
                         .font(Theme.titleFont)
-                        .foregroundStyle(Theme.navy)
+                        .foregroundStyle(Theme.ink)
                 }
                 .padding(16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -131,7 +131,7 @@ struct MeetingDetailView: View {
                     Link(destination: link) {
                         Label("Watch the session on Town TV", systemImage: "play.rectangle")
                             .font(.subheadline.weight(.medium))
-                            .foregroundStyle(Theme.navy)
+                            .foregroundStyle(Theme.ink)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(12)
                             .card()
@@ -144,12 +144,12 @@ struct MeetingDetailView: View {
                             Text("\(article.number)")
                                 .font(.subheadline.weight(.bold))
                                 .monospacedDigit()
-                                .foregroundStyle(Theme.gold)
+                                .foregroundStyle(Theme.accent)
                                 .frame(width: 34)
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(article.title)
                                     .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(Theme.navy)
+                                    .foregroundStyle(Theme.ink)
                                     .multilineTextAlignment(.leading)
                                 HStack(spacing: 6) {
                                     CategoryChip(text: article.category)
@@ -173,7 +173,7 @@ struct MeetingDetailView: View {
             .padding(.bottom, 32)
         }
         .scrollIndicators(.hidden)
-        .background(Theme.parchment.ignoresSafeArea())
+        .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Session")
         .navigationBarTitleDisplayMode(.inline)
     }

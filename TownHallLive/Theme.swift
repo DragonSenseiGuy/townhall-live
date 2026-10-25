@@ -91,36 +91,75 @@ struct SectionLabel: View {
     }
 }
 
-// The shared row recipe for any warrant article. Gray number tile — the
-// Uber menu-motif — leads; SF Symbols and chips trail.
+// The shared row recipe for any warrant article: printed-warrant ledger
+// styling. A big monospaced numeral sits in a fixed gutter (the page number
+// column of a warrant sheet), the official outcome is set in the record
+// register at the trailing edge — no floating cards, no chips.
 struct ArticleRow: View {
     let article: WarrantArticle
     let isCurrent: Bool
+    static let gutter: CGFloat = 40
 
     var body: some View {
-        HStack(spacing: 14) {
-            NumberTile(number: article.number, highlighted: isCurrent)
-            VStack(alignment: .leading, spacing: 6) {
+        HStack(spacing: 12) {
+            Text("\(article.number)")
+                .font(.system(size: 21, weight: .black, design: .monospaced))
+                .monospacedDigit()
+                .foregroundStyle(isCurrent ? Theme.accent : Theme.ink)
+                .frame(width: Self.gutter, alignment: .leading)
+            VStack(alignment: .leading, spacing: 4) {
                 Text(article.title)
-                    .font(.subheadline.weight(isCurrent ? .semibold : .medium))
+                    .font(.footnote.weight(isCurrent ? .bold : .medium))
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
-                HStack(spacing: 6) {
-                    CategoryChip(text: article.category)
-                    if let outcome = article.officialOutcome {
-                        OutcomeChip(result: outcome.result)
-                    }
+                if isCurrent {
+                    Text("On the floor now")
+                        .font(Theme.recordFont)
+                        .foregroundStyle(Theme.accent)
                 }
             }
-            Spacer(minLength: 0)
+            Spacer(minLength: 10)
+            if let outcome = article.officialOutcome {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(registerLabel(outcome.result))
+                        .font(Theme.recordFont)
+                        .foregroundStyle(registerTint(outcome.result))
+                    if let tally = outcome.tally {
+                        Text(verbatim: tally)
+                            .font(Theme.recordFont)
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.inkSecondary.opacity(0.7))
+                            .lineLimit(2)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
+                .frame(maxWidth: 116, alignment: .trailing)
+            } else {
+                Text(registerLabel(article.category))
+                    .font(Theme.recordFont)
+                    .foregroundStyle(Theme.inkSecondary.opacity(0.6))
+                    .lineLimit(1)
+            }
             Image(systemName: "chevron.right")
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Theme.inkSecondary.opacity(0.5))
+                .foregroundStyle(Theme.inkSecondary.opacity(0.45))
         }
-        .padding(13)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .padding(.vertical, 11)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+    }
+
+    private func registerLabel(_ result: String) -> String {
+        result == "no action" ? "NO ACTION" : result.uppercased()
+    }
+
+    private func registerTint(_ result: String) -> Color {
+        switch result {
+        case "passed": Theme.green
+        case "failed": Theme.red
+        default: Theme.inkSecondary
+        }
     }
 }
 

@@ -169,10 +169,6 @@ struct MockVoteCard: View {
         )
     }
 
-    private var maxCount: Int {
-        max(counts.yay, counts.nay, counts.abstain)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -181,10 +177,15 @@ struct MockVoteCard: View {
                     .font(.caption.weight(.bold))
                     .foregroundStyle(Theme.inkSecondary)
             }
+            // Ledger alignment: same big monospaced numeral as the warrant rows.
             HStack(alignment: .top, spacing: 12) {
-                NumberTile(number: article.number)
+                Text("\(article.number)")
+                    .font(.system(size: 21, weight: .black, design: .monospaced))
+                    .monospacedDigit()
+                    .foregroundStyle(Theme.ink)
+                    .frame(width: ArticleRow.gutter, alignment: .leading)
                 Text(article.title)
-                    .font(.subheadline.weight(.medium))
+                    .font(.footnote.weight(.medium))
                     .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -235,11 +236,33 @@ struct MockVoteCard: View {
         .pressable()
     }
 
+    // Election-night result: one segmented share bar, a margin chip, and a
+    // record-register legend — comparisons read in a glance, numbers roll.
     private func results(_ vote: VoteChoice) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            TallyRow(label: "Yay", count: counts.yay, maxCount: maxCount, color: Theme.green, highlight: vote == .yay)
-            TallyRow(label: "Nay", count: counts.nay, maxCount: maxCount, color: Theme.red, highlight: vote == .nay)
-            TallyRow(label: "Abstain", count: counts.abstain, maxCount: maxCount, color: Theme.inkSecondary, highlight: vote == .abstain)
+            HStack(alignment: .center) {
+                Text(marginLeader)
+                    .font(Theme.recordFont)
+                    .foregroundStyle(marginColor)
+                Spacer(minLength: 0)
+                // Margin chip: the one number that decides the floor.
+                Text(verbatim: tied ? "EVEN" : "+\(margin)")
+                    .font(Theme.recordFont)
+                    .monospacedDigit()
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(marginColor, in: Capsule())
+            }
+            VoteShareBar(yay: counts.yay, abstain: counts.abstain, nay: counts.nay)
+                .frame(height: 16)
+                .padding(.vertical, 2)
+            HStack(spacing: 14) {
+                legend("YAY", counts.yay, Theme.green, emphasized: vote == .yay)
+                legend("NAY", counts.nay, Theme.red, emphasized: vote == .nay)
+                legend("ABSTAIN", counts.abstain, Theme.inkSecondary, emphasized: vote == .abstain)
+                Spacer(minLength: 0)
+            }
 
             // The signature moment: your vote lands like an entry in the
             // clerk's record book — timestamped, monospaced, honest about
@@ -250,6 +273,32 @@ struct MockVoteCard: View {
                 .foregroundStyle(Theme.inkSecondary.opacity(0.7))
         }
         .padding(.top, 2)
+    }
+
+    private func legend(_ label: String, _ count: Int, _ color: Color, emphasized: Bool) -> some View {
+        HStack(spacing: 5) {
+            Text(label)
+                .font(Theme.recordFont)
+                .foregroundStyle(emphasized ? Theme.ink : Theme.inkSecondary.opacity(0.7))
+            Text("\(count)")
+                .font(Theme.recordFont)
+                .monospacedDigit()
+                .contentTransition(.numericText(value: Double(count)))
+                .foregroundStyle(emphasized ? color : Theme.inkSecondary)
+                .animation(.spring(response: 0.45, dampingFraction: 0.9), value: count)
+        }
+    }
+
+    private var margin: Int { abs(counts.yay - counts.nay) }
+    private var tied: Bool { counts.yay == counts.nay }
+
+    private var marginLeader: String {
+        tied ? "TIED" : (counts.yay > counts.nay ? "YAY LEADS" : "NAY LEADS")
+    }
+
+    private var marginColor: Color {
+        if tied { return Theme.inkSecondary }
+        return counts.yay > counts.nay ? Theme.green : Theme.red
     }
 }
 // The signature moment: a hairline-ruled record entry that reads like town

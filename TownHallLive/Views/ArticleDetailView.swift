@@ -58,6 +58,8 @@ struct ArticleDetailView: View {
     let articleID: String
 
     @State private var aiState: AIState = .idle
+    // Dev/test only: bumps after an auto-run AI failure so the view scrolls to it.
+    @State private var scrollPrompt = 0
 
     enum AIState {
         case idle
@@ -74,19 +76,35 @@ struct ArticleDetailView: View {
     private var article: WarrantArticle? { store.article(id: articleID) }
 
     var body: some View {
-        ScrollView {
-            if let article {
-                content(article)
-            } else {
-                Text("Article not found.")
-                    .foregroundStyle(Theme.inkSecondary)
+        ScrollViewReader { proxy in
+            ScrollView {
+                if let article {
+                    content(article)
+                } else {
+                    Text("Article not found.")
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+            }
+            .scrollIndicators(.hidden)
+            .background(Theme.canvas.ignoresSafeArea())
+            .navigationTitle(article?.displayNumber ?? "Article")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Theme.canvas, for: .navigationBar)
+            .onChange(of: scrollPrompt) { _, _ in
+                // Dev/test hook: simctl can't scroll, so auto-run tests bring
+                // the AI card (or its error message) into the frame.
+                proxy.scrollTo("thl-ai-card", anchor: .top)
             }
         }
-        .scrollIndicators(.hidden)
-        .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle(article?.displayNumber ?? "Article")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.canvas, for: .navigationBar)
+        // Dev/test hook: auto-run the AI translation for CLI tests.
+        .onAppear {
+            guard UserDefaults.standard.bool(forKey: "thl.autoAI"),
+                  let article,
+                  AppSettings.shared.hasAPIKey,
+                  aiState.isLoading == false,
+                  case .idle = aiState else { return }
+            regenerate(article)
+        }
         .onDisappear { if aiState.isLoading { aiState = .idle } }
     }
 
@@ -102,6 +120,7 @@ struct ArticleDetailView: View {
             }
 
             aiCard(article)
+                .id("thl-ai-card")
 
             if let outcome = article.officialOutcome {
                 outcomeCard(outcome)
@@ -313,6 +332,10 @@ struct ArticleDetailView: View {
                 withAnimation(.easeOut(duration: 0.25)) { aiState = .done(plain) }
             } catch {
                 withAnimation(.easeOut(duration: 0.25)) { aiState = .failed(error.localizedDescription) }
+                // Dev/test hook only: bring the failure UI into a screenshot frame.
+                if UserDefaults.standard.bool(forKey: "thl.autoAI") {
+                    withAnimation(.easeOut(duration: 0.4)) { scrollPrompt += 1 }
+                }
             }
         }
     }
@@ -347,7 +370,7 @@ struct ArticleDetailView: View {
                 if let vote = store.history(id: id) {
                     NavigationLink(value: vote.id) {
                         HStack(alignment: .top, spacing: 10) {
-                            Text("\(vote.year)")
+                            Text(verbatim: "\(vote.year)")
                                 .font(.subheadline)
                                 .monospacedDigit()
                                 .bold()

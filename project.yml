@@ -32,6 +32,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
           NSAllowsArbitraryLoadsInWebContent: true
     settings:
       base:

@@ -113,7 +113,8 @@ struct HistoryDetailView: View {
                             .font(Theme.titleFont)
                             .foregroundStyle(Theme.ink)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("\(vote.meetingName) · \(vote.year)")
+                        // verbatim: Int interpolation localizes to "2,022"
+                        Text(verbatim: "\(vote.meetingName) · \(vote.year)")
                             .font(.footnote)
                             .foregroundStyle(Theme.inkSecondary)
                     }

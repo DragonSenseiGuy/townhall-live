@@ -73,7 +73,13 @@ final class AppSettings {
     }
 
     var apiKey: String {
-        get { KeychainStore.load() ?? "" }
+        get {
+            // Dev/test hook (simctl can't tap or type): `defaults write
+            // <bundleId> thl.testKey 1` lets CLI-driven tests exercise the AI
+            // path without a real key. Harmless in production.
+            if UserDefaults.standard.bool(forKey: "thl.testKey") { return "test-key" }
+            return KeychainStore.load() ?? ""
+        }
         set {
             if newValue.isEmpty { KeychainStore.delete() } else { KeychainStore.save(newValue) }
         }

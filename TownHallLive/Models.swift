@@ -21,6 +21,9 @@ nonisolated struct Meeting: Codable, Sendable, Identifiable {
     /// "live" (simulated demo), "recent", "past"
     let status: String
     let streamURL: String?
+    /// Real, sourced session facts displayed on the record strip.
+    let moderator: String?
+    let sessionNote: String?
 }
 
 nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {

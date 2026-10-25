@@ -15,14 +15,21 @@ enum Theme {
     static let greenSoft     = Color(hex: 0xE7F4EA)
     static let red           = Color(hex: 0xC21F1F)
     static let redSoft       = Color(hex: 0xFBEBEB)
+    // Lighter blue so the accent stays readable on the ink-black feed card.
+    static let accentOnInk   = Color(hex: 0x6FA5F5)
 
     static let pagePadding: CGFloat = 18
     static let cardPadding: CGFloat = 16
 
     // Uber-style hierarchy: weight does the work, no serif, no decorative fonts.
-    static let displayFont  = Font.system(.title, design: .default, weight: .bold)
+    // Display type is pushed genuinely big — hierarchy comes from size contrast,
+    // not from adding more styles.
+    static let displayFont  = Font.system(size: 38, weight: .black, design: .default)
     static let titleFont    = Font.system(.title3, design: .default, weight: .bold)
     static let headlineFont = Font.system(.headline, design: .default, weight: .semibold)
+    // The "record" register: monospaced metadata that reads like a clerk's log.
+    // This is the one place the app's civic voice becomes a visible signature.
+    static let recordFont   = Font.system(.caption2, design: .monospaced, weight: .semibold)
 }
 
 extension Color {

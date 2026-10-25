@@ -68,7 +68,7 @@ struct LiveBadge: View {
     }
 }
 
-// Numeric results where comparisons matter.
+// Numeric results where comparisons matter. Bars spring; numbers count.
 struct TallyRow: View {
     let label: String
     let count: Int
@@ -83,9 +83,10 @@ struct TallyRow: View {
                     .font(.subheadline.weight(highlight ? .semibold : .regular))
                     .foregroundStyle(highlight ? Theme.ink : Theme.inkSecondary)
                 Spacer()
-                Text("\(count)")
-                    .font(.subheadline)
+                Text("\(Int(rubberCount))")
+                    .font(.subheadline.weight(highlight ? .bold : .regular))
                     .monospacedDigit()
+                    .contentTransition(.numericText(value: Double(count)))
                     .foregroundStyle(highlight ? Theme.ink : Theme.inkSecondary)
             }
             GeometryReader { geo in
@@ -93,14 +94,25 @@ struct TallyRow: View {
                     Capsule().fill(Theme.tile)
                     Capsule()
                         .fill(color)
-                        .frame(width: max(6, geo.size.width * ratio))
+                        // A zero count shows nothing — no ghost dot.
+                        .frame(width: count == 0 ? 0 : max(6, geo.size.width * ratio))
                         .animation(.spring(response: 0.45, dampingFraction: 0.9), value: count)
                 }
             }
             .frame(height: 6)
             .clipShape(Capsule())
         }
+        .animation(.spring(response: 0.5, dampingFraction: 0.95), value: count)
+        .onAppear { rubberCount = Double(count) }
+        .onChange(of: count) { _, newValue in
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.95)) {
+                rubberCount = Double(newValue)
+            }
+        }
     }
+
+    // Visible digit rolls with the same spring as the bar.
+    @State private var rubberCount: Double = 0
 
     private var ratio: CGFloat {
         maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0

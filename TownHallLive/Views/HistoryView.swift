@@ -30,7 +30,7 @@ struct HistoryView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(grouped, id: \.year) { group in
-                    yearBanner(group.year)
+                    yearBanner(group.year, count: group.votes.count)
                     ForEach(group.votes) { vote in
                         NavigationLink(value: vote.id) {
                             HistoryRow(vote: vote)
@@ -50,12 +50,22 @@ struct HistoryView: View {
         .searchable(text: $searchText, prompt: "Search past town decisions")
     }
 
-    private func yearBanner(_ year: Int) -> some View {
-        Text(String(year))
-            .font(.system(.title2, design: .default, weight: .bold))
-            .monospacedDigit()
-            .foregroundStyle(Theme.ink)
-            .padding(.top, 20)
+    private func yearBanner(_ year: Int, count: Int) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(String(year))
+                .font(.system(size: 28, weight: .black, design: .default))
+                .monospacedDigit()
+                .foregroundStyle(Theme.ink)
+            Text("\(count) decision\(count == 1 ? "" : "s") recorded")
+                .font(Theme.recordFont)
+                .foregroundStyle(Theme.inkSecondary.opacity(0.8))
+        }
+        .padding(.top, 24)
+        .padding(.bottom, 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.divider).frame(height: 1)
+        }
     }
 }
 

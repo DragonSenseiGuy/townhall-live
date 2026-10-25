@@ -341,22 +341,28 @@ struct ArticleDetailView: View {
     }
 
     private func outcomeCard(_ outcome: OfficialOutcome) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             SectionHeader(text: "Official outcome")
             HStack(spacing: 8) {
                 OutcomeChip(result: outcome.result)
                 if let tally = outcome.tally {
                     Text(tally)
-                        .font(.subheadline)
+                        .font(.subheadline.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            Text(outcome.sourceNote)
-                .font(.caption)
-                .foregroundStyle(Theme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+            // Source note in the record register: where the clerk got this.
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text("SOURCE")
+                    .font(Theme.recordFont)
+                    .foregroundStyle(Theme.inkSecondary.opacity(0.75))
+                Text(outcome.sourceNote)
+                    .font(Theme.recordFont)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)

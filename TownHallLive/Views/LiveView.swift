@@ -64,7 +64,7 @@ struct LiveView: View {
         .toolbarBackground(Theme.canvas, for: .navigationBar)
         // Dev/test hook: cast a mock vote without tap automation.
         .onAppear {
-            if UserDefaults.standard.bool(forKey: "thl.castVote"), let article = store.article(id: "a12") {
+            if UserDefaults.standard.bool(forKey: "thl.castVote"), let article = store.article(id: "a4") {
                 votes.cast(.yay, for: article.id)
             }
         }

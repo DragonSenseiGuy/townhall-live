@@ -203,6 +203,9 @@ struct MockVoteCard: View {
         .padding(Theme.cardPadding)
         .card()
         .animation(.spring(response: 0.4, dampingFraction: 0.85), value: myVote)
+        // One haptic per vote, at the card level — attaching it per button
+        // would fire it three times on a single tap.
+        .sensoryFeedback(.impact(weight: .medium), trigger: myVote)
     }
 
     private func voteButton(_ choice: VoteChoice) -> some View {
@@ -218,12 +221,10 @@ struct MockVoteCard: View {
                     .font(.subheadline.weight(.semibold))
             }
             .foregroundStyle(selected ? .white : color)
-            .frame(maxWidth: .infinity)
-            .frame(height: 46)
+            .frame(maxWidth: .infinity, minHeight: 46)
             .background(selected ? color : color.opacity(0.1), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
         .pressable()
-        .sensoryFeedback(.impact(weight: .medium), trigger: votes.votes[article.id])
     }
 
     private func results(_ vote: VoteChoice) -> some View {

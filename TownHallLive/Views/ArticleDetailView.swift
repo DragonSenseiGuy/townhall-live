@@ -10,7 +10,7 @@ struct WarrantsView: View {
                     meetingSection(meeting)
                 }
                 if store.articles.isEmpty {
-                    Text("Warrants appear here. Bundle your town's warrant data to fill this tab.")
+                    Text("Warrants appear here once a town's warrant data is bundled.")
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                 }

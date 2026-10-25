@@ -35,12 +35,13 @@ struct HistoryView: View {
                         NavigationLink(value: vote.id) {
                             HistoryRow(vote: vote)
                         }
-                        .buttonStyle(.plain)
+                        .pressable()
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, Theme.pagePadding)
+            .padding(.top, 4)
+            .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
         .background(Theme.canvas.ignoresSafeArea())
@@ -165,6 +166,7 @@ struct HistoryDetailView: View {
                                                 .font(.footnote.weight(.medium))
                                                 .foregroundStyle(Theme.ink)
                                                 .multilineTextAlignment(.leading)
+                                                .fixedSize(horizontal: false, vertical: true)
                                         }
                                         Spacer()
                                         Image(systemName: "chevron.right")

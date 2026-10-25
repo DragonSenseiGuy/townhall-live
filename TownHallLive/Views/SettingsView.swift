@@ -79,6 +79,7 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.canvas, for: .navigationBar)
+        .sensoryFeedback(.success, trigger: savedNotice)
         .onAppear {
             draftURL = settings.baseURL
             draftModel = settings.model
@@ -94,6 +95,7 @@ struct SettingsView: View {
         settings.apiKey = draftKey
         draftKey = ""
         savedNotice = true
+        // Confirmation haptic fires with the green "Saved." label.
         withAnimation(.easeOut(duration: 0.4).delay(1.2)) { savedNotice = false }
     }
 }
@@ -122,6 +124,7 @@ struct MeetingDetailView: View {
                     Text(meeting?.title ?? "Meeting")
                         .font(Theme.titleFont)
                         .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -136,6 +139,7 @@ struct MeetingDetailView: View {
                             .padding(12)
                             .card()
                     }
+                    .pressable()
                 }
 
                 ForEach(articles) { article in
@@ -151,6 +155,7 @@ struct MeetingDetailView: View {
                                     .font(.subheadline.weight(.medium))
                                     .foregroundStyle(Theme.ink)
                                     .multilineTextAlignment(.leading)
+                                    .fixedSize(horizontal: false, vertical: true)
                                 HStack(spacing: 6) {
                                     CategoryChip(text: article.category)
                                     if let outcome = article.officialOutcome {
@@ -160,21 +165,23 @@ struct MeetingDetailView: View {
                             }
                             Spacer(minLength: 0)
                             Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Theme.divider)
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(Theme.inkSecondary.opacity(0.5))
                         }
                         .padding(12)
                         .card()
                     }
-                    .buttonStyle(.plain)
+                    .pressable()
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, Theme.pagePadding)
+            .padding(.top, 4)
+            .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
         .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Session")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
     }
 }

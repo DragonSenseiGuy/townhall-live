@@ -113,6 +113,7 @@ struct ArticleRow: View {
         }
         .padding(13)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }
 

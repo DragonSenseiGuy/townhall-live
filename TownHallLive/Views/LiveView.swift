@@ -19,7 +19,7 @@ struct LiveView: View {
                         .pressable()
                     }
                     if liveArticles.isEmpty {
-                        Text("Agenda appears here. Replace the seed data with the town's real warrant.")
+                        Text("The agenda appears here once a meeting goes live.")
                             .font(.footnote)
                             .foregroundStyle(Theme.inkSecondary)
                     }
@@ -113,6 +113,7 @@ struct LiveView: View {
                     Link(destination: link) {
                         pillLabel("Watch on Town TV", systemImage: "play.rectangle", filled: false)
                     }
+                    .pressable()
                 }
             }
         }

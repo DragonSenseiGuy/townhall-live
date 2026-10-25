@@ -81,14 +81,26 @@ struct RootView: View {
     }
 
     private func applyDevOpen() {
-        guard let open = UserDefaults.standard.string(forKey: "thl.open") else { return }
-        switch open {
-        case "settings": livePath.append(DevRoute.settings)
-        default:
-            if store.article(id: open) != nil { warrantsPath.append(open) }
-            else if store.history(id: open) != nil { historyPath.append(open) }
-        }
+        // Consume the key first: if the process dies before the defaults
+        // deletion flushes, a stale hook would keep re-pushing the route.
+        let open = UserDefaults.standard.string(forKey: "thl.open")
         UserDefaults.standard.removeObject(forKey: "thl.open")
+        guard let open else { return }
+        switch open {
+        case "settings":
+            tab = 0
+            livePath.append(DevRoute.settings)
+        default:
+            // The pushed route lives on one stack, so select the tab that
+            // shows it — otherwise the destination opens invisibly.
+            if store.article(id: open) != nil {
+                tab = 1
+                warrantsPath.append(open)
+            } else if store.history(id: open) != nil {
+                tab = 2
+                historyPath.append(open)
+            }
+        }
     }
 }
 

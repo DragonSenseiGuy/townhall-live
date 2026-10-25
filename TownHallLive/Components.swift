@@ -8,6 +8,7 @@ struct CategoryChip: View {
     var body: some View {
         Text(text)
             .font(.caption.weight(.semibold))
+            .lineLimit(1)
             .foregroundStyle(Theme.inkSecondary)
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
@@ -17,6 +18,10 @@ struct CategoryChip: View {
 
 struct OutcomeChip: View {
     let result: String
+
+    private var label: String {
+        result == "no action" ? "No action" : result.capitalized
+    }
 
     private var tint: Color {
         switch result {
@@ -35,8 +40,9 @@ struct OutcomeChip: View {
     }
 
     var body: some View {
-        Text(result.capitalized)
+        Text(label)
             .font(.caption.weight(.semibold))
+            .lineLimit(1)
             .foregroundStyle(tint)
             .padding(.horizontal, 8)
             .padding(.vertical, 3)

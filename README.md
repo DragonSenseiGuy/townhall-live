@@ -29,21 +29,22 @@ Cmd+R. Everything works offline — no backend, no key.
 - Without a key the app is fully functional from bundled plain-English summaries.
 - AI disclosure for the CAC submission: AI generates runtime plain-English translations of public warrant text, and was used to prepare bundled example summaries. All official text remains attributed to public town documents.
 
-## Data — READ BEFORE RECORDING YOUR VIDEO
+## Data
 
-`TownHallLive/Resources/townhall_data.json` currently contains **placeholder seed data written in the style of real Town warrant articles**. Before submission you should replace it with real scraped content, since CAC judges may request the app and source and verify claims:
+`TownHallLive/Resources/townhall_data.json` contains **real Town data** as of Oct 24, 2026:
 
-- Real warrant text: the Town warrant PDF(s) from the town's website (town-ma.gov)
-- Real outcomes/tallies: Town Meeting minutes
-- Real history: past meeting minutes/records (Town Exchange, townexchange.org, is a good secondary source)
-- Confirm the Town TV YouTube channel URL is correct
+- **9 warrant articles** from the official 2026 ATM warrant (town website) — verbatim "To see if the Town…" text, real dollar amounts
+- **Official outcomes with real electronic-vote tallies** from the town results sheet (town website) — e.g. Article 8 school assessment approved 364–41; Article 20 logged as "No action taken" (220–48 on the motion)
+- **7 documented historical decisions** (2024 $6.6M override, MBTA Communities overlay, Wetherbee Woods purchase, 2025 ADU reform, Gates/ABRHS debt exclusions, water-district PFAS) with sources in CONTEXT.md
+- **Real meeting logistics** (May 4–5, 2026, ABRHS Auditorium) and **real Town TV recording URLs** (Town TV Day 1: youtu.be/8mYIVisTVoo)
 
-Each record's `officialOutcome.sourceNote` marks where the town-clerk figure should go.
+The demo session replays the actual 2026 meeting in outline, clearly labeled *simulated*.
+`officialOutcome.sourceNote` on each record names where the figure comes from; if you refresh the data for next year, replace those per the town clerk's records.
 
 ## CAC submission checklist
 
 - [ ] Registration done (personal email, home + school addresses, district) — **deadline Mon Oct 26, 12:00 pm EDT**
-- [ ] Replace seed data with real Town content
+- [x] Replace seed data with real Town content — done (official warrant + results, see Data section)
 - [ ] Record video on iPhone: 1–3 min — participant name, app name, purpose, target audience, tools/languages (Swift, SwiftUI, OpenAI-compatible runtime AI), showcase all three pillars
 - [ ] Disclose AI usage in submission materials
 - [ ] One entry per person — submitting solo

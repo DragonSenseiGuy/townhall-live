@@ -57,7 +57,7 @@ nonisolated enum LiveMerger {
         let town = TownInfo(name: townName ?? bundled.town.name, state: state ?? bundled.town.state)
         guard let snapshot, !snapshot.isEmpty else {
             return TownData(town: town, meetings: bundled.meetings, articles: bundled.articles,
-                            historicalVotes: bundled.historicalVotes, demoSession: bundled.demoSession)
+                            historicalVotes: bundled.historicalVotes)
         }
         let checked = snapshot.fetchedAt.map(shortDate) ?? "recently"
 
@@ -67,7 +67,7 @@ nonisolated enum LiveMerger {
 
         for event in snapshot.upcoming.prefix(3) {
             meetings.append(Meeting(id: event.id, title: event.title, date: event.dateText, status: "upcoming",
-                                    streamURL: nil, kind: "calendar"))
+                                    streamURL: nil, kind: "calendar", link: event.link.isEmpty ? nil : event.link))
         }
 
         let townMeetings = snapshot.townMeetings.sorted { $0.year > $1.year }
@@ -85,15 +85,15 @@ nonisolated enum LiveMerger {
                 id: links.id,
                 title: links.title,
                 date: date,
-                status: index == 0 ? "live" : (index == 1 ? "recent" : "past"),
+                status: index == 0 ? "latest" : (index == 1 ? "recent" : "past"),
                 streamURL: stream
             ))
         }
         let liveIDs = Set(meetings.map(\.id))
-        let hasLiveHero = meetings.contains { $0.status == "live" }
+        let hasLatest = meetings.contains { $0.status == "latest" }
         for old in bundled.meetings where !liveIDs.contains(old.id) {
-            // Only one hero meeting: demote bundled "live" when the site gave us one.
-            let status = hasLiveHero && old.status == "live" ? "recent" : old.status
+            // Only one "latest" Town Meeting: demote the bundled one when the site gave us one.
+            let status = hasLatest && old.status == "latest" ? "recent" : old.status
             meetings.append(Meeting(id: old.id, title: old.title, date: old.date, status: status,
                                     streamURL: old.streamURL, kind: old.kind))
             if let url = old.streamURL, let id = FeedMapper.youTubeID(url) { usedVideoIDs.insert(id) }
@@ -129,7 +129,8 @@ nonisolated enum LiveMerger {
             for parsed in warrant.articles {
                 let old = bundled.articles.first { $0.meetingID == warrant.meetingID && $0.number == parsed.number }
                 covered.insert("\(warrant.meetingID)#\(parsed.number)")
-                let hash = TextHash.of(parsed.legalText)
+                let legal = TextClean.displayText(parsed.legalText)
+                let hash = TextHash.of(legal)
                 let plain: PlainEnglish
                 let source: String?
                 if let curated = old?.plainEnglish {
@@ -148,11 +149,10 @@ nonisolated enum LiveMerger {
                     number: parsed.number,
                     title: parsed.title,
                     category: old?.category ?? category(for: parsed.title),
-                    originalText: parsed.legalText,
+                    originalText: legal,
                     plainEnglish: plain,
                     financialImpact: old?.financialImpact ?? financialImpact(parsed),
                     officialOutcome: outcome(meetingID: warrant.meetingID, number: parsed.number, bundledOutcome: old?.officialOutcome),
-                    simulatedTally: old?.simulatedTally ?? simulatedTally(parsed.number),
                     relatedHistoricalVoteIDs: old?.relatedHistoricalVoteIDs ?? [],
                     plainEnglishSource: source,
                     sourceURL: warrant.sourceURL
@@ -165,13 +165,13 @@ nonisolated enum LiveMerger {
                 category: old.category, originalText: old.originalText, plainEnglish: old.plainEnglish,
                 financialImpact: old.financialImpact,
                 officialOutcome: outcome(meetingID: old.meetingID, number: old.number, bundledOutcome: old.officialOutcome),
-                simulatedTally: old.simulatedTally, relatedHistoricalVoteIDs: old.relatedHistoricalVoteIDs,
+                relatedHistoricalVoteIDs: old.relatedHistoricalVoteIDs,
                 plainEnglishSource: old.plainEnglishSource, sourceURL: old.sourceURL
             ))
         }
 
         return TownData(town: town, meetings: meetings, articles: articles,
-                        historicalVotes: bundled.historicalVotes, demoSession: bundled.demoSession)
+                        historicalVotes: bundled.historicalVotes)
     }
 
     // MARK: Fallbacks (no AI)
@@ -218,11 +218,6 @@ nonisolated enum LiveMerger {
         ]
         for (pattern, name) in rules where RX.contains(pattern, in: title) { return name }
         return "General"
-    }
-
-    /// Clearly-labeled simulated community poll numbers, stable per article.
-    static func simulatedTally(_ number: Int) -> SimulatedTally {
-        SimulatedTally(yay: 280 + (number * 37) % 420, nay: 20 + (number * 53) % 140, abstain: nil)
     }
 
     static func shortDate(_ date: Date) -> String {

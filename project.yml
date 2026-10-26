@@ -4,6 +4,7 @@ options:
   deploymentTarget:
     iOS: "18.0"
   createIntermediateGroups: true
+  developmentLanguage: en
 
 settings:
   base:
@@ -12,6 +13,10 @@ settings:
     SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
     SWIFT_STRICT_CONCURRENCY: complete
     ENABLE_USER_SCRIPT_SANDBOXING: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    # UI strings are looked up by key at runtime (L()), so the catalog's keys
+    # are maintained by hand instead of extracted from source.
+    SWIFT_EMIT_LOC_STRINGS: NO
 
 targets:
   TownHallLive:
@@ -27,6 +32,13 @@ targets:
       path: TownHallLive/Info.plist
       properties:
         CFBundleDisplayName: TownHall Live
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations:
+          - en
+          - zh-Hans
+          - es
+          - hi
+          - ar
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:

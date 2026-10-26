@@ -1,11 +1,14 @@
 {
-  "town": { "name": "Town", "state": "Massachusetts" },
+  "town": {
+    "name": "Town",
+    "state": "Massachusetts"
+  },
   "meetings": [
     {
       "id": "atm-2026",
       "title": "Annual Town Meeting",
       "date": "Monday, May 4, 2026 · 7:00 PM · ABRHS Auditorium, 36 Charter Road",
-      "status": "live",
+      "status": "latest",
       "streamURL": "https://youtu.be/8mYIVisTVoo"
     },
     {
@@ -50,8 +53,9 @@
         "tally": "Approved 357–38",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 705, "nay": 95 },
-      "relatedHistoricalVoteIDs": ["h2024-override"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-override"
+      ]
     },
     {
       "id": "a6",
@@ -79,8 +83,9 @@
         "tally": "Approved 379–36",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 730, "nay": 76 },
-      "relatedHistoricalVoteIDs": ["h2019-gates"]
+      "relatedHistoricalVoteIDs": [
+        "h2019-gates"
+      ]
     },
     {
       "id": "a8",
@@ -108,8 +113,10 @@
         "tally": "Approved 364–41",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 692, "nay": 108 },
-      "relatedHistoricalVoteIDs": ["h2024-override", "h2000-abrhs"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-override",
+        "h2000-abrhs"
+      ]
     },
     {
       "id": "a10",
@@ -137,8 +144,9 @@
         "tally": "Approved 327–15",
         "sourceNote": "Official Town Meeting results, the town, voted on day two of the 2026 meeting."
       },
-      "simulatedTally": { "yay": 651, "nay": 58 },
-      "relatedHistoricalVoteIDs": ["h2024-wetherbee"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-wetherbee"
+      ]
     },
     {
       "id": "a13",
@@ -166,8 +174,9 @@
         "tally": "Approved 351–25",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 668, "nay": 71 },
-      "relatedHistoricalVoteIDs": ["h2024-wetherbee"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-wetherbee"
+      ]
     },
     {
       "id": "a16",
@@ -192,7 +201,6 @@
         "tally": "Approved 242–18",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 588, "nay": 102 },
       "relatedHistoricalVoteIDs": []
     },
     {
@@ -218,8 +226,9 @@
         "tally": "Approved 236–18",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 601, "nay": 94 },
-      "relatedHistoricalVoteIDs": ["h2024-mbta"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-mbta"
+      ]
     },
     {
       "id": "a19",
@@ -244,8 +253,9 @@
         "tally": "Approved 191–16",
         "sourceNote": "Official Town Meeting results, the town, May 2026 electronic vote."
       },
-      "simulatedTally": { "yay": 477, "nay": 69 },
-      "relatedHistoricalVoteIDs": ["h2025-adu"]
+      "relatedHistoricalVoteIDs": [
+        "h2025-adu"
+      ]
     },
     {
       "id": "a20",
@@ -270,8 +280,9 @@
         "tally": "Motion to take no action: 220–48",
         "sourceNote": "Official Town Meeting results list Article 20 as \"No Action Taken\" — town website, May 2026."
       },
-      "simulatedTally": { "yay": 412, "nay": 317 },
-      "relatedHistoricalVoteIDs": ["h2024-mbta"]
+      "relatedHistoricalVoteIDs": [
+        "h2024-mbta"
+      ]
     }
   ],
   "historicalVotes": [
@@ -284,7 +295,8 @@
       "summary": "To comply with the state Affordable Homes Act, Town removed owner-occupancy requirements, design criteria, and parking mandates for ADUs within half a mile of the South Town rail station, and grandfathered existing nonconforming ADUs.",
       "outcome": "passed",
       "tally": "Passed 243–26",
-      "relevanceNote": "The ADU reform opened the door for the housing-flexibility articles that followed — like the 2026 renovation fix for nonconforming lots."
+      "relevanceNote": "The ADU reform opened the door for the housing-flexibility articles that followed — like the 2026 renovation fix for nonconforming lots.",
+      "articleNumber": 30
     },
     {
       "id": "h2024-override",
@@ -306,7 +318,8 @@
       "summary": "Town Meeting ended the town's 75-year single-family-only zoning history by allowing multifamily housing by right near the South Town commuter-rail station, with 10 deed-restricted affordable units required per 100, in perpetuity.",
       "outcome": "passed",
       "tally": "Approved 69%–31%",
-      "relevanceNote": "Every MBTA-overlay zoning debate at the 2026 meeting — including the affordability question town meeting declined to act on — builds on this decision."
+      "relevanceNote": "Every MBTA-overlay zoning debate at the 2026 meeting — including the affordability question town meeting declined to act on — builds on this decision.",
+      "articleNumber": 12
     },
     {
       "id": "h2024-wetherbee",
@@ -317,7 +330,8 @@
       "summary": "Town bought 33.11 wooded acres at 19 & 35 Wetherbee Street — described as the \"Agricultural Gateway to the Town\" — for $3.68 million using a state grant, CPA funds, CPA-backed borrowing, and a $100,000 gift from the Town Conservation Trust.",
       "outcome": "passed",
       "tally": "Passed by 2/3 voice vote (364 voters present)",
-      "relevanceNote": "The 46 Taylor Road purchase and the CPA package reuse this exact funding recipe: state money first, CPA second, private fundraising third, bonding last."
+      "relevanceNote": "The 46 Taylor Road purchase and the CPA package reuse this exact funding recipe: state money first, CPA second, private fundraising third, bonding last.",
+      "articleNumber": 1
     },
     {
       "id": "h2024-pfas",
@@ -352,14 +366,5 @@
       "tally": "3,367 – 1,995",
       "relevanceNote": "Two decades of school-facility investment ends up where the money is actually voted every year: the annual Article 8 regional school assessment."
     }
-  ],
-  "demoSession": [
-    { "id": 1, "articleID": "a4", "headline": "Article 4 called to the floor", "caption": "The FY2027 municipal operating budget — $42,322,565 — comes up under the Select Board's 3.25% growth cap. Floor opens for questions." },
-    { "id": 2, "articleID": "a4", "headline": "Budget debate", "caption": "Finance Committee presents; town meeting members press on levy growth and where the $6.6M override is absorbed." },
-    { "id": 3, "articleID": "a8", "headline": "The school assessment", "caption": "Article 8 asks for $82,830,682 — the largest single line on any Town warrant, the town's share of the regional schools." },
-    { "id": 4, "articleID": "a13", "headline": "Land for conservation", "caption": "Article 13: 5.8 acres at 46 Taylor Road for $1,445,000, backed by a record Town Conservation Trust campaign." },
-    { "id": 5, "articleID": "a16", "headline": "The Insulet TIF debate", "caption": "Longest debate of the meeting: a tax-increment-financing deal for the insulin-pump maker at 35 Nagog Park, approved 242–18." },
-    { "id": 6, "articleID": "a20", "headline": "Article 20 goes a different way", "caption": "The Select Board moves to take no action on the MBTA overlay affordability amendment — the only article that died this year (220–48)." },
-    { "id": 7, "articleID": "a10", "headline": "The CPA package closes the meeting", "caption": "Day two: Article 10 bundles 14 community-preservation appropriations — clock tower to open space — and passes 327–15." }
   ]
 }

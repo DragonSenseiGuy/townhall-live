@@ -24,5 +24,11 @@
 	<string>UCxxxxxxxxxxxxxxxxxxxxxx</string>
 	<key>recordingTitleFilter</key>
 	<string>Meeting</string>
+	<key>resultsArchivePath</key>
+	<string>/Archive.aspx?AMID=xxxx</string>
+	<key>warrantsArchivePath</key>
+	<string>/Archive.aspx?AMID=xxxx</string>
+	<key>historyFromYear</key>
+	<integer>2018</integer>
 </dict>
 </plist>

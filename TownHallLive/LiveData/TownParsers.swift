@@ -148,6 +148,12 @@ nonisolated enum TextClean {
         return out
     }
 
+    /// Text for display: long rule lines from PDFs ("______", "........")
+    /// become a single space so nothing renders wider than the screen.
+    static func displayText(_ s: String) -> String {
+        collapse(RX.replace("[_.=\\-\\u2026]{6,}", in: s, with: " "))
+    }
+
     static func dollarValue(_ amount: String) -> Double {
         let lower = amount.lowercased()
         let digits = amount.filter { $0.isNumber || $0 == "." }

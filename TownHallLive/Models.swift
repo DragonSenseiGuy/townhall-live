@@ -85,17 +85,19 @@ nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
     let title: String
     let category: String
     let originalText: String
-    let plainEnglish: PlainEnglish
+    /// The AI's plain-English version, or nil when none has been written yet.
+    /// Nothing else ever fills it: no booklet text, no templated sentences.
+    let plainEnglish: PlainEnglish?
     let financialImpact: FinancialImpact?
     let officialOutcome: OfficialOutcome?
     let relatedHistoricalVoteIDs: [String]
-    /// "ai" = written through AIService from the official text,
-    /// "excerpt" = taken straight from the warrant, not translated yet.
+    /// "ai" when `plainEnglish` was written through AIService from the
+    /// official text; nil when there is no plain-English version yet.
     var plainEnglishSource: String? = nil
     /// Document the text was scraped from (live data only).
     var sourceURL: String? = nil
 
-    var isTranslated: Bool { plainEnglishSource == "ai" }
+    var isTranslated: Bool { plainEnglishSource == "ai" && plainEnglish != nil }
 }
 
 nonisolated struct PlainEnglish: Codable, Sendable, Equatable {

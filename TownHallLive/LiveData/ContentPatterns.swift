@@ -380,7 +380,7 @@ struct ContentPatterns {
         return [label, numbers].filter { !$0.isEmpty }.joined(separator: " ")
     }
 
-    // MARK: Generated notes and fallback sentences (written by the app in English)
+    // MARK: Generated notes (written by the app in English)
 
     func generatedText(_ text: String) -> String? {
         let s = text.trimmingCharacters(in: .whitespaces)
@@ -392,21 +392,10 @@ struct ContentPatterns {
            let n = PX.group(m, 1, s) {
             return format("Largest of %@ dollar figures in the warrant text — see the original text for each line item.", n)
         }
-        if let m = PX.whole("Dollar amount in the article: (.+)", s), let amount = PX.group(m, 1, s) {
-            return format("Dollar amount in the article: %@", amount)
-        }
         if let m = PX.whole("Article (\\d{1,3})", s), let n = PX.group(m, 1, s) {
             return format("Article %@", n)
         }
-        let fixed = [
-            "Dollar figure stated in the warrant text.",
-            "Needs a two-thirds majority to pass",
-            "Needs a simple majority to pass",
-            "See the original warrant text below for the full details",
-            "A yes vote approves the article as written in the warrant.",
-            "A no vote rejects the article as written.",
-        ]
-        if fixed.contains(s) { return lookup(s) }
+        if s == "Dollar figure stated in the warrant text." { return lookup(s) }
         return nil
     }
 }

@@ -1,17 +1,18 @@
 import SwiftUI
 
+// The full library: every Town Meeting's warrant articles, grouped by meeting.
 struct WarrantsView: View {
     let store: DataStore
 
     var body: some View {
-        ScrollView {
+        VerticalPage {
             VStack(alignment: .leading, spacing: 24) {
                 LiveStatusLine(store: store)
-                ForEach(store.meetings.filter { $0.kind != "recording" }) { meeting in
+                ForEach(store.townMeetings) { meeting in
                     meetingSection(meeting)
                 }
                 if store.articles.isEmpty {
-                    Text("Warrants appear here once a town's warrant data is bundled.")
+                    Text(L("Warrant articles appear here once the town publishes a warrant."))
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                 }
@@ -20,119 +21,98 @@ struct WarrantsView: View {
             .padding(.top, 4)
             .padding(.bottom, 40)
         }
-        .scrollIndicators(.hidden)
         .refreshable { await store.refresh() }
         .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle("Warrants")
+        .navigationTitle(L("Warrants"))
         .toolbarBackground(Theme.canvas, for: .navigationBar)
     }
 
     @ViewBuilder
     private func meetingSection(_ meeting: Meeting) -> some View {
-        let articles = store.articles.filter { $0.meetingID == meeting.id }.sorted { $0.number < $1.number }
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
+        let articles = store.articles(in: meeting.id)
+        if !articles.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(meeting.title)
+                    Text(L(meeting.title))
                         .font(Theme.headlineFont)
                         .foregroundStyle(Theme.ink)
                     Text(meeting.date)
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
-                if meeting.status == "live" { LiveBadge() }
-            }
-            ForEach(articles) { article in
-                NavigationLink(value: article.id) {
-                    ArticleRow(article: article, isCurrent: false)
+                ForEach(articles) { article in
+                    NavigationLink(value: article.id) {
+                        ArticleRow(article: article, isCurrent: false)
+                    }
+                    .pressable()
                 }
-                .pressable()
             }
         }
     }
 }
 
-// One article: original legal text beside its plain-English translation,
-// financial impact, official outcome, and links back into history.
+// One article: a single plain-English explanation, the official text right
+// under it, then money, the official outcome beside the reader's own stance,
+// and links back into history.
 struct ArticleDetailView: View {
     let store: DataStore
     let articleID: String
+    var stances: StanceStore
 
-    @State private var aiState: AIState = .idle
-    // Dev/test only: bumps after an auto-run AI failure so the view scrolls to it.
-    @State private var scrollPrompt = 0
-
-    enum AIState {
-        case idle
-        case loading
-        case done(PlainEnglish)
-        case failed(String)
-
-        var isLoading: Bool {
-            if case .loading = self { return true }
-            return false
-        }
-    }
+    @State private var aiError: String?
+    private var settings: AppSettings { .shared }
 
     private var article: WarrantArticle? { store.article(id: articleID) }
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                if let article {
-                    content(article)
-                } else {
-                    Text("Article not found.")
-                        .foregroundStyle(Theme.inkSecondary)
-                }
-            }
-            .scrollIndicators(.hidden)
-            .background(Theme.canvas.ignoresSafeArea())
-            .navigationTitle(article?.displayNumber ?? "Article")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Theme.canvas, for: .navigationBar)
-            .onChange(of: scrollPrompt) { _, _ in
-                // Dev/test hook: simctl can't scroll, so auto-run tests bring
-                // the AI card (or its error message) into the frame.
-                proxy.scrollTo("thl-ai-card", anchor: .top)
+        VerticalPage {
+            if let article {
+                content(article)
+            } else {
+                Text(L("Article not found."))
+                    .foregroundStyle(Theme.inkSecondary)
+                    .padding(Theme.pagePadding)
             }
         }
-        // Dev/test hook: auto-run the AI translation for CLI tests.
-        .onAppear {
-            guard UserDefaults.standard.bool(forKey: "thl.autoAI"),
-                  let article,
-                  AppSettings.shared.hasAPIKey,
-                  aiState.isLoading == false,
-                  case .idle = aiState else { return }
-            regenerate(article)
+        .background(Theme.canvas.ignoresSafeArea())
+        .navigationTitle(article.map { L("Article %@", String($0.number)) } ?? L("Article"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.canvas, for: .navigationBar)
+        // No plain-English version yet: write one when an AI key is set.
+        .task(id: articleID) {
+            guard let article, !article.isTranslated, settings.hasAPIKey else { return }
+            aiError = await store.generatePlainEnglish(for: article)
         }
-        .onDisappear { if aiState.isLoading { aiState = .idle } }
+        // Interface in another language: translate the explanation into it.
+        .task(id: translationTaskID) {
+            // The booklet excerpt is replaced by an AI version first; translate that.
+            guard let article, settings.language != .english, settings.hasAPIKey,
+                  article.isTranslated else { return }
+            await store.translateContent(article.plainEnglish, language: settings.language)
+        }
+    }
+
+    private var translationTaskID: String {
+        "\(articleID)|\(settings.language.rawValue)|\(article.map { TextHash.of($0.plainEnglish.summary) } ?? "")"
     }
 
     @ViewBuilder
     private func content(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             heroCard(article)
-
-            plainEnglishCard(article.plainEnglish, translated: article.isTranslated)
+            plainEnglishCard(article)
+            officialTextCard(article)
 
             if let impact = article.financialImpact {
                 financialCard(impact)
             }
 
-            aiCard(article)
-                .id("thl-ai-card")
-
-            if let outcome = article.officialOutcome {
-                outcomeCard(outcome)
-            }
+            outcomeCard(article)
 
             if !article.relatedHistoricalVoteIDs.isEmpty {
                 historyCard(article)
             }
-
-            originalTextCard(article)
         }
         .padding(.horizontal, Theme.pagePadding)
         .padding(.top, 4)
@@ -145,15 +125,16 @@ struct ArticleDetailView: View {
                 NumberTile(number: article.number, highlighted: true)
                     .frame(width: 44, height: 44)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Warrant article")
+                    Text(L("Warrant article"))
                         .font(.caption2.weight(.semibold))
                         .tracking(0.7)
                         .foregroundStyle(Theme.accent)
                     Text(meetingDate)
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
+                Spacer(minLength: 0)
             }
             Text(article.title)
                 .font(Theme.titleFont)
@@ -175,16 +156,58 @@ struct ArticleDetailView: View {
         article.flatMap { store.meeting(id: $0.meetingID)?.date } ?? ""
     }
 
-    private func plainEnglishCard(_ plain: PlainEnglish, translated: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(text: "In plain English")
-            if !translated {
-                Text("Not translated yet — this is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version.")
-                    .font(.footnote)
-                    .foregroundStyle(Theme.inkSecondary)
+    // MARK: Plain English (one section)
+
+    private func plainEnglishCard(_ article: WarrantArticle) -> some View {
+        let generating = store.isGenerating(article)
+        let language = settings.language
+        let translated = store.localizedPlain(article.plainEnglish, language: language)
+        let plain = translated ?? article.plainEnglish
+        let translating = store.isTranslatingContent(article.plainEnglish, language: language)
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                SectionHeader(text: L("In plain English"))
+                Spacer(minLength: 8)
+                if settings.hasAPIKey, !generating {
+                    Button {
+                        Task { aiError = await store.generatePlainEnglish(for: article) }
+                    } label: {
+                        Label(L("Regenerate with AI"), systemImage: "sparkles")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.accent)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            if generating {
+                HStack(spacing: 10) {
+                    ProgressView().tint(Theme.accent)
+                    Text(L("Writing a plain-English version…"))
+                        .font(.footnote)
+                        .foregroundStyle(Theme.inkSecondary)
+                }
+            } else if !article.isTranslated {
+                note(settings.hasAPIKey
+                     ? L("This is the warrant booklet's own summary.")
+                     : L("This is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version."))
+            }
+            if let aiError, !generating {
+                Text(L("Couldn't write a plain-English version right now.") + " " + aiError)
+                    .font(.caption)
+                    .foregroundStyle(Theme.red)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            Text(aiState.isLoading ? "Translating with AI…" : plain.summary)
+            if language != .english, translated == nil {
+                if translating {
+                    note(L("Translating…"))
+                } else if !settings.hasAPIKey {
+                    note(L("Shown in English. Add an AI key in Settings to translate explanations."))
+                }
+            }
+
+            Text(plain.summary)
                 .font(.body)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
@@ -203,43 +226,58 @@ struct ArticleDetailView: View {
 
             Divider().overlay(Theme.divider)
 
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 5) {
-                        Image(systemName: "checkmark")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(Theme.green)
-                        Text("Vote yes")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(Theme.green)
-                    }
-                    Text(plain.votingYesMeans)
-                        .font(.footnote)
-                        .foregroundStyle(Theme.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                Rectangle().fill(Theme.divider).frame(width: 1)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 5) {
-                        Image(systemName: "xmark")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(Theme.red)
-                        Text("Vote no")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(Theme.red)
-                    }
-                    Text(plain.votingNoMeans)
-                        .font(.footnote)
-                        .foregroundStyle(Theme.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 10) {
+                meaningRow(symbol: "checkmark", label: L("Vote yes"), color: Theme.green, text: plain.votingYesMeans)
+                meaningRow(symbol: "xmark", label: L("Vote no"), color: Theme.red, text: plain.votingNoMeans)
             }
         }
         .padding(Theme.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
+    }
+
+    private func note(_ text: String) -> some View {
+        Text(text)
+            .font(.footnote)
+            .foregroundStyle(Theme.inkSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func meaningRow(symbol: String, label: String, color: Color, text: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 5) {
+                Image(systemName: symbol)
+                    .font(.caption2.weight(.bold))
+                Text(label)
+                    .font(.caption.weight(.bold))
+            }
+            .foregroundStyle(color)
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: Official text
+
+    private func officialTextCard(_ article: WarrantArticle) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            SectionLabel(text: L("Official text"))
+            Text(article.originalText)
+                .font(.footnote.leading(.loose))
+                .foregroundStyle(Theme.ink.opacity(0.85))
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
+            if let source = article.sourceURL, let link = URL(string: source) {
+                Link(L("Open the warrant document"), destination: link)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
+        }
+        .padding(Theme.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
 
@@ -250,7 +288,7 @@ struct ArticleDetailView: View {
                 .foregroundStyle(Theme.accent)
                 .padding(.top, 2)
             VStack(alignment: .leading, spacing: 4) {
-                SectionLabel(text: "Financial impact")
+                SectionLabel(text: L("Financial impact"))
                 Text(impact.amount)
                     .font(.title3)
                     .monospacedDigit()
@@ -260,112 +298,45 @@ struct ArticleDetailView: View {
                     .foregroundStyle(Theme.inkSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            Spacer(minLength: 0)
         }
         .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
 
-    private func aiCard(_ article: WarrantArticle) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                SectionLabel(text: "Live AI translation")
-                Spacer()
-                if !AppSettings.shared.hasAPIKey {
-                    NavigationLink {
-                        SettingsView()
-                    } label: {
-                        Text("Add a free key")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(Theme.accent)
+    // MARK: Outcome + your stance
+
+    private func outcomeCard(_ article: WarrantArticle) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                SectionHeader(text: L("Official outcome"))
+                if let outcome = article.officialOutcome {
+                    HStack(spacing: 8) {
+                        OutcomeChip(result: outcome.result)
+                        if let tally = outcome.tally {
+                            Text(tally)
+                                .font(.subheadline)
+                                .monospacedDigit()
+                                .foregroundStyle(Theme.ink)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
-                }
-            }
-            switch aiState {
-            case .idle:
-                Text("Re-translate this article live through the configured endpoint (Hack Club AI by default).")
-                    .font(.footnote)
-                    .foregroundStyle(Theme.inkSecondary)
-                Button {
-                    regenerate(article)
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "sparkles")
-                            .font(.footnote.weight(.semibold))
-                        Text("Translate with AI")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 11)
-                    .background(Theme.ink, in: Capsule())
-                }
-                .pressable()
-                .disabled(!AppSettings.shared.hasAPIKey)
-                .opacity(AppSettings.shared.hasAPIKey ? 1 : 0.5)
-            case .loading:
-                HStack(spacing: 10) {
-                    ProgressView()
-                        .tint(Theme.accent)
-                    Text("Asking the model for a plain-English rewrite…")
-                        .font(.footnote)
+                    Text(outcome.sourceNote)
+                        .font(.caption)
                         .foregroundStyle(Theme.inkSecondary)
-                }
-            case .done(let plain):
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(plain.summary)
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(plain.keyTakeaways.joined(separator: " · "))
+                } else {
+                    Text(L("Not voted yet. The result appears here once the town publishes it."))
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-            case .failed(let message):
-                Text(message)
-                    .font(.footnote)
-                    .foregroundStyle(Theme.red)
             }
-        }
-        .padding(Theme.cardPadding)
-        .card()
-    }
 
-    private func regenerate(_ article: WarrantArticle) {
-        aiState = .loading
-        Task {
-            do {
-                let plain = try await AIService().translate(article: article)
-                withAnimation(.easeOut(duration: 0.25)) { aiState = .done(plain) }
-                store.cacheTranslation(plain, for: article)
-            } catch {
-                withAnimation(.easeOut(duration: 0.25)) { aiState = .failed(error.localizedDescription) }
-                // Dev/test hook only: bring the failure UI into a screenshot frame.
-                if UserDefaults.standard.bool(forKey: "thl.autoAI") {
-                    withAnimation(.easeOut(duration: 0.4)) { scrollPrompt += 1 }
-                }
-            }
-        }
-    }
+            Divider().overlay(Theme.divider)
 
-    private func outcomeCard(_ outcome: OfficialOutcome) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            SectionHeader(text: "Official outcome")
-            HStack(spacing: 8) {
-                OutcomeChip(result: outcome.result)
-                if let tally = outcome.tally {
-                    Text(tally)
-                        .font(.subheadline)
-                        .monospacedDigit()
-                        .foregroundStyle(Theme.ink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            Text(outcome.sourceNote)
-                .font(.caption)
-                .foregroundStyle(Theme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+            StanceView(articleID: article.id, stances: stances)
         }
         .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -374,7 +345,7 @@ struct ArticleDetailView: View {
 
     private func historyCard(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionHeader(text: "Synced with history")
+            SectionHeader(text: L("Synced with history"))
             ForEach(article.relatedHistoricalVoteIDs, id: \.self) { id in
                 if let vote = store.history(id: id) {
                     NavigationLink(value: vote.id) {
@@ -384,16 +355,11 @@ struct ArticleDetailView: View {
                                 .monospacedDigit()
                                 .bold()
                                 .foregroundStyle(Theme.accent)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(vote.title)
-                                    .font(.footnote.weight(.medium))
-                                    .foregroundStyle(Theme.ink)
-                                    .multilineTextAlignment(.leading)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                Text("Town meeting voted to \(vote.outcome)")
-                                    .font(.caption2)
-                                    .foregroundStyle(Theme.inkSecondary)
-                            }
+                            Text(vote.title)
+                                .font(.footnote.weight(.medium))
+                                .foregroundStyle(Theme.ink)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 0)
                             OutcomeChip(result: vote.outcome)
                         }
@@ -408,22 +374,55 @@ struct ArticleDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
+}
 
-    private func originalTextCard(_ article: WarrantArticle) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            SectionLabel(text: "Original warrant text")
-            Text(article.originalText)
-                .font(.caption.leading(.loose))
+// "Where do you stand?" — the reader's own Yay / Nay / Abstain, saved on this
+// device only and shown beside the real outcome. No community numbers.
+struct StanceView: View {
+    let articleID: String
+    var stances: StanceStore
+
+    private var stance: VoteChoice? { stances.stance(for: articleID) }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SectionHeader(text: L("Where do you stand?"))
+            HStack(spacing: 8) {
+                ForEach(VoteChoice.allCases) { choice in
+                    button(choice)
+                }
+            }
+            Text(stance == nil
+                 ? L("Saved only on this phone. Official votes happen in person at Town Meeting.")
+                 : L("Your stance: %@ · saved only on this phone.", label(stance!)))
+                .font(.caption)
                 .foregroundStyle(Theme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
-            if let source = article.sourceURL, let link = URL(string: source) {
-                Link("Open the warrant document", destination: link)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Theme.accent)
-            }
         }
-        .padding(Theme.cardPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: stance)
+        .sensoryFeedback(.selection, trigger: stance)
+    }
+
+    private func label(_ choice: VoteChoice) -> String { L(choice.rawValue) }
+
+    private func button(_ choice: VoteChoice) -> some View {
+        let selected = stance == choice
+        let color: Color = choice == .yay ? Theme.green : (choice == .nay ? Theme.red : Theme.inkSecondary)
+        return Button {
+            stances.toggle(choice, for: articleID)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: choice == .yay ? "checkmark" : (choice == .nay ? "xmark" : "minus"))
+                    .font(.footnote.weight(.bold))
+                Text(label(choice))
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .foregroundStyle(selected ? .white : color)
+            .frame(maxWidth: .infinity, minHeight: 46)
+            .background(selected ? color : color.opacity(0.1), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        .pressable()
     }
 }

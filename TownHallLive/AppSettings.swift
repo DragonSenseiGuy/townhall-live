@@ -45,7 +45,7 @@ enum KeychainStore {
 }
 
 // User-adjustable AI configuration: endpoint (OpenAI-compatible), model, key.
-// Defaults are Hack Club AI so the demo runs with free student credits.
+// Defaults are Hack Club AI (free API keys for students).
 @Observable
 final class AppSettings {
     static let shared = AppSettings()
@@ -57,6 +57,13 @@ final class AppSettings {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        self.language = AppLanguage.stored(in: defaults)
+    }
+
+    /// Interface language, chosen in Settings and applied app-wide immediately.
+    /// A stored property so SwiftUI observes changes.
+    var language: AppLanguage {
+        didSet { defaults.set(language.rawValue, forKey: AppLanguage.defaultsKey) }
     }
 
     var baseURL: String {

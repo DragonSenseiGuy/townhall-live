@@ -77,7 +77,7 @@ struct SectionLabel: View {
     let text: String
 
     var body: some View {
-        Text(text.uppercased())
+        Text(text.uppercased(with: AppSettings.shared.language.locale))
             .font(.caption2.weight(.semibold))
             .tracking(0.7)
             .foregroundStyle(Theme.inkSecondary)
@@ -127,7 +127,7 @@ struct NumberTile: View {
         RoundedRectangle(cornerRadius: 10, style: .continuous)
             .fill(highlighted ? Theme.accent : Theme.tile)
             .overlay(
-                Text("\(number)")
+                Text(verbatim: "\(number)")
                     .font(.system(.callout, design: .default, weight: .bold))
                     .monospacedDigit()
                     .foregroundStyle(highlighted ? .white : Theme.ink)
@@ -147,4 +147,23 @@ func pillStyle(_ label: String, systemImage: String, filled: Bool) -> some View 
     .padding(.horizontal, 16)
     .padding(.vertical, 11)
     .background(filled ? Theme.ink : Theme.tile, in: Capsule())
+}
+
+// Every screen scrolls vertically only. The content is pinned to the scroll
+// view's own width (`containerRelativeFrame`), so nothing inside — a long
+// unbreakable run of text, a row whose ideal width is wider than the phone, a
+// sliding transition — can widen the scroll content and let the whole page
+// pan sideways on a horizontal swipe.
+struct VerticalPage<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        ScrollView(.vertical) {
+            content
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .containerRelativeFrame(.horizontal, alignment: .leading)
+        }
+        .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
+        .scrollIndicators(.hidden)
+    }
 }

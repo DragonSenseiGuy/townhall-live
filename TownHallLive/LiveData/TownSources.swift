@@ -19,6 +19,12 @@ nonisolated struct TownSources: Sendable, Equatable {
     var youtubeChannelID: String?
     /// Regex a video title must match to count as a meeting recording.
     var recordingTitleFilter: String
+    /// Document archive listing past Town Meeting results abstracts (CivicPlus Archive.aspx?AMID=…).
+    var resultsArchivePath: String? = nil
+    /// Document archive listing past warrants (used for titles the results leave out).
+    var warrantsArchivePath: String? = nil
+    /// Oldest year the History tab reads from the archive.
+    var historyFromYear: Int = 2018
 
     /// Changes when the configured sources change, so stale caches are dropped.
     var cacheKey: String {
@@ -35,6 +41,12 @@ nonisolated struct TownSources: Sendable, Equatable {
 
     var townMeetingURL: URL? { websiteBaseURL == nil ? nil : url(townMeetingPath) }
     var calendarURL: URL? { calendarRSSPath.flatMap { websiteBaseURL == nil && !$0.lowercased().hasPrefix("http") ? nil : url($0) } }
+    var resultsArchiveURL: URL? { websiteBaseURL == nil ? nil : resultsArchivePath.flatMap(url) }
+    var warrantsArchiveURL: URL? { websiteBaseURL == nil ? nil : warrantsArchivePath.flatMap(url) }
+    var historyKey: String {
+        [websiteBaseURL?.absoluteString ?? "", resultsArchivePath ?? "", warrantsArchivePath ?? "", String(historyFromYear)].joined(separator: "|")
+    }
+
     var youtubeFeedURL: URL? {
         youtubeChannelID.flatMap { URL(string: "https://www.youtube.com/feeds/videos.xml?channel_id=\($0)") }
     }
@@ -69,7 +81,11 @@ nonisolated struct TownSources: Sendable, Equatable {
             calendarRSSPath: string("calendarRSSPath"),
             calendarTitleFilter: string("calendarTitleFilter") ?? "Town Meeting",
             youtubeChannelID: channel,
-            recordingTitleFilter: string("recordingTitleFilter") ?? "Meeting"
+            recordingTitleFilter: string("recordingTitleFilter") ?? "Meeting",
+            resultsArchivePath: string("resultsArchivePath").flatMap { isPlaceholder($0) ? nil : $0 },
+            warrantsArchivePath: string("warrantsArchivePath").flatMap { isPlaceholder($0) ? nil : $0 },
+            historyFromYear: (plist["historyFromYear"] as? Int)
+                ?? string("historyFromYear").flatMap(Int.init) ?? 2018
         )
     }
 

@@ -137,10 +137,84 @@ nonisolated struct TownScraper: Sendable {
     }
 }
 
+// Past decisions from the town's document archive (results abstracts, plus
+// warrants for titles). Each archive document is immutable, so it is parsed
+// once and cached; only the listing is re-read.
+nonisolated struct HistoryScraper: Sendable {
+    let sources: TownSources
+    var session: URLSession = .shared
+
+    private var scraper: TownScraper { TownScraper(sources: sources, session: session) }
+
+    /// Results and warrant archive listings, limited to `fromYear` onward.
+    /// nil when the results archive could not be read.
+    @concurrent
+    func listing() async -> (results: [ArchiveEntry], warrants: [ArchiveEntry])? {
+        guard let resultsURL = sources.resultsArchiveURL else { return nil }
+        async let resultsData = scraper.fetch(resultsURL)
+        async let warrantsData = scraper.fetch(sources.warrantsArchiveURL)
+        guard let html = await resultsData.flatMap(TownScraper.decodeHTML) else { return nil }
+        let results = ArchiveListParser.parse(html: html, pageURL: resultsURL).filter { $0.year >= sources.historyFromYear }
+        var warrants: [ArchiveEntry] = []
+        if let data = await warrantsData, let page = TownScraper.decodeHTML(data), let url = sources.warrantsArchiveURL {
+            warrants = ArchiveListParser.parse(html: page, pageURL: url).filter { $0.year >= sources.historyFromYear }
+        }
+        LiveLog.log("history archive: \(results.count) results, \(warrants.count) warrants since \(sources.historyFromYear)")
+        return (results, warrants)
+    }
+
+    /// Downloads and parses one results abstract. nil = network failure (try
+    /// again later); a document with `unreadable` = no usable text, skipped.
+    @concurrent
+    func document(for entry: ArchiveEntry, warrants: [ArchiveEntry]) async -> HistoryDocument? {
+        guard let url = URL(string: entry.url), let data = await scraper.fetch(url, timeout: 120) else { return nil }
+        guard let text = TownScraper.extractPDFText(data), !data.starts(with: Array("<".utf8)) else {
+            LiveLog.log("history: no text in \(entry.title), skipping")
+            return HistoryDocument(entry: entry, articles: [], unreadable: true, fetchedAt: Date())
+        }
+        var articles = AbstractParser.parse(text: text)
+        if AbstractParser.needsWarrantTitles(articles), let warrant = matchingWarrant(for: entry, in: warrants),
+           let wurl = URL(string: warrant.url), let wdata = await scraper.fetch(wurl, timeout: 120),
+           let wtext = TownScraper.extractPDFText(wdata) {
+            let titles = Dictionary(WarrantParser.parse(text: wtext).map { ($0.number, $0.title) }, uniquingKeysWith: { a, _ in a })
+            for index in articles.indices where articles[index].title.count < 4 {
+                if let title = titles[articles[index].number] { articles[index].title = title }
+            }
+        }
+        LiveLog.log("history: \(articles.count) decisions in \(entry.title)")
+        return HistoryDocument(entry: entry, articles: articles, unreadable: articles.isEmpty, fetchedAt: Date())
+    }
+
+    /// Same year and kind; for several special meetings in one year, the one
+    /// whose label shares the month.
+    func matchingWarrant(for entry: ArchiveEntry, in warrants: [ArchiveEntry]) -> ArchiveEntry? {
+        let candidates = warrants.filter { $0.year == entry.year && $0.isSpecial == entry.isSpecial }
+        if candidates.count <= 1 { return candidates.first }
+        func normalized(_ s: String) -> String {
+            RX.replace("(\\d)(st|nd|rd|th)\\b", in: s.lowercased(), with: "$1")
+        }
+        if let label = entry.dateLabel.map(normalized) {
+            // "December 3" must not match "December 10": compare month + day first.
+            let parts = label.split(separator: " ")
+            if parts.count >= 2 {
+                let monthDay = "\(parts[0]) \(parts[1].filter(\.isNumber))"
+                if let hit = candidates.first(where: {
+                    RX.contains("\\b" + NSRegularExpression.escapedPattern(for: monthDay) + "\\b", in: normalized($0.title))
+                }) { return hit }
+            }
+            if let month = parts.first.map(String.init),
+               let hit = candidates.first(where: { normalized($0.title).contains(month) }) { return hit }
+        }
+        return candidates.first
+    }
+}
+
 // Caches-directory JSON for the last snapshot and the AI translation cache.
 nonisolated enum LiveCache {
     static let snapshotFile = "live_snapshot.json"
     static let translationsFile = "plain_english_cache.json"
+    static let contentTranslationsFile = "content_translations.json"
+    static let historyFile = "history_archive_v1.json"
 
     static var directory: URL? {
         guard let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }

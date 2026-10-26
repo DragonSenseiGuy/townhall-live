@@ -1,36 +1,46 @@
 import SwiftUI
 
+// Every past Town Meeting decision the town's archive has in readable form,
+// plus the curated entries that explain why a decision still matters.
 struct HistoryView: View {
     let store: DataStore
     @State private var searchText = ""
+    @State private var year: Int? = nil
 
     private var grouped: [(year: Int, votes: [HistoricalVote])] {
-        let filtered = searchText.isEmpty
-            ? store.historicalVotes
-            : store.historicalVotes.filter {
+        var filtered = store.historicalVotes
+        if let year { filtered = filtered.filter { $0.year == year } }
+        if !searchText.isEmpty {
+            filtered = filtered.filter {
                 $0.title.localizedCaseInsensitiveContains(searchText)
                     || $0.summary.localizedCaseInsensitiveContains(searchText)
                     || $0.category.localizedCaseInsensitiveContains(searchText)
+                    || L($0.category).localizedCaseInsensitiveContains(searchText)
+                    || $0.meetingName.localizedCaseInsensitiveContains(searchText)
             }
-        let sorted = filtered.sorted { $0.year > $1.year }
+        }
+        // Stable: newest year first, curated notes first within a year, then article order.
+        let sorted = filtered.enumerated().sorted { a, b in
+            if a.element.year != b.element.year { return a.element.year > b.element.year }
+            return a.offset < b.offset
+        }.map(\.element)
         var out: [(Int, [HistoricalVote])] = []
-        var currentYear = -1
         for vote in sorted {
-            if vote.year != currentYear {
-                out.append((vote.year, [vote]))
-                currentYear = vote.year
-            } else {
+            if let last = out.last, last.0 == vote.year {
                 out[out.count - 1].1.append(vote)
+            } else {
+                out.append((vote.year, [vote]))
             }
         }
         return out
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+        VerticalPage {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                statusLine
                 ForEach(grouped, id: \.year) { group in
-                    yearBanner(group.year)
+                    yearBanner(group.year, count: group.votes.count)
                     ForEach(group.votes) { vote in
                         NavigationLink(value: vote.id) {
                             HistoryRow(vote: vote)
@@ -38,36 +48,103 @@ struct HistoryView: View {
                         .pressable()
                     }
                 }
+                if grouped.isEmpty, !store.isLoadingHistory {
+                    Text(L("No decisions match."))
+                        .font(.footnote)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .padding(.top, 20)
+                }
             }
             .padding(.horizontal, Theme.pagePadding)
             .padding(.top, 4)
             .padding(.bottom, 40)
         }
-        .scrollIndicators(.hidden)
-        .refreshable { await store.refresh() }
+        .refreshable { await store.loadHistory(force: true) }
         .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle("History")
+        .navigationTitle(L("History"))
         .toolbarBackground(Theme.canvas, for: .navigationBar)
-        .searchable(text: $searchText, prompt: "Search past town decisions")
+        .searchable(text: $searchText, prompt: L("Search past town decisions"))
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Picker(L("Year"), selection: $year) {
+                        Text(L("All years")).tag(Int?.none)
+                        ForEach(store.historyYears, id: \.self) { y in
+                            Text(verbatim: String(y)).tag(Int?.some(y))
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                        Text(year.map { String($0) } ?? L("All years"))
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundStyle(Theme.ink)
+                }
+            }
+        }
+        // Unstructured so switching tabs doesn't cancel a half-read archive.
+        .onAppear { Task { await store.loadHistory() } }
     }
 
-    private func yearBanner(_ year: Int) -> some View {
-        Text(String(year))
-            .font(.system(.title2, design: .default, weight: .bold))
-            .monospacedDigit()
-            .foregroundStyle(Theme.ink)
-            .padding(.top, 20)
+    @ViewBuilder
+    private var statusLine: some View {
+        if store.isLoadingHistory {
+            HStack(spacing: 8) {
+                ProgressView().controlSize(.small).tint(Theme.accent)
+                Text(store.historyPending > 0
+                     ? L("Reading past results from the town archive… %@ left", String(store.historyPending))
+                     : L("Checking the town archive…"))
+                    .font(.footnote)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.top, 4)
+        } else if store.historyConfigured {
+            Text(L("Decisions: %@ · from the town's results archive", String(store.historicalVotes.count)))
+                .font(.footnote)
+                .foregroundStyle(Theme.inkSecondary)
+                .padding(.top, 4)
+        }
     }
+
+    private func yearBanner(_ year: Int, count: Int) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(verbatim: String(year))
+                .font(.system(.title2, design: .default, weight: .bold))
+                .monospacedDigit()
+                .foregroundStyle(Theme.ink)
+            Spacer()
+            Text(verbatim: String(count))
+                .font(.footnote.weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(Theme.inkSecondary)
+        }
+        .padding(.top, 20)
+    }
+}
+
+func outcomeSymbol(_ result: String) -> (name: String, color: Color) {
+    switch result {
+    case "passed": ("checkmark.circle.fill", Theme.green)
+    case "failed": ("xmark.circle.fill", Theme.red)
+    default: ("minus.circle.fill", Theme.inkSecondary)
+    }
+}
+
+func tallyText(_ tally: String) -> String {
+    tally == "Unanimous" ? L("Unanimous") : tally
 }
 
 struct HistoryRow: View {
     let vote: HistoricalVote
 
     var body: some View {
+        let symbol = outcomeSymbol(vote.outcome)
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: vote.outcome == "passed" ? "checkmark.circle.fill" : "xmark.circle.fill")
+            Image(systemName: symbol.name)
                 .font(.subheadline)
-                .foregroundStyle(vote.outcome == "passed" ? Theme.green : Theme.red)
+                .foregroundStyle(symbol.color)
                 .padding(.top, 3)
             VStack(alignment: .leading, spacing: 5) {
                 Text(vote.title)
@@ -75,12 +152,20 @@ struct HistoryRow: View {
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
+                Text(meetingLine)
+                    .font(.caption)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 6) {
                     CategoryChip(text: vote.category)
-                    Text(vote.tally)
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(Theme.inkSecondary)
+                    if !vote.tally.isEmpty {
+                        Text(tallyText(vote.tally))
+                            .font(.caption)
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .foregroundStyle(Theme.inkSecondary)
+                    }
                 }
             }
             Spacer(minLength: 0)
@@ -89,6 +174,14 @@ struct HistoryRow: View {
                 .foregroundStyle(Theme.inkSecondary.opacity(0.5))
         }
         .padding(.vertical, 10)
+    }
+
+    private var meetingLine: String {
+        let meeting = L(vote.meetingName.components(separatedBy: " · ").first ?? vote.meetingName)
+        let date = vote.meetingName.components(separatedBy: " · ").dropFirst().joined(separator: " · ")
+        var line = date.isEmpty ? meeting : "\(meeting) · \(date)"
+        if let n = vote.articleNumber { line += " · " + L("Article %@", String(n)) }
+        return line
     }
 }
 
@@ -103,7 +196,7 @@ struct HistoryDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
+        VerticalPage {
             VStack(alignment: .leading, spacing: 16) {
                 if let vote {
                     VStack(alignment: .leading, spacing: 8) {
@@ -116,37 +209,54 @@ struct HistoryDetailView: View {
                             .foregroundStyle(Theme.ink)
                             .fixedSize(horizontal: false, vertical: true)
                         // verbatim: Int interpolation localizes to "2,022"
-                        Text(verbatim: "\(vote.meetingName) · \(vote.year)")
+                        Text(verbatim: "\(L(vote.meetingName.components(separatedBy: " · ").first ?? vote.meetingName)) · \(vote.year)")
                             .font(.footnote)
                             .foregroundStyle(Theme.inkSecondary)
                     }
 
-                    HStack(alignment: .top, spacing: 10) {
-                        Image(systemName: "clock.arrow.circlepath")
-                            .foregroundStyle(Theme.accent)
-                            .padding(.top, 2)
-                        VStack(alignment: .leading, spacing: 4) {
-                            SectionLabel(text: "Why it matters today")
-                            Text(vote.relevanceNote)
-                                .font(.footnote)
-                                .foregroundStyle(Theme.inkSecondary)
-                                .fixedSize(horizontal: false, vertical: true)
+                    if !vote.relevanceNote.isEmpty {
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .foregroundStyle(Theme.accent)
+                                .padding(.top, 2)
+                            VStack(alignment: .leading, spacing: 4) {
+                                SectionLabel(text: L("Why it matters today"))
+                                Text(vote.relevanceNote)
+                                    .font(.footnote)
+                                    .foregroundStyle(Theme.inkSecondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            Spacer(minLength: 0)
                         }
+                        .padding(Theme.cardPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .card()
                     }
-                    .padding(Theme.cardPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .card()
 
                     VStack(alignment: .leading, spacing: 6) {
-                        SectionLabel(text: "The vote")
-                        Text(vote.summary)
-                            .font(.body)
-                            .foregroundStyle(Theme.ink)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Text("Result: \(vote.outcome) · \(vote.tally)")
-                            .font(.subheadline)
-                            .monospacedDigit()
-                            .foregroundStyle(Theme.ink)
+                        SectionLabel(text: L("The vote"))
+                        if !vote.summary.isEmpty {
+                            Text(vote.summary)
+                                .font(.body)
+                                .foregroundStyle(Theme.ink)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        HStack(spacing: 8) {
+                            OutcomeChip(result: vote.outcome)
+                            if !vote.tally.isEmpty {
+                                Text(tallyText(vote.tally))
+                                    .font(.subheadline)
+                                    .monospacedDigit()
+                                    .foregroundStyle(Theme.ink)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                        if let source = vote.sourceURL, let link = URL(string: source) {
+                            Link(L("Open the official results"), destination: link)
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(Theme.accent)
+                                .padding(.top, 4)
+                        }
                     }
                     .padding(Theme.cardPadding)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -154,12 +264,12 @@ struct HistoryDetailView: View {
 
                     if !relatedArticles.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            SectionLabel(text: "On the warrant now")
+                            SectionLabel(text: L("On the warrant now"))
                             ForEach(relatedArticles) { article in
                                 NavigationLink(value: article.id) {
                                     HStack {
                                         VStack(alignment: .leading, spacing: 2) {
-                                            Text(article.displayNumber)
+                                            Text(L("Article %@", String(article.number)))
                                                 .font(.caption2.weight(.bold))
                                                 .tracking(0.5)
                                                 .foregroundStyle(Theme.accent)
@@ -169,7 +279,7 @@ struct HistoryDetailView: View {
                                                 .multilineTextAlignment(.leading)
                                                 .fixedSize(horizontal: false, vertical: true)
                                         }
-                                        Spacer()
+                                        Spacer(minLength: 0)
                                         Image(systemName: "chevron.right")
                                             .font(.footnote.weight(.semibold))
                                             .foregroundStyle(Theme.inkSecondary.opacity(0.5))
@@ -189,9 +299,8 @@ struct HistoryDetailView: View {
             .padding(.horizontal, Theme.pagePadding)
             .padding(.bottom, 40)
         }
-        .scrollIndicators(.hidden)
         .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle("Decision")
+        .navigationTitle(L("Decision"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.canvas, for: .navigationBar)
     }

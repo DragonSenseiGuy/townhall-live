@@ -97,6 +97,28 @@ struct AIService {
         return parsed
     }
 
+    /// Translates an existing plain-English summary into another language,
+    /// keeping the same JSON shape (dollar figures and names unchanged).
+    func translate(plain: PlainEnglish, into language: AppLanguage) async throws -> PlainEnglish {
+        let system = """
+        You translate short civic explanations from English into \(language.englishName) for everyday \
+        residents. Keep dollar amounts, numbers, article numbers, place names and proper nouns exact. \
+        Reply with ONLY minified JSON with exactly the same keys as the input: \
+        {"summary": string, "keyTakeaways": [strings], "votingYesMeans": string, "votingNoMeans": string}. \
+        Translate every value into \(language.englishName). No markdown, no commentary.
+        """
+        let input = try JSONEncoder().encode(plain)
+        let raw = try await complete(messages: [
+            Message(role: "system", content: system),
+            Message(role: "user", content: String(decoding: input, as: UTF8.self)),
+        ])
+        guard let body = Self.firstJSONObject(in: raw),
+              let parsed = try? JSONDecoder().decode(PlainEnglish.self, from: body) else {
+            throw AIError.badResponse
+        }
+        return parsed
+    }
+
     private static func firstJSONObject(in text: String) -> Data? {
         guard
             let start = text.firstIndex(of: "{"),

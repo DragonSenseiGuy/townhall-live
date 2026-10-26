@@ -12,8 +12,8 @@ struct TownHallLiveApp: App {
 struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var store = DataStore()
-    @State private var session = DemoSessionController()
-    @State private var votes = MockVoteController()
+    @State private var stances = StanceStore()
+    private var settings: AppSettings { .shared }
     // Dev hook: `simctl launch <udid> <bundle> -thl.startTab 1` opens a specific
     // tab for CLI screenshots/videos.
     @State private var tab: Int
@@ -32,7 +32,7 @@ struct RootView: View {
     @ViewBuilder
     private func destination(for id: String) -> some View {
         if store.article(id: id) != nil {
-            ArticleDetailView(store: store, articleID: id)
+            ArticleDetailView(store: store, articleID: id, stances: stances)
         } else if store.history(id: id) != nil {
             HistoryDetailView(store: store, voteID: id)
         } else {
@@ -43,13 +43,13 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $tab) {
             NavigationStack(path: $livePath) {
-                LiveView(store: store, session: session, votes: votes)
+                LiveView(store: store, openWarrants: { tab = 1 })
                     .navigationDestination(for: String.self, destination: destination)
                     .navigationDestination(for: DevRoute.self) { route in
                         SettingsView()
                     }
             }
-            .tabItem { Label("Live", systemImage: "dot.radiowaves.right") }
+            .tabItem { Label(L("Live"), systemImage: "dot.radiowaves.right") }
             .tag(0)
 
             NavigationStack(path: $warrantsPath) {
@@ -59,7 +59,7 @@ struct RootView: View {
                         SettingsView()
                     }
             }
-            .tabItem { Label("Warrants", systemImage: "doc.text") }
+            .tabItem { Label(L("Warrants"), systemImage: "doc.text") }
             .tag(1)
 
             NavigationStack(path: $historyPath) {
@@ -69,25 +69,24 @@ struct RootView: View {
                         SettingsView()
                     }
             }
-            .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
+            .tabItem { Label(L("History"), systemImage: "clock.arrow.circlepath") }
             .tag(2)
         }
         .tint(Theme.ink)
         .preferredColorScheme(.light)
+        // The language chosen in Settings drives the whole interface: strings
+        // (via L()), system formatting, and right-to-left layout for Arabic.
+        .environment(\.locale, settings.language.locale)
+        .environment(\.layoutDirection, settings.language.layoutDirection)
         .task {
             store.load()
-            session.configure(with: store.demoSteps)
             applyDevOpen()
             // Cached/bundled data is already on screen; now fetch live.
             await store.refresh()
-            session.configure(with: store.demoSteps)
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, store.data != nil else { return }
-            Task {
-                await store.refreshIfStale()
-                session.configure(with: store.demoSteps)
-            }
+            Task { await store.refreshIfStale() }
         }
     }
 

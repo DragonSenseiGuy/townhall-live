@@ -15,37 +15,49 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Base URL", text: $draftURL)
+                Picker(L("Language"), selection: $settings.language) {
+                    ForEach(AppLanguage.allCases) { language in
+                        Text(verbatim: language.nativeName).tag(language)
+                    }
+                }
+            } header: {
+                Text(L("Language"))
+            } footer: {
+                Text(L("Changes the whole app right away. With an AI key, plain-English explanations are translated too."))
+            }
+
+            Section {
+                TextField(L("Base URL"), text: $draftURL)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .font(.footnote.monospaced())
-                TextField("Model", text: $draftModel)
+                TextField(L("Model"), text: $draftModel)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .font(.footnote.monospaced())
             } header: {
-                Text("AI endpoint")
+                Text(L("AI endpoint"))
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Uses any OpenAI-compatible chat-completions endpoint. Default is Hack Club AI — free API keys for students at ai.hackclub.com.")
-                    Link("Get a Hack Club AI key", destination: URL(string: "https://ai.hackclub.com")!)
+                    Text(L("Uses any OpenAI-compatible chat-completions endpoint. Default is Hack Club AI — free API keys for students at ai.hackclub.com."))
+                    Link(L("Get a Hack Club AI key"), destination: URL(string: "https://ai.hackclub.com")!)
                         .foregroundStyle(Theme.accent)
                 }
             }
 
             Section {
-                SecureField("API key", text: $draftKey)
+                SecureField(L("API key"), text: $draftKey)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .font(.footnote.monospaced())
                     .onSubmit { saveKey() }
                 HStack {
-                    Button("Save key", action: saveKey)
+                    Button(L("Save key"), action: saveKey)
                         .disabled(draftKey.isEmpty)
                     Spacer()
                     if settings.hasAPIKey || !draftKey.isEmpty {
-                        Button("Remove", role: .destructive) {
+                        Button(L("Remove"), role: .destructive) {
                             draftKey = ""
                             settings.apiKey = ""
                         }
@@ -54,58 +66,58 @@ struct SettingsView: View {
                 .buttonStyle(.borderless)
 
                 if settings.hasAPIKey && draftKey.isEmpty {
-                    Label("Key stored in the Keychain.", systemImage: "lock.shield")
+                    Label(L("Key stored in the Keychain."), systemImage: "lock.shield")
                         .font(.footnote)
                         .foregroundStyle(Theme.green)
                 }
 
                 if savedNotice {
-                    Label("Saved.", systemImage: "checkmark.circle")
+                    Label(L("Saved."), systemImage: "checkmark.circle")
                         .font(.footnote)
                         .foregroundStyle(Theme.green)
                 }
             } footer: {
-                Text("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works with bundled plain-English summaries.")
+                Text(L("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles without a curated summary show the warrant booklet's own summary."))
             }
 
             Section {
-                TextField("Town website (https://…)", text: $draftWebsite)
+                TextField(L("Town website (https://…)"), text: $draftWebsite)
                     .keyboardType(.URL)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .font(.footnote.monospaced())
-                TextField("Town TV YouTube channel ID (UC…)", text: $draftChannel)
+                TextField(L("Town TV YouTube channel ID (UC…)"), text: $draftChannel)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .font(.footnote.monospaced())
                 HStack {
-                    Button("Save sources", action: saveSources)
+                    Button(L("Save sources"), action: saveSources)
                     Spacer()
                     if sourcesSaved {
-                        Label("Saved.", systemImage: "checkmark.circle")
+                        Label(L("Saved."), systemImage: "checkmark.circle")
                             .font(.footnote)
                             .foregroundStyle(Theme.green)
                     }
                 }
                 .buttonStyle(.borderless)
             } header: {
-                Text("Live town data")
+                Text(L("Live town data"))
             } footer: {
-                Text("Warrants, results, meetings and Town TV recordings are read on this device from the town's public website and YouTube channel. Leave a field blank to use the app's TownSources.plist. Pull down on any tab to refresh; without a connection the app shows the last saved data.")
+                Text(L("Warrants, results, past decisions, meetings and Town TV recordings are read on this device from the town's public website and YouTube channel. Leave a field blank to use the app's TownSources.plist. Pull down on any tab to refresh; without a connection the app shows the last saved data."))
             }
 
-            Section("About") {
-                LabeledContent("App", value: "TownHall Live")
-                LabeledContent("Pilot town", value: "\(TownSources.current().townName ?? "Town"), \(TownSources.current().state ?? "Massachusetts")")
-                LabeledContent("Made for", value: "Congressional App Challenge 2026")
-                Text("AI disclosure: AI is used to generate plain-English summaries of public warrant articles at runtime, and was used to prepare the bundled example summaries. All legal text remains sourced from public town documents.")
+            Section(L("About")) {
+                LabeledContent(L("App"), value: "TownHall Live")
+                LabeledContent(L("Pilot town"), value: "\(TownSources.current().townName ?? L("Town")), \(L(TownSources.current().state ?? "Massachusetts"))")
+                LabeledContent(L("Made for"), value: "Congressional App Challenge 2026")
+                Text(L("AI disclosure: AI is used to write plain-English summaries of public warrant articles and to translate them at runtime, and was used to prepare the bundled summaries. All legal text remains sourced from public town documents."))
                     .font(.caption2)
                     .foregroundStyle(Theme.inkSecondary)
             }
         }
         .scrollContentBackground(.hidden)
         .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle("Settings")
+        .navigationTitle(L("Settings"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.canvas, for: .navigationBar)
         .sensoryFeedback(.success, trigger: savedNotice)
@@ -158,17 +170,14 @@ struct MeetingDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
+        VerticalPage {
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        if meeting?.status == "live" { LiveBadge() }
-                        Spacer()
-                        Text(meeting?.date ?? "")
-                            .font(.footnote)
-                            .foregroundStyle(Theme.inkSecondary)
-                    }
-                    Text(meeting?.title ?? "Meeting")
+                    Text(meeting?.date ?? "")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(L(meeting?.title ?? "Meeting"))
                         .font(Theme.titleFont)
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
@@ -179,7 +188,7 @@ struct MeetingDetailView: View {
 
                 if let url = meeting?.streamURL, let link = URL(string: url) {
                     Link(destination: link) {
-                        Label("Watch the session on Town TV", systemImage: "play.rectangle")
+                        Label(L("Watch the session on Town TV"), systemImage: "play.rectangle")
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(Theme.ink)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -192,7 +201,7 @@ struct MeetingDetailView: View {
                 ForEach(articles) { article in
                     NavigationLink(value: article.id) {
                         HStack(alignment: .top, spacing: 12) {
-                            Text("\(article.number)")
+                            Text(verbatim: "\(article.number)")
                                 .font(.subheadline.weight(.bold))
                                 .monospacedDigit()
                                 .foregroundStyle(Theme.accent)
@@ -225,9 +234,8 @@ struct MeetingDetailView: View {
             .padding(.top, 4)
             .padding(.bottom, 40)
         }
-        .scrollIndicators(.hidden)
         .background(Theme.canvas.ignoresSafeArea())
-        .navigationTitle("Session")
+        .navigationTitle(L("Session"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.canvas, for: .navigationBar)
     }

@@ -1,12 +1,17 @@
+import Foundation
+
 // Model layer. Value types, `nonisolated` so they cross isolation domains freely.
-// One bundled JSON file (`Resources/townhall_data.json`) feeds the whole app.
+// The bundled JSON (`Resources/townhall_data.json`) is the offline fallback and
+// curated layer; live data from the town's own sources is merged over it.
+//
+// Decoding is tolerant: unknown keys from older bundles or caches (e.g. the
+// fields retired in earlier versions) are simply ignored.
 
 nonisolated struct TownData: Codable, Sendable {
     let town: TownInfo
     let meetings: [Meeting]
     let articles: [WarrantArticle]
     let historicalVotes: [HistoricalVote]
-    let demoSession: [DemoStep]
 }
 
 nonisolated struct TownInfo: Codable, Sendable {
@@ -18,12 +23,35 @@ nonisolated struct Meeting: Codable, Sendable, Identifiable {
     let id: String
     let title: String
     let date: String
-    /// "live" (simulated demo), "recent", "past", "upcoming"
+    /// "latest" (newest Town Meeting), "recent", "past", "upcoming"
     let status: String
     let streamURL: String?
     /// nil = Town Meeting; "calendar" = upcoming event from the town calendar;
     /// "recording" = a recent Town TV meeting video.
     var kind: String? = nil
+    /// Calendar event page (calendar items only).
+    var link: String? = nil
+
+    var isTownMeeting: Bool { kind == nil }
+
+    /// Best-effort calendar date parsed from the display string
+    /// ("Monday, May 4, 2026 · 7:00 PM" → May 4, 2026).
+    var parsedDate: Date? { MeetingDate.parse(date) }
+}
+
+nonisolated enum MeetingDate {
+    static func parse(_ text: String) -> Date? {
+        let pattern = "(January|February|March|April|May|June|July|August|September|October|November|December)\\s+(\\d{1,2})(?:st|nd|rd|th)?,?\\s+(\\d{4})"
+        guard let re = try? NSRegularExpression(pattern: pattern),
+              let m = re.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+              let r = Range(m.range, in: text) else { return nil }
+        let cleaned = String(text[r]).replacingOccurrences(of: "(st|nd|rd|th)", with: "", options: .regularExpression)
+            .replacingOccurrences(of: ",", with: "")
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "MMMM d yyyy"
+        return f.date(from: cleaned)
+    }
 }
 
 nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
@@ -36,7 +64,6 @@ nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
     let plainEnglish: PlainEnglish
     let financialImpact: FinancialImpact?
     let officialOutcome: OfficialOutcome?
-    let simulatedTally: SimulatedTally
     let relatedHistoricalVoteIDs: [String]
     /// nil = curated (bundled), "ai" = generated through AIService,
     /// "excerpt" = taken straight from the warrant booklet, not translated.
@@ -45,10 +72,9 @@ nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
     var sourceURL: String? = nil
 
     var isTranslated: Bool { plainEnglishSource != "excerpt" }
-    var displayNumber: String { "Article \(number)" }
 }
 
-nonisolated struct PlainEnglish: Codable, Sendable {
+nonisolated struct PlainEnglish: Codable, Sendable, Equatable {
     let summary: String
     let keyTakeaways: [String]
     let votingYesMeans: String
@@ -61,16 +87,10 @@ nonisolated struct FinancialImpact: Codable, Sendable {
 }
 
 nonisolated struct OfficialOutcome: Codable, Sendable {
-    /// "passed" | "failed" | "postponed"
+    /// "passed" | "failed" | "no action" | "postponed"
     let result: String
     let tally: String?
     let sourceNote: String
-}
-
-nonisolated struct SimulatedTally: Codable, Sendable {
-    let yay: Int
-    let nay: Int
-    let abstain: Int?
 }
 
 nonisolated struct HistoricalVote: Codable, Sendable, Identifiable {
@@ -80,19 +100,17 @@ nonisolated struct HistoricalVote: Codable, Sendable, Identifiable {
     let title: String
     let category: String
     let summary: String
-    /// "passed" | "failed"
+    /// "passed" | "failed" | "no action" | "postponed"
     let outcome: String
     let tally: String
+    /// Curated entries explain why the decision matters today; scraped ones leave it empty.
     let relevanceNote: String
+    var articleNumber: Int? = nil
+    /// Results document the entry was read from (live history only).
+    var sourceURL: String? = nil
 }
 
-nonisolated struct DemoStep: Codable, Sendable, Identifiable {
-    let id: Int
-    let articleID: String
-    let headline: String
-    let caption: String
-}
-
+/// The user's own stance on an article — saved on this device only.
 enum VoteChoice: String, CaseIterable, Identifiable {
     case yay = "Yay"
     case nay = "Nay"

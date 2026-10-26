@@ -1,11 +1,35 @@
 import Foundation
 
 // Model layer. Value types, `nonisolated` so they cross isolation domains freely.
-// The bundled JSON (`Resources/townhall_data.json`) is the offline fallback and
-// curated layer; live data from the town's own sources is merged over it.
+// The bundled JSON (`Resources/townhall_data.json`) is the offline fallback;
+// live data from the town's own sources is merged over it. The bundle holds
+// facts only (official text, outcomes, meetings): every plain-English
+// explanation is written by the AI at runtime from the official text.
 //
 // Decoding is tolerant: unknown keys from older bundles or caches (e.g. the
 // fields retired in earlier versions) are simply ignored.
+
+/// The bundled JSON as shipped: no prewritten explanations.
+nonisolated struct BundledTownData: Codable, Sendable {
+    let town: TownInfo
+    let meetings: [Meeting]
+    let articles: [BundledArticle]
+    let historicalVotes: [HistoricalVote]
+}
+
+/// A warrant article as bundled: official text and the recorded outcome only.
+nonisolated struct BundledArticle: Codable, Sendable {
+    let id: String
+    let meetingID: String
+    let number: Int
+    let title: String
+    let category: String
+    let originalText: String
+    let officialOutcome: OfficialOutcome?
+    let relatedHistoricalVoteIDs: [String]
+    /// Document the text was taken from, when known.
+    var sourceURL: String? = nil
+}
 
 nonisolated struct TownData: Codable, Sendable {
     let town: TownInfo
@@ -65,13 +89,13 @@ nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
     let financialImpact: FinancialImpact?
     let officialOutcome: OfficialOutcome?
     let relatedHistoricalVoteIDs: [String]
-    /// nil = curated (bundled), "ai" = generated through AIService,
-    /// "excerpt" = taken straight from the warrant booklet, not translated.
+    /// "ai" = written through AIService from the official text,
+    /// "excerpt" = taken straight from the warrant, not translated yet.
     var plainEnglishSource: String? = nil
     /// Document the text was scraped from (live data only).
     var sourceURL: String? = nil
 
-    var isTranslated: Bool { plainEnglishSource != "excerpt" }
+    var isTranslated: Bool { plainEnglishSource == "ai" }
 }
 
 nonisolated struct PlainEnglish: Codable, Sendable, Equatable {

@@ -25,11 +25,15 @@ final class DataStore {
     /// Articles whose plain-English version is being generated right now.
     private(set) var generating: Set<String> = []
 
-    @ObservationIgnored private var bundled: TownData?
+    @ObservationIgnored private var bundled: BundledTownData?
     @ObservationIgnored private var snapshot: LiveSnapshot?
     @ObservationIgnored private var translations: [String: PlainEnglish] = [:]
     @ObservationIgnored private var sources = TownSources.current()
     @ObservationIgnored private var isTranslating = false
+    /// Another plain-English pass was asked for while one was running.
+    @ObservationIgnored private var plainEnglishRequested = false
+    /// Official texts (by hash) the model never answered usably this session.
+    @ObservationIgnored private var plainEnglishRejected: Set<String> = []
     @ObservationIgnored private var historyCache: HistoryCacheFile?
 
     var articles: [WarrantArticle] { data?.articles ?? [] }
@@ -74,7 +78,7 @@ final class DataStore {
         if let url = Bundle.main.url(forResource: "townhall_data", withExtension: "json"),
            let raw = try? Data(contentsOf: url) {
             do {
-                bundled = try JSONDecoder().decode(TownData.self, from: raw)
+                bundled = try JSONDecoder().decode(BundledTownData.self, from: raw)
             } catch {
                 LiveLog.log("bundled data unreadable: \(error.localizedDescription)")
             }
@@ -116,7 +120,12 @@ final class DataStore {
             rebuild()
         }
         isLiveConfigured = sources.isConfigured
-        guard sources.isConfigured else { return }
+        guard sources.isConfigured else {
+            // Bundled articles still get their AI plain English.
+            translateLiveContent()
+            await generateMissingPlainEnglish()
+            return
+        }
 
         isRefreshing = true
         let fresh = await TownScraper(sources: sources).refresh(previous: snapshot)
@@ -133,7 +142,7 @@ final class DataStore {
         // Titles first (background, non-blocking), then the slower
         // one-article-at-a-time plain-English generation.
         translateLiveContent()
-        await translatePending()
+        await generateMissingPlainEnglish()
     }
 
     /// Refresh when the last live data is older than `maxAge`.
@@ -320,7 +329,7 @@ final class DataStore {
     // MARK: - Private
 
     private func rebuild() {
-        let base = bundled ?? TownData(
+        let base = bundled ?? BundledTownData(
             town: TownInfo(name: "Town", state: "Massachusetts"),
             meetings: [], articles: [], historicalVotes: []
         )
@@ -335,21 +344,61 @@ final class DataStore {
         )
     }
 
-    /// With an AI key set, writes plain-English versions for scraped articles
-    /// that only have a warrant excerpt. One at a time; stops after repeated failures.
-    private func translatePending() async {
-        guard !isTranslating, AppSettings.shared.hasAPIKey else { return }
+    /// With an AI key set, has the AI write the plain-English version of
+    /// every article shown (live warrant and bundled alike) that doesn't have
+    /// one cached yet, from its official text. One article per request, run
+    /// through `TranslationRunner` like the title batches: a reply that can't
+    /// be read is retried (up to 3 tries per article, then skipped for the
+    /// session), network failures back off and retry, and every article
+    /// that comes back is kept and shown at once. A call made while a pass
+    /// runs is folded into it, so articles that appear mid-pass are covered.
+    func generateMissingPlainEnglish() async {
+        load()
+        guard AppSettings.shared.hasAPIKey else { return }
+        guard !isTranslating else {
+            plainEnglishRequested = true
+            return
+        }
         isTranslating = true
         defer { isTranslating = false }
-        var failures = 0
-        let pending = articles.filter { !$0.isTranslated }
-        for article in pending.prefix(60) {
-            if await generatePlainEnglish(for: article) == nil {
-                failures = 0
-            } else {
-                failures += 1
-                if failures >= 3 { break }
+        repeat {
+            plainEnglishRequested = false
+            let ids = articles
+                .filter { !$0.isTranslated && !plainEnglishRejected.contains(TextHash.of($0.originalText)) }
+                .map(\.id)
+            guard !ids.isEmpty else { break }
+
+            var runner = TranslationRunner(
+                translate: { [weak self] batch in
+                    guard let self, let id = batch.first, let article = self.article(id: id) else { return [:] }
+                    // Written meanwhile (e.g. from the article screen): nothing to do.
+                    if article.isTranslated || self.generating.contains(id) { return [0: id] }
+                    self.generating.insert(id)
+                    defer { self.generating.remove(id) }
+                    let plain = try await AIService().translate(article: article)
+                    self.cacheTranslation(plain, for: article)
+                    return [0: id]
+                },
+                isUnusableReply: { error in
+                    if case AIService.AIError.badResponse = error { return true }
+                    return error is DecodingError
+                },
+                sleep: { seconds in try? await Task.sleep(for: .seconds(seconds)) },
+                shouldContinue: { AppSettings.shared.hasAPIKey },
+                deliver: { _ in }
+            )
+            runner.batchSize = 1
+            let outcome = await runner.run(ids)
+            for id in outcome.rejected {
+                if let article = article(id: id) { plainEnglishRejected.insert(TextHash.of(article.originalText)) }
             }
-        }
+            if !outcome.rejected.isEmpty {
+                LiveLog.log("AI plain English: \(outcome.rejected.count) articles unreadable after retries")
+            }
+            if !outcome.deferred.isEmpty {
+                LiveLog.log("AI plain English paused; \(outcome.deferred.count) articles left for the next refresh")
+                break
+            }
+        } while plainEnglishRequested
     }
 }

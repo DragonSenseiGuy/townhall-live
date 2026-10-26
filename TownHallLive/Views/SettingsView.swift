@@ -77,7 +77,7 @@ struct SettingsView: View {
                         .foregroundStyle(Theme.green)
                 }
             } footer: {
-                Text(L("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles without a curated summary show the warrant booklet's own summary."))
+                Text(L("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version."))
             }
 
             Section {
@@ -110,7 +110,7 @@ struct SettingsView: View {
                 LabeledContent(L("App"), value: "TownHall Live")
                 LabeledContent(L("Pilot town"), value: "\(TownSources.current().townName ?? L("Town")), \(L(TownSources.current().state ?? "Massachusetts"))")
                 LabeledContent(L("Made for"), value: "Congressional App Challenge 2026")
-                Text(L("AI disclosure: AI is used to write plain-English summaries of public warrant articles and to translate them at runtime, and was used to prepare the bundled summaries. All legal text remains sourced from public town documents."))
+                Text(L("AI disclosure: every plain-English summary in the app is written by AI at runtime from the official warrant text, and AI translates content into other languages. Nothing is prewritten. All legal text remains sourced from public town documents."))
                     .font(.caption2)
                     .foregroundStyle(Theme.inkSecondary)
             }

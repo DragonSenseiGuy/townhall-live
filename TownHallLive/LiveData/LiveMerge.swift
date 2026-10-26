@@ -48,7 +48,7 @@ nonisolated enum TextHash {
 
 nonisolated enum LiveMerger {
     static func merge(
-        bundled: TownData,
+        bundled: BundledTownData,
         snapshot: LiveSnapshot?,
         translations: [String: PlainEnglish],
         townName: String? = nil,
@@ -56,7 +56,8 @@ nonisolated enum LiveMerger {
     ) -> TownData {
         let town = TownInfo(name: townName ?? bundled.town.name, state: state ?? bundled.town.state)
         guard let snapshot, !snapshot.isEmpty else {
-            return TownData(town: town, meetings: bundled.meetings, articles: bundled.articles,
+            return TownData(town: town, meetings: bundled.meetings,
+                            articles: bundled.articles.map { bundledArticle($0, translations: translations, outcome: $0.officialOutcome) },
                             historicalVotes: bundled.historicalVotes)
         }
         let checked = snapshot.fetchedAt.map(shortDate) ?? "recently"
@@ -117,7 +118,7 @@ nonisolated enum LiveMerger {
         func outcome(meetingID: String, number: Int, bundledOutcome: OfficialOutcome?) -> OfficialOutcome? {
             guard let results, results.meetingID == meetingID,
                   let o = results.outcomes.first(where: { $0.number == number }) else { return bundledOutcome }
-            // The town's summary sheet usually prints no counts; keep a curated
+            // The town's summary sheet usually prints no counts; keep a bundled
             // count only when it agrees with the live result.
             let tally = o.tally.map { "\(o.label) \($0)" }
                 ?? (bundledOutcome?.result == o.result ? bundledOutcome?.tally : nil)
@@ -130,19 +131,8 @@ nonisolated enum LiveMerger {
                 let old = bundled.articles.first { $0.meetingID == warrant.meetingID && $0.number == parsed.number }
                 covered.insert("\(warrant.meetingID)#\(parsed.number)")
                 let legal = TextClean.displayText(parsed.legalText)
-                let hash = TextHash.of(legal)
-                let plain: PlainEnglish
-                let source: String?
-                if let curated = old?.plainEnglish {
-                    plain = curated
-                    source = old?.plainEnglishSource
-                } else if let ai = translations[hash] {
-                    plain = ai
-                    source = "ai"
-                } else {
-                    plain = fallbackPlainEnglish(parsed)
-                    source = "excerpt"
-                }
+                // Plain English is only ever the AI's, keyed by the official text.
+                let (plain, source) = plainEnglish(legalText: legal, parsed: parsed, translations: translations)
                 articles.append(WarrantArticle(
                     id: old?.id ?? "\(warrant.meetingID)-a\(parsed.number)",
                     meetingID: warrant.meetingID,
@@ -151,7 +141,7 @@ nonisolated enum LiveMerger {
                     category: old?.category ?? category(for: parsed.title),
                     originalText: legal,
                     plainEnglish: plain,
-                    financialImpact: old?.financialImpact ?? financialImpact(parsed),
+                    financialImpact: financialImpact(parsed),
                     officialOutcome: outcome(meetingID: warrant.meetingID, number: parsed.number, bundledOutcome: old?.officialOutcome),
                     relatedHistoricalVoteIDs: old?.relatedHistoricalVoteIDs ?? [],
                     plainEnglishSource: source,
@@ -160,18 +150,49 @@ nonisolated enum LiveMerger {
             }
         }
         for old in bundled.articles where !covered.contains("\(old.meetingID)#\(old.number)") {
-            articles.append(WarrantArticle(
-                id: old.id, meetingID: old.meetingID, number: old.number, title: old.title,
-                category: old.category, originalText: old.originalText, plainEnglish: old.plainEnglish,
-                financialImpact: old.financialImpact,
-                officialOutcome: outcome(meetingID: old.meetingID, number: old.number, bundledOutcome: old.officialOutcome),
-                relatedHistoricalVoteIDs: old.relatedHistoricalVoteIDs,
-                plainEnglishSource: old.plainEnglishSource, sourceURL: old.sourceURL
+            articles.append(bundledArticle(
+                old, translations: translations,
+                outcome: outcome(meetingID: old.meetingID, number: old.number, bundledOutcome: old.officialOutcome)
             ))
         }
 
         return TownData(town: town, meetings: meetings, articles: articles,
                         historicalVotes: bundled.historicalVotes)
+    }
+
+    // MARK: Plain English
+
+    /// The AI's plain-English version of `legalText` when one is cached, else
+    /// an excerpt of the official text (source "excerpt", queued for the AI).
+    static func plainEnglish(legalText: String, parsed: ParsedArticle,
+                             translations: [String: PlainEnglish]) -> (PlainEnglish, String) {
+        if let ai = translations[TextHash.of(legalText)] { return (ai, "ai") }
+        return (fallbackPlainEnglish(parsed), "excerpt")
+    }
+
+    /// A bundled-only article (not on the live warrant): its official text
+    /// goes through the same AI path as live articles.
+    static func bundledArticle(_ old: BundledArticle, translations: [String: PlainEnglish],
+                               outcome: OfficialOutcome?) -> WarrantArticle {
+        let parsed = parsedBundled(old)
+        let (plain, source) = plainEnglish(legalText: old.originalText, parsed: parsed, translations: translations)
+        return WarrantArticle(
+            id: old.id, meetingID: old.meetingID, number: old.number, title: old.title,
+            category: old.category, originalText: old.originalText, plainEnglish: plain,
+            financialImpact: financialImpact(parsed),
+            officialOutcome: outcome,
+            relatedHistoricalVoteIDs: old.relatedHistoricalVoteIDs,
+            plainEnglishSource: source, sourceURL: old.sourceURL
+        )
+    }
+
+    /// Reads a bundled article's official text the way a scraped one is read
+    /// (dollar figures), for the excerpt and the money line.
+    static func parsedBundled(_ old: BundledArticle) -> ParsedArticle {
+        let parsed = WarrantParser.article(number: old.number, title: old.title, vote: nil, body: old.originalText)
+        return ParsedArticle(number: old.number, title: old.title, voteRequirement: nil,
+                             legalText: old.originalText, bookletSummary: nil, recommendations: nil,
+                             amounts: parsed.amounts)
     }
 
     // MARK: Fallbacks (no AI)

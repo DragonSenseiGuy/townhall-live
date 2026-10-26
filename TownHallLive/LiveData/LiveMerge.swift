@@ -132,7 +132,7 @@ nonisolated enum LiveMerger {
                 covered.insert("\(warrant.meetingID)#\(parsed.number)")
                 let legal = TextClean.displayText(parsed.legalText)
                 // Plain English is only ever the AI's, keyed by the official text.
-                let (plain, source) = plainEnglish(legalText: legal, parsed: parsed, translations: translations)
+                let (plain, source) = plainEnglish(legalText: legal, translations: translations)
                 articles.append(WarrantArticle(
                     id: old?.id ?? "\(warrant.meetingID)-a\(parsed.number)",
                     meetingID: warrant.meetingID,
@@ -163,11 +163,11 @@ nonisolated enum LiveMerger {
     // MARK: Plain English
 
     /// The AI's plain-English version of `legalText` when one is cached, else
-    /// an excerpt of the official text (source "excerpt", queued for the AI).
-    static func plainEnglish(legalText: String, parsed: ParsedArticle,
-                             translations: [String: PlainEnglish]) -> (PlainEnglish, String) {
+    /// nothing (the article is queued for the AI when a key is set).
+    static func plainEnglish(legalText: String,
+                             translations: [String: PlainEnglish]) -> (PlainEnglish?, String?) {
         if let ai = translations[TextHash.of(legalText)] { return (ai, "ai") }
-        return (fallbackPlainEnglish(parsed), "excerpt")
+        return (nil, nil)
     }
 
     /// A bundled-only article (not on the live warrant): its official text
@@ -175,7 +175,7 @@ nonisolated enum LiveMerger {
     static func bundledArticle(_ old: BundledArticle, translations: [String: PlainEnglish],
                                outcome: OfficialOutcome?) -> WarrantArticle {
         let parsed = parsedBundled(old)
-        let (plain, source) = plainEnglish(legalText: old.originalText, parsed: parsed, translations: translations)
+        let (plain, source) = plainEnglish(legalText: old.originalText, translations: translations)
         return WarrantArticle(
             id: old.id, meetingID: old.meetingID, number: old.number, title: old.title,
             category: old.category, originalText: old.originalText, plainEnglish: plain,
@@ -187,32 +187,12 @@ nonisolated enum LiveMerger {
     }
 
     /// Reads a bundled article's official text the way a scraped one is read
-    /// (dollar figures), for the excerpt and the money line.
+    /// (dollar figures), for the money line.
     static func parsedBundled(_ old: BundledArticle) -> ParsedArticle {
         let parsed = WarrantParser.article(number: old.number, title: old.title, vote: nil, body: old.originalText)
         return ParsedArticle(number: old.number, title: old.title, voteRequirement: nil,
                              legalText: old.originalText, bookletSummary: nil, recommendations: nil,
                              amounts: parsed.amounts)
-    }
-
-    // MARK: Fallbacks (no AI)
-
-    static func fallbackPlainEnglish(_ a: ParsedArticle) -> PlainEnglish {
-        let summary = a.bookletSummary.map { TextClean.sentences($0, count: 2) }
-            ?? TextClean.sentences(a.legalText, count: 1)
-        var takeaways: [String] = []
-        if let impact = financialImpact(a) { takeaways.append("Dollar amount in the article: \(impact.amount)") }
-        if let vote = a.voteRequirement {
-            takeaways.append(RX.contains("two.?thirds|2/3", in: vote) ? "Needs a two-thirds majority to pass" : "Needs a simple majority to pass")
-        }
-        if let recs = a.recommendations { takeaways.append("Recommendations: \(recs)") }
-        if takeaways.isEmpty { takeaways.append("See the original warrant text below for the full details") }
-        return PlainEnglish(
-            summary: summary,
-            keyTakeaways: takeaways,
-            votingYesMeans: "A yes vote approves the article as written in the warrant.",
-            votingNoMeans: "A no vote rejects the article as written."
-        )
     }
 
     static func financialImpact(_ a: ParsedArticle) -> FinancialImpact? {

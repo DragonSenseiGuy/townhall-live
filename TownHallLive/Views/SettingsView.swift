@@ -77,7 +77,7 @@ struct SettingsView: View {
                         .foregroundStyle(Theme.green)
                 }
             } footer: {
-                Text(L("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version."))
+                Text(L("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show the official warrant text, with no plain-English version."))
             }
 
             Section {

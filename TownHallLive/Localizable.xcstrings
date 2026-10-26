@@ -36,76 +36,6 @@
         }
       }
     },
-    "A no vote rejects the article as written.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التصويت بلا يرفض البند بصيغته المكتوبة."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A no vote rejects the article as written."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un voto en contra rechaza el artículo tal como está redactado."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "विपक्ष में वोट अनुच्छेद को लिखे रूप में अस्वीकार करता है।"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "投反对票即否决该条款原文。"
-          }
-        }
-      }
-    },
-    "A yes vote approves the article as written in the warrant.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "التصويت بنعم يوافق على البند كما ورد في جدول الأعمال."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A yes vote approves the article as written in the warrant."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un voto a favor aprueba el artículo tal como está redactado en la convocatoria."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "पक्ष में वोट अनुच्छेद को वारंट में लिखे अनुसार स्वीकृत करता है।"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "投赞成票即按议案原文批准该条款。"
-          }
-        }
-      }
-    },
     "AI disclosure: every plain-English summary in the app is written by AI at runtime from the official warrant text, and AI translates content into other languages. Nothing is prewritten. All legal text remains sourced from public town documents.": {
       "extractionState": "manual",
       "localizations": {
@@ -277,6 +207,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "弃权"
+          }
+        }
+      }
+    },
+    "Add an AI key in Settings for a plain-English version.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أضف مفتاح ذكاء اصطناعي في الإعدادات للحصول على نسخة بلغة مبسطة."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add an AI key in Settings for a plain-English version."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade una clave de IA en Ajustes para obtener una versión en lenguaje sencillo."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सरल भाषा वाला संस्करण पाने के लिए सेटिंग्स में AI कुंजी जोड़ें।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在设置中添加 AI 密钥即可获得通俗易懂的版本。"
           }
         }
       }
@@ -1436,41 +1401,6 @@
         }
       }
     },
-    "Dollar amount in the article: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "المبلغ بالدولار في البند: %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dollar amount in the article: %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importe en dólares del artículo: %@"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "अनुच्छेद में डॉलर राशि: %@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "条款中的金额：%@"
-          }
-        }
-      }
-    },
     "Dollar figure stated in the warrant text.": {
       "extractionState": "manual",
       "localizations": {
@@ -2482,76 +2412,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "反对"
-          }
-        }
-      }
-    },
-    "Needs a simple majority to pass": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يحتاج إلى أغلبية بسيطة لإقراره"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Needs a simple majority to pass"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Necesita mayoría simple para aprobarse"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "पारित होने के लिए साधारण बहुमत चाहिए"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需简单多数票方可通过"
-          }
-        }
-      }
-    },
-    "Needs a two-thirds majority to pass": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يحتاج إلى أغلبية الثلثين لإقراره"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Needs a two-thirds majority to pass"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Necesita una mayoría de dos tercios para aprobarse"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "पारित होने के लिए दो-तिहाई बहुमत चाहिए"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需三分之二多数票方可通过"
           }
         }
       }
@@ -3886,41 +3746,6 @@
         }
       }
     },
-    "See the original warrant text below for the full details": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "راجع نص جدول الأعمال الأصلي أدناه للاطلاع على التفاصيل كاملة"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "See the original warrant text below for the full details"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consulte el texto original de la convocatoria abajo para ver todos los detalles"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "पूरी जानकारी के लिए नीचे वारंट का मूल पाठ देखें"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "完整内容请参阅下方议案原文"
-          }
-        }
-      }
-    },
     "Select Board": {
       "extractionState": "manual",
       "localizations": {
@@ -4411,37 +4236,37 @@
         }
       }
     },
-    "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version.": {
+    "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show the official warrant text, with no plain-English version.": {
       "extractionState": "manual",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يبقى المفتاح على هذا الجهاز ولا يُضمَّن أبدًا في شيفرة التطبيق. بدون مفتاح تعمل كل الشاشات، وتعرض البنود مقتطفًا من النص الرسمي لجدول الأعمال بدلًا من نسخة بلغة بسيطة."
+            "value": "يبقى المفتاح على هذا الجهاز ولا يُضمَّن أبدًا في شيفرة التطبيق. بدون مفتاح تعمل كل الشاشات، وتعرض البنود النص الرسمي لجدول الأعمال دون نسخة بلغة بسيطة."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version."
+            "value": "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show the official warrant text, with no plain-English version."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La clave se queda en este dispositivo y nunca se incluye en el código de la app. Sin clave, todas las pantallas siguen funcionando; los artículos muestran un extracto del texto oficial de la convocatoria en lugar de una versión en lenguaje sencillo."
+            "value": "La clave se queda en este dispositivo y nunca se incluye en el código de la app. Sin clave, todas las pantallas siguen funcionando; los artículos muestran el texto oficial de la convocatoria, sin versión en lenguaje sencillo."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "कुंजी इसी डिवाइस पर रहती है और ऐप के कोड में कभी शामिल नहीं होती। कुंजी के बिना भी हर स्क्रीन काम करती है; अनुच्छेदों में सरल भाषा संस्करण की जगह आधिकारिक वारंट पाठ का अंश दिखता है।"
+            "value": "कुंजी इसी डिवाइस पर रहती है और ऐप के कोड में कभी शामिल नहीं होती। कुंजी के बिना भी हर स्क्रीन काम करती है; अनुच्छेदों में आधिकारिक वारंट पाठ दिखता है, सरल भाषा संस्करण नहीं।"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "密钥只保存在本设备上，绝不会写入应用代码。没有密钥时所有页面仍可使用；条款将显示官方议案原文的摘录，而不是通俗版本。"
+            "value": "密钥只保存在本设备上，绝不会写入应用代码。没有密钥时所有页面仍可使用；条款只显示官方议案原文，没有通俗版本。"
           }
         }
       }
@@ -4477,76 +4302,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "表决"
-          }
-        }
-      }
-    },
-    "This is the warrant booklet's own summary.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هذا هو الملخص الوارد في كتيّب جدول الأعمال."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is the warrant booklet's own summary."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este es el resumen del propio folleto de la convocatoria."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "यह वारंट पुस्तिका का अपना सारांश है।"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "这是议案手册自带的摘要。"
-          }
-        }
-      }
-    },
-    "This is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هذا هو الملخص الوارد في كتيّب جدول الأعمال. أضف مفتاح ذكاء اصطناعي في الإعدادات للحصول على نسخة مبسّطة."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este es el resumen del propio folleto de la convocatoria. Añade una clave de IA en Ajustes para obtener una versión sencilla."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "यह वारंट पुस्तिका का अपना सारांश है। सरल भाषा संस्करण के लिए सेटिंग्स में AI कुंजी जोड़ें।"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "这是议案手册自带的摘要。在设置中添加 AI 密钥即可获得通俗版本。"
           }
         }
       }

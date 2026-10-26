@@ -86,15 +86,15 @@ struct ArticleDetailView: View {
         }
         // Interface in another language: translate the explanation into it.
         .task(id: translationTaskID) {
-            // The booklet excerpt is replaced by an AI version first; translate that.
+            // Only an AI-written version exists to translate.
             guard let article, settings.language != .english, settings.hasAPIKey,
-                  article.isTranslated else { return }
-            await store.translateContent(article.plainEnglish, language: settings.language)
+                  article.isTranslated, let plain = article.plainEnglish else { return }
+            await store.translateContent(plain, language: settings.language)
         }
     }
 
     private var translationTaskID: String {
-        "\(articleID)|\(settings.language.rawValue)|\(article.map { TextHash.of($0.plainEnglish.summary) } ?? "")"
+        "\(articleID)|\(settings.language.rawValue)|\(article.map { TextHash.of($0.plainEnglish?.summary ?? "") } ?? "")"
     }
 
     @ViewBuilder
@@ -161,15 +161,11 @@ struct ArticleDetailView: View {
     private func plainEnglishCard(_ article: WarrantArticle) -> some View {
         let generating = store.isGenerating(article)
         let language = settings.language
-        let translated = store.localizedPlain(article.plainEnglish, language: language)
-        // Not translated yet: the app's own fallback sentences still come from the catalog.
-        let plain = translated ?? PlainEnglish(
-            summary: article.plainEnglish.summary,
-            keyTakeaways: article.plainEnglish.keyTakeaways.map(LT),
-            votingYesMeans: LT(article.plainEnglish.votingYesMeans),
-            votingNoMeans: LT(article.plainEnglish.votingNoMeans)
-        )
-        let translating = store.isTranslatingContent(article.plainEnglish, language: language)
+        // Only the AI's own text is ever shown here; without it the section is just a note.
+        let ai = article.isTranslated ? article.plainEnglish : nil
+        let translated = ai.flatMap { store.localizedPlain($0, language: language) }
+        let plain = translated ?? ai
+        let translating = ai.map { store.isTranslatingContent($0, language: language) } ?? false
 
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
@@ -194,10 +190,8 @@ struct ArticleDetailView: View {
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                 }
-            } else if !article.isTranslated {
-                note(settings.hasAPIKey
-                     ? L("This is the warrant booklet's own summary.")
-                     : L("This is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version."))
+            } else if ai == nil, !settings.hasAPIKey {
+                note(L("Add an AI key in Settings for a plain-English version."))
             }
             if let aiError, !generating {
                 Text(L("Couldn't write a plain-English version right now.") + " " + aiError)
@@ -205,7 +199,7 @@ struct ArticleDetailView: View {
                     .foregroundStyle(Theme.red)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            if language != .english, translated == nil {
+            if ai != nil, language != .english, translated == nil {
                 if translating {
                     note(L("Translating…"))
                 } else if !settings.hasAPIKey {
@@ -213,28 +207,30 @@ struct ArticleDetailView: View {
                 }
             }
 
-            Text(plain.summary)
-                .font(.body)
-                .foregroundStyle(Theme.ink)
-                .fixedSize(horizontal: false, vertical: true)
+            if let plain {
+                Text(plain.summary)
+                    .font(.body)
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(Array(plain.keyTakeaways.enumerated()), id: \.offset) { _, takeaway in
-                    HStack(alignment: .top, spacing: 8) {
-                        Circle().fill(Theme.accent).frame(width: 5, height: 5).padding(.top, 8)
-                        Text(takeaway)
-                            .font(.subheadline)
-                            .foregroundStyle(Theme.ink)
-                            .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(Array(plain.keyTakeaways.enumerated()), id: \.offset) { _, takeaway in
+                        HStack(alignment: .top, spacing: 8) {
+                            Circle().fill(Theme.accent).frame(width: 5, height: 5).padding(.top, 8)
+                            Text(takeaway)
+                                .font(.subheadline)
+                                .foregroundStyle(Theme.ink)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                 }
-            }
 
-            Divider().overlay(Theme.divider)
+                Divider().overlay(Theme.divider)
 
-            VStack(alignment: .leading, spacing: 10) {
-                meaningRow(symbol: "checkmark", label: L("Vote yes"), color: Theme.green, text: plain.votingYesMeans)
-                meaningRow(symbol: "xmark", label: L("Vote no"), color: Theme.red, text: plain.votingNoMeans)
+                VStack(alignment: .leading, spacing: 10) {
+                    meaningRow(symbol: "checkmark", label: L("Vote yes"), color: Theme.green, text: plain.votingYesMeans)
+                    meaningRow(symbol: "xmark", label: L("Vote no"), color: Theme.red, text: plain.votingNoMeans)
+                }
             }
         }
         .padding(Theme.cardPadding)

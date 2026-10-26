@@ -130,8 +130,10 @@ final class DataStore {
         } else {
             LiveLog.log("refresh produced no live data; keeping what's on screen")
         }
-        await translatePending()
+        // Titles first (background, non-blocking), then the slower
+        // one-article-at-a-time plain-English generation.
         translateLiveContent()
+        await translatePending()
     }
 
     /// Refresh when the last live data is older than `maxAge`.
@@ -214,7 +216,7 @@ final class DataStore {
             out.append(text)
         }
         for meeting in upcomingMeetings { add(meeting.title, meeting: true) }
-        for recording in recordings.prefix(6) { add(recording.title, meeting: true) }
+        for recording in recordings { add(recording.title, meeting: true) }
         for meeting in townMeetings { add(meeting.title, meeting: true) }
         for meeting in townMeetings {
             for article in articles(in: meeting.id) {
@@ -289,6 +291,7 @@ final class DataStore {
                 historyCache = cache
                 LiveCache.save(cache, to: LiveCache.historyFile)
                 publishHistory()
+                translateLiveContent() // queue the new titles now, not after the whole archive
                 failures = 0
             } else {
                 failures += 1

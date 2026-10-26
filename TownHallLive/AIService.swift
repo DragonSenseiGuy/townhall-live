@@ -120,38 +120,39 @@ struct AIService {
     }
 
     /// Translates a batch of short scraped strings (meeting and recording
-    /// titles, article titles) into another language in one request: JSON
-    /// array in, JSON array of the same length and order out.
-    func translate(texts: [String], into language: AppLanguage) async throws -> [String] {
-        guard !texts.isEmpty else { return [] }
+    /// titles, article titles) into another language in one request. Sent as
+    /// a JSON object keyed by id ("1", "2", …) so the reply can be matched
+    /// item by item; returns index in `texts` → translation for every item
+    /// the reply contained (possibly fewer than were sent). Throws
+    /// `badResponse` only when nothing in the reply could be matched.
+    func translate(texts: [String], into language: AppLanguage) async throws -> [Int: String] {
+        guard !texts.isEmpty else { return [:] }
         let system = """
         You translate short titles and notes from a Massachusetts town government (meeting names, \
         video titles, warrant article titles, vote notes) from English into \(language.englishName). \
         Keep numbers, dates, dollar amounts, article numbers, people's names, street and place names, \
-        and the names of the town and its schools exact. The input is a JSON array of strings. Reply \
-        with ONLY a JSON array of exactly \(texts.count) strings: the translations, in the same order. \
+        and the names of the town and its schools exact. The input is a JSON object mapping ids to \
+        English strings. Reply with ONLY a JSON object with exactly the same ids, each mapped to its \
+        \(language.englishName) translation. Translate every item; never merge, split or skip items. \
         No markdown, no commentary.
         """
-        let input = try JSONEncoder().encode(texts)
+        // Built by hand to keep the ids in numeric order.
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.withoutEscapingSlashes]
+        var fields: [String] = []
+        for (i, text) in texts.enumerated() {
+            fields.append("\"\(i + 1)\":" + String(decoding: try encoder.encode(text), as: UTF8.self))
+        }
         let raw = try await complete(messages: [
             Message(role: "system", content: system),
-            Message(role: "user", content: String(decoding: input, as: UTF8.self)),
+            Message(role: "user", content: "{" + fields.joined(separator: ",") + "}"),
         ])
-        guard let body = Self.firstJSONArray(in: raw),
-              let parsed = try? JSONDecoder().decode([String].self, from: body),
-              parsed.count == texts.count else {
+        let parsed = TranslationReply.parse(raw, count: texts.count)
+        guard !parsed.isEmpty else {
+            logger.debug("unreadable batch translation reply: \(String(raw.prefix(200)), privacy: .public)")
             throw AIError.badResponse
         }
         return parsed
-    }
-
-    private static func firstJSONArray(in text: String) -> Data? {
-        guard
-            let start = text.firstIndex(of: "["),
-            let end = text.lastIndex(of: "]"),
-            start < end
-        else { return nil }
-        return String(text[start...end]).data(using: .utf8)
     }
 
     private static func firstJSONObject(in text: String) -> Data? {

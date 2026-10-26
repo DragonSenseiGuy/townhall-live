@@ -84,9 +84,20 @@ struct RootView: View {
             // Cached/bundled data is already on screen; now fetch live.
             await store.refresh()
         }
+        // Scraped titles in the chosen language: batch AI translation in the
+        // background whenever the language changes (cached ones apply at once).
+        .onChange(of: settings.language, initial: true) {
+            store.translateLiveContent()
+        }
+        .onChange(of: settings.keyRevision) {
+            store.translateLiveContent()
+        }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, store.data != nil else { return }
-            Task { await store.refreshIfStale() }
+            Task {
+                await store.refreshIfStale()
+                store.translateLiveContent()
+            }
         }
     }
 

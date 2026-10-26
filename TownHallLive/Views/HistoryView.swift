@@ -17,6 +17,8 @@ struct HistoryView: View {
                     || $0.category.localizedCaseInsensitiveContains(searchText)
                     || L($0.category).localizedCaseInsensitiveContains(searchText)
                     || $0.meetingName.localizedCaseInsensitiveContains(searchText)
+                    || LT($0.title).localizedCaseInsensitiveContains(searchText)
+                    || meetingNameText($0.meetingName).localizedCaseInsensitiveContains(searchText)
             }
         }
         // Stable: newest year first, curated notes first within a year, then article order.
@@ -132,10 +134,6 @@ func outcomeSymbol(_ result: String) -> (name: String, color: Color) {
     }
 }
 
-func tallyText(_ tally: String) -> String {
-    tally == "Unanimous" ? L("Unanimous") : tally
-}
-
 struct HistoryRow: View {
     let vote: HistoricalVote
 
@@ -147,7 +145,7 @@ struct HistoryRow: View {
                 .foregroundStyle(symbol.color)
                 .padding(.top, 3)
             VStack(alignment: .leading, spacing: 5) {
-                Text(vote.title)
+                Text(LT(vote.title))
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
@@ -177,9 +175,7 @@ struct HistoryRow: View {
     }
 
     private var meetingLine: String {
-        let meeting = L(vote.meetingName.components(separatedBy: " · ").first ?? vote.meetingName)
-        let date = vote.meetingName.components(separatedBy: " · ").dropFirst().joined(separator: " · ")
-        var line = date.isEmpty ? meeting : "\(meeting) · \(date)"
+        var line = meetingNameText(vote.meetingName)
         if let n = vote.articleNumber { line += " · " + L("Article %@", String(n)) }
         return line
     }
@@ -204,12 +200,12 @@ struct HistoryDetailView: View {
                             CategoryChip(text: vote.category)
                             OutcomeChip(result: vote.outcome)
                         }
-                        Text(vote.title)
+                        Text(LT(vote.title))
                             .font(Theme.titleFont)
                             .foregroundStyle(Theme.ink)
                             .fixedSize(horizontal: false, vertical: true)
                         // verbatim: Int interpolation localizes to "2,022"
-                        Text(verbatim: "\(L(vote.meetingName.components(separatedBy: " · ").first ?? vote.meetingName)) · \(vote.year)")
+                        Text(verbatim: "\(meetingNameText(vote.meetingName.components(separatedBy: " · ").first ?? vote.meetingName)) · \(vote.year)")
                             .font(.footnote)
                             .foregroundStyle(Theme.inkSecondary)
                     }
@@ -221,7 +217,7 @@ struct HistoryDetailView: View {
                                 .padding(.top, 2)
                             VStack(alignment: .leading, spacing: 4) {
                                 SectionLabel(text: L("Why it matters today"))
-                                Text(vote.relevanceNote)
+                                Text(LT(vote.relevanceNote))
                                     .font(.footnote)
                                     .foregroundStyle(Theme.inkSecondary)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -236,7 +232,13 @@ struct HistoryDetailView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         SectionLabel(text: L("The vote"))
                         if !vote.summary.isEmpty {
-                            Text(vote.summary)
+                            // Curated entries carry a plain-language explanation; scraped
+                            // ones quote the warrant, which stays in the original English.
+                            let isOfficialWording = vote.relevanceNote.isEmpty
+                            if isOfficialWording, AppSettings.shared.language != .english {
+                                officialRecordNote
+                            }
+                            Text(isOfficialWording ? vote.summary : LT(vote.summary))
                                 .font(.body)
                                 .foregroundStyle(Theme.ink)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -273,7 +275,7 @@ struct HistoryDetailView: View {
                                                 .font(.caption2.weight(.bold))
                                                 .tracking(0.5)
                                                 .foregroundStyle(Theme.accent)
-                                            Text(article.title)
+                                            Text(LT(article.title))
                                                 .font(.footnote.weight(.medium))
                                                 .foregroundStyle(Theme.ink)
                                                 .multilineTextAlignment(.leading)

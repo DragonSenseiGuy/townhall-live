@@ -119,6 +119,41 @@ struct AIService {
         return parsed
     }
 
+    /// Translates a batch of short scraped strings (meeting and recording
+    /// titles, article titles) into another language in one request: JSON
+    /// array in, JSON array of the same length and order out.
+    func translate(texts: [String], into language: AppLanguage) async throws -> [String] {
+        guard !texts.isEmpty else { return [] }
+        let system = """
+        You translate short titles and notes from a Massachusetts town government (meeting names, \
+        video titles, warrant article titles, vote notes) from English into \(language.englishName). \
+        Keep numbers, dates, dollar amounts, article numbers, people's names, street and place names, \
+        and the names of the town and its schools exact. The input is a JSON array of strings. Reply \
+        with ONLY a JSON array of exactly \(texts.count) strings: the translations, in the same order. \
+        No markdown, no commentary.
+        """
+        let input = try JSONEncoder().encode(texts)
+        let raw = try await complete(messages: [
+            Message(role: "system", content: system),
+            Message(role: "user", content: String(decoding: input, as: UTF8.self)),
+        ])
+        guard let body = Self.firstJSONArray(in: raw),
+              let parsed = try? JSONDecoder().decode([String].self, from: body),
+              parsed.count == texts.count else {
+            throw AIError.badResponse
+        }
+        return parsed
+    }
+
+    private static func firstJSONArray(in text: String) -> Data? {
+        guard
+            let start = text.firstIndex(of: "["),
+            let end = text.lastIndex(of: "]"),
+            start < end
+        else { return nil }
+        return String(text[start...end]).data(using: .utf8)
+    }
+
     private static func firstJSONObject(in text: String) -> Data? {
         guard
             let start = text.firstIndex(of: "{"),

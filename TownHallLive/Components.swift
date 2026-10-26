@@ -48,6 +48,15 @@ struct OutcomeChip: View {
     }
 }
 
+// Legal wording stays in its original English: it is the official record.
+// Shown above official text whenever the interface is in another language.
+var officialRecordNote: some View {
+    Label(L("Shown in the original English: this is the official legal record."), systemImage: "building.columns")
+        .font(.caption)
+        .foregroundStyle(Theme.inkSecondary)
+        .fixedSize(horizontal: false, vertical: true)
+}
+
 // "Updated 5 minutes ago" — where the data on screen came from and how fresh it is.
 struct LiveStatusLine: View {
     let store: DataStore

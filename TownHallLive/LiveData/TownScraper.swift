@@ -214,6 +214,7 @@ nonisolated enum LiveCache {
     static let snapshotFile = "live_snapshot.json"
     static let translationsFile = "plain_english_cache.json"
     static let contentTranslationsFile = "content_translations.json"
+    static let textTranslationsFile = "text_translations.json"
     static let historyFile = "history_archive_v1.json"
 
     static var directory: URL? {

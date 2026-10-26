@@ -23,7 +23,7 @@ struct SettingsView: View {
             } header: {
                 Text(L("Language"))
             } footer: {
-                Text(L("Changes the whole app right away. With an AI key, plain-English explanations are translated too."))
+                Text(L("Changes the whole app right away, including meeting names, outcomes and dates. With an AI key, titles and plain-English explanations are translated too; official legal text stays in English."))
             }
 
             Section {
@@ -173,11 +173,11 @@ struct MeetingDetailView: View {
         VerticalPage {
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(meeting?.date ?? "")
+                    Text(dateLineText(meeting?.date ?? ""))
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(L(meeting?.title ?? "Meeting"))
+                    Text(meeting.map { meetingNameText($0.title) } ?? L("Meeting"))
                         .font(Theme.titleFont)
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
@@ -207,7 +207,7 @@ struct MeetingDetailView: View {
                                 .foregroundStyle(Theme.accent)
                                 .frame(width: 34)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(article.title)
+                                Text(LT(article.title))
                                     .font(.subheadline.weight(.medium))
                                     .foregroundStyle(Theme.ink)
                                     .multilineTextAlignment(.leading)

@@ -98,11 +98,11 @@ struct LiveView: View {
                     .foregroundStyle(Theme.accent)
                 SectionLabel(text: L("Upcoming"))
             }
-            Text(meeting.title)
+            Text(meetingNameText(meeting.title))
                 .font(featured ? Theme.titleFont : .subheadline.weight(.semibold))
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(meeting.date)
+            Text(dateLineText(meeting.date))
                 .font(.footnote)
                 .foregroundStyle(Theme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -154,12 +154,12 @@ struct LiveView: View {
                                 )
                                 .frame(width: 34, height: 34)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(recording.title)
+                                Text(meetingNameText(recording.title))
                                     .font(.subheadline.weight(.semibold))
                                     .foregroundStyle(Theme.ink)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
-                                Text(recording.date)
+                                Text(dateLineText(recording.date))
                                     .font(.footnote)
                                     .foregroundStyle(Theme.inkSecondary)
                             }
@@ -198,7 +198,7 @@ struct LastTownMeetingCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionLabel(text: L("Last Town Meeting · %@", dateText))
-            Text(L(meeting.title))
+            Text(meetingNameText(meeting.title))
                 .font(Theme.titleFont)
                 .foregroundStyle(Theme.ink)
             if articles.isEmpty {

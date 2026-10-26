@@ -106,37 +106,37 @@
         }
       }
     },
-    "AI disclosure: AI is used to write plain-English summaries of public warrant articles and to translate them at runtime, and was used to prepare the bundled summaries. All legal text remains sourced from public town documents.": {
+    "AI disclosure: every plain-English summary in the app is written by AI at runtime from the official warrant text, and AI translates content into other languages. Nothing is prewritten. All legal text remains sourced from public town documents.": {
       "extractionState": "manual",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "إفصاح عن الذكاء الاصطناعي: يُستخدم الذكاء الاصطناعي لكتابة ملخصات بلغة بسيطة لبنود جدول الأعمال العامة وترجمتها أثناء استخدام التطبيق، كما استُخدم في إعداد الملخصات المضمّنة. جميع النصوص القانونية مأخوذة من وثائق البلدة العامة."
+            "value": "إفصاح عن الذكاء الاصطناعي: كل ملخص بلغة بسيطة في التطبيق يكتبه الذكاء الاصطناعي أثناء الاستخدام انطلاقًا من النص الرسمي لجدول الأعمال، ويترجم الذكاء الاصطناعي المحتوى إلى لغات أخرى. لا يوجد أي نص مكتوب مسبقًا. جميع النصوص القانونية مأخوذة من وثائق البلدة العامة."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "AI disclosure: AI is used to write plain-English summaries of public warrant articles and to translate them at runtime, and was used to prepare the bundled summaries. All legal text remains sourced from public town documents."
+            "value": "AI disclosure: every plain-English summary in the app is written by AI at runtime from the official warrant text, and AI translates content into other languages. Nothing is prewritten. All legal text remains sourced from public town documents."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uso de IA: la IA se usa para redactar resúmenes en lenguaje sencillo de los artículos públicos de la convocatoria y para traducirlos mientras usas la app, y se usó para preparar los resúmenes incluidos. Todo el texto legal proviene de documentos públicos del municipio."
+            "value": "Uso de IA: cada resumen en lenguaje sencillo de la app lo redacta la IA mientras la usas, a partir del texto oficial de la convocatoria, y la IA traduce el contenido a otros idiomas. Nada está escrito de antemano. Todo el texto legal proviene de documentos públicos del municipio."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "AI प्रकटीकरण: ऐप चलते समय सार्वजनिक वारंट अनुच्छेदों के सरल भाषा सारांश लिखने और उनका अनुवाद करने के लिए AI का उपयोग करता है, और साथ आए सारांश तैयार करने में भी AI का उपयोग हुआ है। सारा कानूनी पाठ नगर के सार्वजनिक दस्तावेज़ों से ही लिया गया है।"
+            "value": "AI प्रकटीकरण: ऐप का हर सरल भाषा सारांश ऐप चलते समय आधिकारिक वारंट पाठ से AI लिखता है, और AI ही सामग्री का दूसरी भाषाओं में अनुवाद करता है। कुछ भी पहले से लिखा हुआ नहीं है। सारा कानूनी पाठ नगर के सार्वजनिक दस्तावेज़ों से ही लिया गया है।"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AI 使用说明：应用在运行时使用 AI 为公开的议案条款撰写通俗易懂的摘要并进行翻译，内置摘要的准备过程也使用了 AI。所有法律文本均来自镇政府的公开文件。"
+            "value": "AI 使用说明：应用中的每一条通俗摘要都由 AI 在运行时根据官方议案原文撰写，内容也由 AI 翻译成其他语言。没有任何预先写好的内容。所有法律文本均来自镇政府的公开文件。"
           }
         }
       }
@@ -4411,37 +4411,37 @@
         }
       }
     },
-    "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles without a curated summary show the warrant booklet's own summary.": {
+    "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version.": {
       "extractionState": "manual",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يبقى المفتاح على هذا الجهاز ولا يُضمَّن أبدًا في شيفرة التطبيق. بدون مفتاح تعمل كل الشاشات، وتعرض البنود التي لا تملك ملخصًا مُعدًّا الملخصَ الوارد في كتيّب جدول الأعمال."
+            "value": "يبقى المفتاح على هذا الجهاز ولا يُضمَّن أبدًا في شيفرة التطبيق. بدون مفتاح تعمل كل الشاشات، وتعرض البنود مقتطفًا من النص الرسمي لجدول الأعمال بدلًا من نسخة بلغة بسيطة."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles without a curated summary show the warrant booklet's own summary."
+            "value": "The key stays on this device and is never embedded in the app's code. Without a key, every screen still works; articles show an excerpt of the official warrant text instead of a plain-English version."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La clave se queda en este dispositivo y nunca se incluye en el código de la app. Sin clave, todas las pantallas siguen funcionando; los artículos sin resumen preparado muestran el resumen del propio folleto de la convocatoria."
+            "value": "La clave se queda en este dispositivo y nunca se incluye en el código de la app. Sin clave, todas las pantallas siguen funcionando; los artículos muestran un extracto del texto oficial de la convocatoria en lugar de una versión en lenguaje sencillo."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "कुंजी इसी डिवाइस पर रहती है और ऐप के कोड में कभी शामिल नहीं होती। कुंजी के बिना भी हर स्क्रीन काम करती है; जिन अनुच्छेदों का तैयार सारांश नहीं है, उनमें वारंट पुस्तिका का अपना सारांश दिखता है।"
+            "value": "कुंजी इसी डिवाइस पर रहती है और ऐप के कोड में कभी शामिल नहीं होती। कुंजी के बिना भी हर स्क्रीन काम करती है; अनुच्छेदों में सरल भाषा संस्करण की जगह आधिकारिक वारंट पाठ का अंश दिखता है।"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "密钥只保存在本设备上，绝不会写入应用代码。没有密钥时所有页面仍可使用；没有精选摘要的条款将显示议案手册自带的摘要。"
+            "value": "密钥只保存在本设备上，绝不会写入应用代码。没有密钥时所有页面仍可使用；条款将显示官方议案原文的摘录，而不是通俗版本。"
           }
         }
       }

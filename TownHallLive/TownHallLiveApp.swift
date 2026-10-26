@@ -91,6 +91,8 @@ struct RootView: View {
         }
         .onChange(of: settings.keyRevision) {
             store.translateLiveContent()
+            // A new key: have the AI write every missing plain-English version.
+            Task { await store.generateMissingPlainEnglish() }
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, store.data != nil else { return }

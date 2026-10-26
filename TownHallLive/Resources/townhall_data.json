@@ -34,20 +34,6 @@
       "title": "Appropriations for Municipal Operating Budget",
       "category": "Town Budget",
       "originalText": "To see if the Town will raise and appropriate, transfer and/or appropriate from available funds, the sum of $42,322,565 to defray the necessary expenses of the departments, offices and boards of the Town, exclusive of the Regional Schools' budgets, or take any other action relative thereto.",
-      "plainEnglish": {
-        "summary": "This article funds every town department — police, fire, public works, health, library, and general government — for the fiscal year that began July 1, 2026, excluding the regional school assessment voted separately.",
-        "keyTakeaways": [
-          "The town-side operating budget came to $42,322,565, growing about 3.05% inside the Select Board's 3.25% growth cap",
-          "The 2024 override reset the tax-levy baseline, which is why services could be funded without a new override this year",
-          "Total municipal spending including capital and enterprise subsidies was about $43.85 million"
-        ],
-        "votingYesMeans": "A yes vote funded day-to-day town operations at the level the Finance Committee recommended.",
-        "votingNoMeans": "A no vote would have sent the board back for cuts or a revised budget late in the fiscal year."
-      },
-      "financialImpact": {
-        "amount": "$42,322,565",
-        "explanation": "Raised through property tax inside the levy limit, plus available funds — this article drives the bulk of the town's share of the annual property tax bill."
-      },
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 357–38",
@@ -64,20 +50,6 @@
       "title": "Authorize Borrowing for Town Hall HVAC and Emergency Power Replacement Project",
       "category": "Capital Borrowing",
       "originalText": "To see if the Town will vote to raise and appropriate, transfer from available funds, or borrow money by the issuance of bonds or notes a sum of money to be expended by the Town Manager for the Town Hall HVAC replacement and emergency power replacement, including all costs incidental and related thereto; or take any other action relative thereto.",
-      "plainEnglish": {
-        "summary": "This article authorized $2.75 million in borrowing to replace the aging Town Hall heating, cooling, and emergency power systems — as an all-electric heat-pump project.",
-        "keyTakeaways": [
-          "The full project is worth $3.75 million, but a $1 million Commonwealth construction grant cuts what Town borrows",
-          "The replacement is all-electric heat pumps, consistent with the town's climate goals",
-          "This replaced a controversial 2025 borrowing package that had bundled too many projects"
-        ],
-        "votingYesMeans": "A yes vote authorized bonds so the work could proceed with the state grant secured.",
-        "votingNoMeans": "A no vote would have left the 1970s-era building systems in place and risked losing the grant."
-      },
-      "financialImpact": {
-        "amount": "$2,750,000",
-        "explanation": "Borrowing authorization; the remainder of the $3,750,000 project is covered by a $1,000,000 Commonwealth grant."
-      },
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 379–36",
@@ -94,20 +66,6 @@
       "title": "Regional School District Assessment",
       "category": "School Budget",
       "originalText": "To see if the Town will raise and appropriate, transfer and/or appropriate from available funds, the sum of $82,830,682 to defray the necessary expenses of the Regional School District, or take any other action relative thereto.",
-      "plainEnglish": {
-        "summary": "This article paid the town's share of the regional school district's budget — by far the largest single line on any Town warrant, covering the high school, R.J. Grey Junior High, and the elementary schools the town shares with Boxborough.",
-        "keyTakeaways": [
-          "the town's FY2027 assessment is $82,830,682 — roughly two-thirds of everything the town votes on in a typical year",
-          "The assessment is calculated under the regional district agreement, weighted by enrollment and property values, so Town Meeting cannot freely cut it",
-          "An effort to reject the assessment earlier in 2026 failed to gain traction; the article passed comfortably"
-        ],
-        "votingYesMeans": "A yes vote funded the regional schools for the year, as the district agreement obligates both towns.",
-        "votingNoMeans": "A no vote would have refused the assessment — but state law and the regional agreement would still require the towns to fund the district."
-      },
-      "financialImpact": {
-        "amount": "$82,830,682",
-        "explanation": "The single largest appropriation Town votes on each year; the A-B district's total FY27 budget is substantially larger, with Boxborough covering a smaller share."
-      },
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 364–41",
@@ -125,20 +83,6 @@
       "title": "Appropriate Community Preservation Funds",
       "category": "Community Preservation",
       "originalText": "To see if the Town will appropriate or set aside for later appropriation, and authorize and direct the Select Board and the Town Manager to expend or set aside the following amounts listed below for community preservation purposes, with such expenditures to be subject to conditions listed in the Article's Summary and to be further specified in award letters from the Community Preservation Committee, with each item considered a separate appropriation:",
-      "plainEnglish": {
-        "summary": "The annual Community Preservation Act package: 14 separate appropriations totaling about $2.28 million, funded entirely by the CPA property-tax surcharge and its state match — not the general levy.",
-        "keyTakeaways": [
-          "Biggest line: $598,500 to restore the Town Hall clock tower",
-          "Also funds the Apple Tree arboretum trail, Theatre III, McManus Manor affordable housing, and an $850,940 open-space set-aside",
-          "Includes scheduled debt payments on past CPA purchases, including Wetherbee Woods from 2024"
-        ],
-        "votingYesMeans": "A yes vote approved all 14 CPA projects and set-asides as one package, exactly as the Community Preservation Committee ranked them.",
-        "votingNoMeans": "A no vote would have deferred all fourteen projects for a year, since the article was voted as a single package."
-      },
-      "financialImpact": {
-        "amount": "$2,279,396",
-        "explanation": "Drawn from the CPA General Fund ($1,959,196), the Historic Set-Aside ($40,800), and Open Space Set-Aside ($279,400) — money raised by the CPA surcharge with annual state matching revenue."
-      },
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 327–15",
@@ -155,20 +99,6 @@
       "title": "Authorize Acquisition of Property Located at 46 Taylor Road",
       "category": "Land Preservation",
       "originalText": "To see if the Town will vote to: 1. authorize the Select Board to acquire by purchase, gift, eminent domain or otherwise, and accept the deed of a fee simple interest, for open space, passive recreation and conservation purposes under M.G.L. Chapter 44B, Section 8C, the Community Preservation Act, that certain parcel of land containing approximately 5.80 acres, more or less, known as 46 Taylor Road in Town… 2. appropriate $1,445,000 for the purchase of 46 Taylor Road as described above… or take any other action relative thereto.",
-      "plainEnglish": {
-        "summary": "This article bought 5.8 acres at 46 Taylor Road for permanent open space and conservation — continuing the town's long pattern of land-banking with CPA funds.",
-        "keyTakeaways": [
-          "The purchase price is $1.4 million plus $45,000 for due diligence: $1 million from the CPA open-space set-aside and up to $445,000 in bonding",
-          "The Town Conservation Trust later donated $116,620 from a record fundraising campaign to reduce the town's cost",
-          "The land becomes town-owned conservation land, not merely restricted private property"
-        ],
-        "votingYesMeans": "A yes vote protected the parcel from development as town-owned open space forever.",
-        "votingNoMeans": "A no vote would have left the parcel available for private development."
-      },
-      "financialImpact": {
-        "amount": "$1,445,000",
-        "explanation": "$1,400,000 purchase price plus $45,000 due diligence; $1,000,000 from the CPA Open Space Set-Aside, up to $445,000 bonded for 20 years or less."
-      },
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 351–25",
@@ -185,17 +115,6 @@
       "title": "Approve Tax Increment Financing for Insulet Corporation — 35 Nagog Park",
       "category": "Economic Development",
       "originalText": "To see if the Town will vote, pursuant to M.G.L. c.40, § 59 and M.G.L. c.23A, §§ 3A-3F to authorize the Select Board to (a) approve and execute a Tax Increment Financing (\"TIF\") Agreement between the Town and Insulet Corporation, Inc. for the property shown on Assessors Map B4-3-1, containing approximately 6.54 acres located at 35 Nagog Park, Town, MA, on terms and conditions deemed by the Select Board to be in the best interest of the Town; and (b) authorize the Select Board to execute any necessary documents relating thereto, and to take such other actions as may be necessary or appropriate to obtain approval of and implement the TIF Agreement and Certified Project application; or to take any other action in relation thereto.",
-      "plainEnglish": {
-        "summary": "The most-discussed article of the 2026 meeting: a tax-increment-financing deal giving Insulet — the insulin-pump maker at Nagog Park — a stepped-down property-tax exemption on its expansion in exchange for keeping and growing jobs in Town.",
-        "keyTakeaways": [
-          "A TIF does not cut taxes outright; the company pays slowly rising taxes on the new value while the town gains investment it otherwise might not",
-          "Insulet is one of the town's largest employers and property taxpayers, which is why the debate ran long",
-          "The Select Board signed off on terms it judged in the town's interest before bringing the deal to the floor"
-        ],
-        "votingYesMeans": "A yes vote authorized the TIF agreement, locking in the negotiated tax schedule for the project.",
-        "votingNoMeans": "A no vote would have cancelled the negotiated deal and left the expansion on the ordinary tax rolls."
-      },
-      "financialImpact": null,
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 242–18",
@@ -210,17 +129,6 @@
       "title": "Amend Zoning Bylaw and Map to Establish Nagog Park Innovation Overlay District",
       "category": "Zoning",
       "originalText": "To see if the Town will vote to amend the Zoning Bylaw and Zoning Map as follows and to renumber or alphabetize as necessary to accommodate such changes; or take any other action relative thereto:",
-      "plainEnglish": {
-        "summary": "Created a new Innovation Overlay District over the Nagog Park office park, giving the town modern flexible zoning tools to keep commercial property productive as office demand shifts.",
-        "keyTakeaways": [
-          "Overlay districts add options on top of the base zoning; nothing underneath is removed",
-          "The district covers the 35 Nagog Park area where Insulet expanded — zoning and the TIF article worked as a pair",
-          "Two-thirds of town meeting members had to approve, since zoning changes require a supermajority"
-        ],
-        "votingYesMeans": "A yes vote added the overlay, expanding what landowners can build there with town review.",
-        "votingNoMeans": "A no vote would have kept the office park under its existing, more restrictive zoning."
-      },
-      "financialImpact": null,
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 236–18",
@@ -237,17 +145,6 @@
       "title": "Amend Zoning Bylaw Related to Residential Additions on Nonconforming Lots",
       "category": "Zoning",
       "originalText": "To see if the Town will vote to amend the Zoning Bylaw by deleting the current Section 8.1.4 and replacing it with the following: 8.1.4 Extensions, alterations or changes of Single- and Two-Family Dwellings on Nonconforming Lots – One or more extensions, alterations or changes to a single or two-family residential STRUCTURE on a nonconforming LOT shall be deemed not to increase any nonconformity and shall not require special permits under Section 8.1.5, provided that such extensions, alterations or changes comply with all applicable dimensional requirements…",
-      "plainEnglish": {
-        "summary": "A quiet but important fix: homeowners on older, smaller-than-required lots can renovate or add on without a special permit hearing, as long as the work meets today's dimensional rules.",
-        "keyTakeaways": [
-          "Roughly a quarter of the town's houses sit on lots that predate the current zoning sizes and are technically 'nonconforming'",
-          "Before, even a compliant porch or addition could trigger a months-long special-permit process",
-          "Housing-latency articles like this and the 2025 ADU reform aim to remove friction without changing neighborhood character"
-        ],
-        "votingYesMeans": "A yes vote let compliant renovations on legacy lots proceed by right.",
-        "votingNoMeans": "A no vote kept the special-permit requirement for additions on nonconforming lots."
-      },
-      "financialImpact": null,
       "officialOutcome": {
         "result": "passed",
         "tally": "Approved 191–16",
@@ -264,17 +161,6 @@
       "title": "Amend Zoning Bylaw to Increase Affordability Requirements in the MBTA Overlay District",
       "category": "Zoning",
       "originalText": "To see if the Town will vote to amend the Zoning Bylaw by deleting the current Section 4.4.6 and …(full replacement text as set out in the 2026 warrant, increasing affordability requirements for housing in the MBTA Communities Overlay District)",
-      "plainEnglish": {
-        "summary": "The one article of the 2026 meeting that went nowhere: a proposal to raise affordable-housing requirements inside the MBTA Communities overlay the town adopted in 2024. The Select Board moved to take no action, and town meeting agreed.",
-        "keyTakeaways": [
-          "\"Take no action\" is how town meeting skips an article without killing the topic forever — it can return on a future warrant",
-          "Supporters wanted more affordable units per development; opponents worried the requirement would stall the multifamily housing the 2024 overlay just unlocked",
-          "The no-action motion itself was voted by counted ballot: 220–48"
-        ],
-        "votingYesMeans": "A yes vote on the article would have imposed higher affordability set-asides in the overlay district.",
-        "votingNoMeans": "The town ultimately took no action, leaving the 2024 affordability rules exactly as adopted."
-      },
-      "financialImpact": null,
       "officialOutcome": {
         "result": "no action",
         "tally": "Motion to take no action: 220–48",

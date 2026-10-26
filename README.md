@@ -41,9 +41,9 @@ To add a string: use `L("English text")` (or `L("Text with %@", value)`) and add
 - Runtime model calls use **any OpenAI-compatible endpoint** (OpenRouter-style shape).
   Defaults: Hack Club AI (`https://ai.hackclub.com/proxy/v1`, `openai/gpt-4o-mini`).
 - Base URL + model live in `UserDefaults`; the API key is entered in **Settings** and stored only in the **Keychain** — never in code.
-- **Plain English** on an article is one section: the curated summary bundled with the app when there is one, otherwise the cached AI version, otherwise one is written automatically when a key is set, otherwise the warrant booklet's own summary with a small note. A small **Regenerate with AI** button is available with a key.
+- **Plain English** on an article is one section, and it is always written by the AI: nothing is prewritten or bundled. The cached AI version is shown when there is one; with a key set, one is written automatically for every article (live and bundled) from its official text; without a key, an excerpt of the official text is shown with a small note. A small **Regenerate with AI** button is available with a key.
 - Without a key the app stays fully functional.
-- AI disclosure for the CAC submission: AI generates runtime plain-English translations of public warrant text, and was used to prepare bundled example summaries. All official text remains attributed to public town documents.
+- AI disclosure for the CAC submission: AI writes every plain-English explanation at runtime from the public warrant text; the app ships no prewritten explanations. All official text remains attributed to public town documents.
 
 ## Live data
 
@@ -62,9 +62,9 @@ The app reads the town's own public sources **on the phone** — no backend:
 **How it behaves**
 
 - Launch shows the last saved live data (or the bundled JSON) instantly, then refreshes in the background. Pull down on any tab to refresh; the app also refreshes when it comes back to the foreground after 30 minutes. A small "Updated X ago" line shows freshness.
-- Live data overrides bundled data article by article. Curated plain-English summaries, curated vote counts (only when they agree with the live result) and the curated History entries stay bundled.
+- Live data overrides bundled data article by article. Bundled vote counts (only when they agree with the live result) and the curated History entries stay bundled; plain English never comes from the bundle.
 - **History** loads lazily when the tab opens: the archive listing is re-read at most daily, each abstract PDF is downloaded and parsed once (newest first, published as it goes) and cached in `history_archive_v1.json`. PDFs without extractable text are skipped and retried weekly. Pull down on History to re-read the archive.
-- **Plain English:** with an AI key set, scraped articles that have no curated summary are translated in the background through the configured OpenAI-compatible endpoint and cached on disk by a hash of the article text. Without a key, the app shows the booklet's own summary (first sentences), the dollar figure and vote requirement, clearly marked *not translated yet*.
+- **Plain English:** with an AI key set, every article shown (live warrant articles and bundled ones) is written up in the background from its official text through the configured OpenAI-compatible endpoint, one article per request, and cached on disk by a hash of that text. A reply that can't be read is retried (up to 3 tries per article), network failures back off and retry, and each article appears as soon as its version arrives. Without a key, the app shows the booklet's own summary or the first sentence of the official text, plus the dollar figure and vote requirement when known, clearly marked *not translated yet*.
 - **Offline / failures:** every source is fetched and parsed independently. A network error, a moved page or an unreadable PDF is logged (`com.townhalllive` / `live` in Console) and the previous data stays on screen; nothing blanks or crashes. The warrant PDF is only re-downloaded when its link changes.
 - Caches live in the app's Caches directory (`TownHallLive/live_snapshot.json`, `plain_english_cache.json`, `content_translations.json`, `text_translations.json`, `history_archive_v1.json`), so iOS may purge them; the app then falls back to bundled data until the next refresh. Unknown keys in older caches or bundles are ignored when decoding.
 
@@ -97,7 +97,7 @@ CI (`.github/workflows/build.yml`) copies the example plist, runs `xcodegen` and
 
 ## Data
 
-`TownHallLive/Resources/townhall_data.json` is the offline fallback and the curated layer on top of live data. It contains **real Town data** as of Oct 24, 2026:
+`TownHallLive/Resources/townhall_data.json` is the offline fallback under live data. It holds facts only (official text, outcomes, meetings, history), never plain-English explanations. It contains **real Town data** as of Oct 24, 2026:
 
 - **9 warrant articles** from the official 2026 ATM warrant (town website) — verbatim "To see if the Town…" text, real dollar amounts
 - **Official outcomes with real electronic-vote tallies** from the town results sheet (town website) — e.g. Article 8 school assessment approved 364–41; Article 20 logged as "No action taken" (220–48 on the motion)

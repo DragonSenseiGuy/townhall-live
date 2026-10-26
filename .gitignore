@@ -1,3 +1,6 @@
 CONTEXT.md
 TownHallLive.xcodeproj/
 .DS_Store
+
+# Real town source URLs (copy TownSources.example.plist)
+TownHallLive/Resources/TownSources.plist

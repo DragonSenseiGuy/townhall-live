@@ -86,4 +86,20 @@ final class AppSettings {
     }
 
     var hasAPIKey: Bool { !apiKey.isEmpty }
+
+    // Live-data source overrides (empty = use TownSources.plist).
+    var townWebsiteOverride: String {
+        get { defaults.string(forKey: TownSources.websiteOverrideKey) ?? "" }
+        set { setOrClear(newValue, forKey: TownSources.websiteOverrideKey) }
+    }
+
+    var youtubeChannelOverride: String {
+        get { defaults.string(forKey: TownSources.youtubeOverrideKey) ?? "" }
+        set { setOrClear(newValue, forKey: TownSources.youtubeOverrideKey) }
+    }
+
+    private func setOrClear(_ value: String, forKey key: String) {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { defaults.removeObject(forKey: key) } else { defaults.set(trimmed, forKey: key) }
+    }
 }

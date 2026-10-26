@@ -44,6 +44,7 @@ struct HistoryView: View {
             .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
+        .refreshable { await store.refresh() }
         .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("History")
         .toolbarBackground(Theme.canvas, for: .navigationBar)

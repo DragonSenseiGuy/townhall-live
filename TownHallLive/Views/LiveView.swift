@@ -58,6 +58,7 @@ struct LiveView: View {
             .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
+        .refreshable { await store.refresh() }
         .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("TownHall Live")
         .navigationBarTitleDisplayMode(.inline)
@@ -80,9 +81,7 @@ struct LiveView: View {
         }
     }
 
-    private var liveMeeting: Meeting? {
-        store.meetings.first { $0.status == "live" } ?? store.meetings.first
-    }
+    private var liveMeeting: Meeting? { store.heroMeeting }
 
     private var liveArticles: [WarrantArticle] {
         guard let meeting = liveMeeting else { return [] }
@@ -96,7 +95,7 @@ struct LiveView: View {
                 Image(systemName: "building.columns.fill")
                     .font(.subheadline)
                     .foregroundStyle(Theme.accent)
-                SectionLabel(text: "Town · Massachusetts")
+                SectionLabel(text: "\(store.data?.town.name ?? "Town") · \(store.data?.town.state ?? "Massachusetts")")
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text(liveMeeting?.title ?? "No meeting scheduled")
@@ -105,6 +104,7 @@ struct LiveView: View {
                 Text(liveMeeting?.date ?? "")
                     .font(.subheadline)
                     .foregroundStyle(Theme.inkSecondary)
+                LiveStatusLine(store: store)
             }
             HStack(spacing: 10) {
                 LiveBadge()

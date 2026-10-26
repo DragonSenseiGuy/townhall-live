@@ -18,9 +18,12 @@ nonisolated struct Meeting: Codable, Sendable, Identifiable {
     let id: String
     let title: String
     let date: String
-    /// "live" (simulated demo), "recent", "past"
+    /// "live" (simulated demo), "recent", "past", "upcoming"
     let status: String
     let streamURL: String?
+    /// nil = Town Meeting; "calendar" = upcoming event from the town calendar;
+    /// "recording" = a recent Town TV meeting video.
+    var kind: String? = nil
 }
 
 nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
@@ -35,7 +38,13 @@ nonisolated struct WarrantArticle: Codable, Sendable, Identifiable {
     let officialOutcome: OfficialOutcome?
     let simulatedTally: SimulatedTally
     let relatedHistoricalVoteIDs: [String]
+    /// nil = curated (bundled), "ai" = generated through AIService,
+    /// "excerpt" = taken straight from the warrant booklet, not translated.
+    var plainEnglishSource: String? = nil
+    /// Document the text was scraped from (live data only).
+    var sourceURL: String? = nil
 
+    var isTranslated: Bool { plainEnglishSource != "excerpt" }
     var displayNumber: String { "Article \(number)" }
 }
 

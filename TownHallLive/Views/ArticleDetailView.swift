@@ -6,7 +6,8 @@ struct WarrantsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                ForEach(store.meetings) { meeting in
+                LiveStatusLine(store: store)
+                ForEach(store.meetings.filter { $0.kind != "recording" }) { meeting in
                     meetingSection(meeting)
                 }
                 if store.articles.isEmpty {
@@ -20,6 +21,7 @@ struct WarrantsView: View {
             .padding(.bottom, 40)
         }
         .scrollIndicators(.hidden)
+        .refreshable { await store.refresh() }
         .background(Theme.canvas.ignoresSafeArea())
         .navigationTitle("Warrants")
         .toolbarBackground(Theme.canvas, for: .navigationBar)
@@ -113,7 +115,7 @@ struct ArticleDetailView: View {
         VStack(alignment: .leading, spacing: 16) {
             heroCard(article)
 
-            plainEnglishCard(article.plainEnglish)
+            plainEnglishCard(article.plainEnglish, translated: article.isTranslated)
 
             if let impact = article.financialImpact {
                 financialCard(impact)
@@ -173,9 +175,15 @@ struct ArticleDetailView: View {
         article.flatMap { store.meeting(id: $0.meetingID)?.date } ?? ""
     }
 
-    private func plainEnglishCard(_ plain: PlainEnglish) -> some View {
+    private func plainEnglishCard(_ plain: PlainEnglish, translated: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(text: "In plain English")
+            if !translated {
+                Text("Not translated yet — this is the warrant booklet's own summary. Add an AI key in Settings for a plain-English version.")
+                    .font(.footnote)
+                    .foregroundStyle(Theme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(aiState.isLoading ? "Translating with AI…" : plain.summary)
                 .font(.body)
                 .foregroundStyle(Theme.ink)
@@ -330,6 +338,7 @@ struct ArticleDetailView: View {
             do {
                 let plain = try await AIService().translate(article: article)
                 withAnimation(.easeOut(duration: 0.25)) { aiState = .done(plain) }
+                store.cacheTranslation(plain, for: article)
             } catch {
                 withAnimation(.easeOut(duration: 0.25)) { aiState = .failed(error.localizedDescription) }
                 // Dev/test hook only: bring the failure UI into a screenshot frame.
@@ -407,6 +416,11 @@ struct ArticleDetailView: View {
                 .font(.caption.leading(.loose))
                 .foregroundStyle(Theme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
+            if let source = article.sourceURL, let link = URL(string: source) {
+                Link("Open the warrant document", destination: link)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
         }
         .padding(Theme.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)

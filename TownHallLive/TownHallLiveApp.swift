@@ -10,6 +10,7 @@ struct TownHallLiveApp: App {
 }
 
 struct RootView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var store = DataStore()
     @State private var session = DemoSessionController()
     @State private var votes = MockVoteController()
@@ -75,8 +76,18 @@ struct RootView: View {
         .preferredColorScheme(.light)
         .task {
             store.load()
-            session.configure(with: store.data?.demoSession ?? [])
+            session.configure(with: store.demoSteps)
             applyDevOpen()
+            // Cached/bundled data is already on screen; now fetch live.
+            await store.refresh()
+            session.configure(with: store.demoSteps)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active, store.data != nil else { return }
+            Task {
+                await store.refreshIfStale()
+                session.configure(with: store.demoSteps)
+            }
         }
     }
 

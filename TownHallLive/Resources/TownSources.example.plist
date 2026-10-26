@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Copy this file to TownSources.plist (same folder) and fill in your town.
+  TownSources.plist is gitignored. Placeholder values (anything containing
+  "example" or "xxxx") are ignored, so the app runs on bundled data until
+  real sources are set here or in Settings.
+-->
+<plist version="1.0">
+<dict>
+	<key>townName</key>
+	<string>Example Town</string>
+	<key>state</key>
+	<string>Massachusetts</string>
+	<key>websiteBaseURL</key>
+	<string>https://www.example-town.gov</string>
+	<key>townMeetingPath</key>
+	<string>/townmeeting</string>
+	<key>calendarRSSPath</key>
+	<string>/RSSFeed.aspx?ModID=58&amp;CID=All-calendar.xml</string>
+	<key>calendarTitleFilter</key>
+	<string>Town Meeting</string>
+	<key>youtubeChannelID</key>
+	<string>UCxxxxxxxxxxxxxxxxxxxxxx</string>
+	<key>recordingTitleFilter</key>
+	<string>Meeting</string>
+</dict>
+</plist>

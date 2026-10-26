@@ -106,3 +106,24 @@ struct TallyRow: View {
         maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
     }
 }
+
+// "Updated 5 minutes ago" — where the data on screen came from and how fresh it is.
+struct LiveStatusLine: View {
+    let store: DataStore
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            Text(text(now: context.date))
+                .font(.footnote)
+                .foregroundStyle(Theme.inkSecondary)
+        }
+    }
+
+    private func text(now: Date) -> String {
+        if store.isRefreshing { return "Updating from the town website…" }
+        guard store.isLiveConfigured, let updated = store.lastUpdated else { return "Showing saved town data" }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return "Updated \(formatter.localizedString(for: min(updated, now), relativeTo: now))"
+    }
+}

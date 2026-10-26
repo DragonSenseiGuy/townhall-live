@@ -8,6 +8,9 @@ struct SettingsView: View {
     @State private var draftModel: String = ""
     @State private var draftKey: String = ""
     @State private var savedNotice = false
+    @State private var draftWebsite: String = ""
+    @State private var draftChannel: String = ""
+    @State private var sourcesSaved = false
 
     var body: some View {
         Form {
@@ -65,9 +68,35 @@ struct SettingsView: View {
                 Text("The key stays on this device and is never embedded in the app's code. Without a key, every screen still works with bundled plain-English summaries.")
             }
 
+            Section {
+                TextField("Town website (https://…)", text: $draftWebsite)
+                    .keyboardType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .font(.footnote.monospaced())
+                TextField("Town TV YouTube channel ID (UC…)", text: $draftChannel)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .font(.footnote.monospaced())
+                HStack {
+                    Button("Save sources", action: saveSources)
+                    Spacer()
+                    if sourcesSaved {
+                        Label("Saved.", systemImage: "checkmark.circle")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.green)
+                    }
+                }
+                .buttonStyle(.borderless)
+            } header: {
+                Text("Live town data")
+            } footer: {
+                Text("Warrants, results, meetings and Town TV recordings are read on this device from the town's public website and YouTube channel. Leave a field blank to use the app's TownSources.plist. Pull down on any tab to refresh; without a connection the app shows the last saved data.")
+            }
+
             Section("About") {
                 LabeledContent("App", value: "TownHall Live")
-                LabeledContent("Pilot town", value: "Town, Massachusetts")
+                LabeledContent("Pilot town", value: "\(TownSources.current().townName ?? "Town"), \(TownSources.current().state ?? "Massachusetts")")
                 LabeledContent("Made for", value: "Congressional App Challenge 2026")
                 Text("AI disclosure: AI is used to generate plain-English summaries of public warrant articles at runtime, and was used to prepare the bundled example summaries. All legal text remains sourced from public town documents.")
                     .font(.caption2)
@@ -83,7 +112,25 @@ struct SettingsView: View {
         .onAppear {
             draftURL = settings.baseURL
             draftModel = settings.model
+            let current = TownSources.current()
+            draftWebsite = settings.townWebsiteOverride.isEmpty
+                ? (current.websiteBaseURL?.absoluteString ?? "") : settings.townWebsiteOverride
+            draftChannel = settings.youtubeChannelOverride.isEmpty
+                ? (current.youtubeChannelID ?? "") : settings.youtubeChannelOverride
         }
+    }
+
+    private func saveSources() {
+        // Store an override only when it differs from the bundled config.
+        settings.townWebsiteOverride = ""
+        settings.youtubeChannelOverride = ""
+        let bundled = TownSources.current()
+        let website = draftWebsite.trimmingCharacters(in: .whitespacesAndNewlines)
+        let channel = draftChannel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if website != (bundled.websiteBaseURL?.absoluteString ?? "") { settings.townWebsiteOverride = website }
+        if channel != (bundled.youtubeChannelID ?? "") { settings.youtubeChannelOverride = channel }
+        sourcesSaved = true
+        withAnimation(.easeOut(duration: 0.4).delay(1.2)) { sourcesSaved = false }
     }
 
     private func saveKey() {

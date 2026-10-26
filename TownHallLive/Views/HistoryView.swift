@@ -83,7 +83,8 @@ struct HistoryView: View {
                 }
             }
         }
-        .task { await store.loadHistory() }
+        // Unstructured so switching tabs doesn't cancel a half-read archive.
+        .onAppear { Task { await store.loadHistory() } }
     }
 
     @ViewBuilder

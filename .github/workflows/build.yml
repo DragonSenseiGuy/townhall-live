@@ -35,3 +35,12 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             build CODE_SIGNING_ALLOWED=NO | tee build.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
           grep -q "BUILD SUCCEEDED" build.log
+
+      - name: Check compiled localizations
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -type d -name "TownHallLive.app" -path "*iphonesimulator*" | head -1)
+          echo "App: $APP"
+          for lang in en zh-Hans es hi ar; do
+            test -f "$APP/$lang.lproj/Localizable.strings" || { echo "missing $lang.lproj/Localizable.strings"; ls "$APP"; exit 1; }
+          done
+          plutil -p "$APP/ar.lproj/Localizable.strings" | grep -m 3 "Settings\|Warrants\|History"

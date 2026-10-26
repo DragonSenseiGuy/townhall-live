@@ -208,8 +208,7 @@ final class DataStore {
     /// publishing as it goes. Unreadable PDFs are skipped (retried weekly).
     func loadHistory(force: Bool = false) async {
         guard !isLoadingHistory else { return }
-        let current = TownSources.current()
-        if current != sources { sources = current }
+        let sources = TownSources.current() // picks up Settings changes
         historyConfigured = sources.resultsArchiveURL != nil
         guard historyConfigured else { return }
         isLoadingHistory = true

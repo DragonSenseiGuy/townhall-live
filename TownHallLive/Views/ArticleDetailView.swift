@@ -33,10 +33,10 @@ struct WarrantsView: View {
         if !articles.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(L(meeting.title))
+                    Text(meetingNameText(meeting.title))
                         .font(Theme.headlineFont)
                         .foregroundStyle(Theme.ink)
-                    Text(meeting.date)
+                    Text(dateLineText(meeting.date))
                         .font(.footnote)
                         .foregroundStyle(Theme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -136,7 +136,7 @@ struct ArticleDetailView: View {
                 }
                 Spacer(minLength: 0)
             }
-            Text(article.title)
+            Text(LT(article.title))
                 .font(Theme.titleFont)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
@@ -153,7 +153,7 @@ struct ArticleDetailView: View {
     }
 
     private var meetingDate: String {
-        article.flatMap { store.meeting(id: $0.meetingID)?.date } ?? ""
+        article.flatMap { store.meeting(id: $0.meetingID)?.date }.map(dateLineText) ?? ""
     }
 
     // MARK: Plain English (one section)
@@ -162,7 +162,13 @@ struct ArticleDetailView: View {
         let generating = store.isGenerating(article)
         let language = settings.language
         let translated = store.localizedPlain(article.plainEnglish, language: language)
-        let plain = translated ?? article.plainEnglish
+        // Not translated yet: the app's own fallback sentences still come from the catalog.
+        let plain = translated ?? PlainEnglish(
+            summary: article.plainEnglish.summary,
+            keyTakeaways: article.plainEnglish.keyTakeaways.map(LT),
+            votingYesMeans: LT(article.plainEnglish.votingYesMeans),
+            votingNoMeans: LT(article.plainEnglish.votingNoMeans)
+        )
         let translating = store.isTranslatingContent(article.plainEnglish, language: language)
 
         return VStack(alignment: .leading, spacing: 10) {
@@ -265,6 +271,9 @@ struct ArticleDetailView: View {
     private func officialTextCard(_ article: WarrantArticle) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionLabel(text: L("Official text"))
+            if settings.language != .english {
+                officialRecordNote
+            }
             Text(article.originalText)
                 .font(.footnote.leading(.loose))
                 .foregroundStyle(Theme.ink.opacity(0.85))
@@ -293,7 +302,7 @@ struct ArticleDetailView: View {
                     .font(.title3)
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink)
-                Text(impact.explanation)
+                Text(LT(impact.explanation))
                     .font(.footnote)
                     .foregroundStyle(Theme.inkSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -315,14 +324,14 @@ struct ArticleDetailView: View {
                     HStack(spacing: 8) {
                         OutcomeChip(result: outcome.result)
                         if let tally = outcome.tally {
-                            Text(tally)
+                            Text(tallyText(tally))
                                 .font(.subheadline)
                                 .monospacedDigit()
                                 .foregroundStyle(Theme.ink)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    Text(outcome.sourceNote)
+                    Text(LT(outcome.sourceNote))
                         .font(.caption)
                         .foregroundStyle(Theme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -355,7 +364,7 @@ struct ArticleDetailView: View {
                                 .monospacedDigit()
                                 .bold()
                                 .foregroundStyle(Theme.accent)
-                            Text(vote.title)
+                            Text(LT(vote.title))
                                 .font(.footnote.weight(.medium))
                                 .foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.leading)

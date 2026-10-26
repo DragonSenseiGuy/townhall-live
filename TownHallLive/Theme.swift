@@ -94,7 +94,7 @@ struct ArticleRow: View {
         HStack(spacing: 14) {
             NumberTile(number: article.number, highlighted: isCurrent)
             VStack(alignment: .leading, spacing: 6) {
-                Text(article.title)
+                Text(LT(article.title))
                     .font(.subheadline.weight(isCurrent ? .semibold : .medium))
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)

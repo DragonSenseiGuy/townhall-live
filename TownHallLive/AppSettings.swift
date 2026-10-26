@@ -89,8 +89,12 @@ final class AppSettings {
         }
         set {
             if newValue.isEmpty { KeychainStore.delete() } else { KeychainStore.save(newValue) }
+            keyRevision += 1
         }
     }
+
+    /// Bumped whenever the key is saved or removed (the Keychain itself isn't observable).
+    private(set) var keyRevision = 0
 
     var hasAPIKey: Bool { !apiKey.isEmpty }
 

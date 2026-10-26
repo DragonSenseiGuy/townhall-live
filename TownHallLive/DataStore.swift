@@ -131,6 +131,7 @@ final class DataStore {
             LiveLog.log("refresh produced no live data; keeping what's on screen")
         }
         await translatePending()
+        translateLiveContent()
     }
 
     /// Refresh when the last live data is older than `maxAge`.
@@ -201,6 +202,50 @@ final class DataStore {
         }
     }
 
+    // MARK: - Live content in the interface language
+
+    /// Scraped free-form text that isn't one of the catalog's known shapes,
+    /// most visible first: Live tab, warrants, then history. Official legal
+    /// text (warrant wording, results excerpts) is never included.
+    func translatableTexts() -> [String] {
+        var out: [String] = []
+        func add(_ text: String?, meeting: Bool = false) {
+            guard let text, !text.isEmpty, needsAITranslation(text, asMeetingName: meeting) else { return }
+            out.append(text)
+        }
+        for meeting in upcomingMeetings { add(meeting.title, meeting: true) }
+        for recording in recordings.prefix(6) { add(recording.title, meeting: true) }
+        for meeting in townMeetings { add(meeting.title, meeting: true) }
+        for meeting in townMeetings {
+            for article in articles(in: meeting.id) {
+                add(article.title)
+                add(article.financialImpact?.explanation)
+                add(article.officialOutcome?.sourceNote)
+            }
+        }
+        for article in articles where !townMeetings.contains(where: { $0.id == article.meetingID }) {
+            add(article.title)
+        }
+        for vote in historicalVotes {
+            add(vote.title)
+            add(vote.meetingName, meeting: true)
+            if !vote.relevanceNote.isEmpty {
+                // Curated entries: the summary is a plain-language explanation, not legal text.
+                add(vote.summary)
+                add(vote.relevanceNote)
+            }
+        }
+        return out
+    }
+
+    /// Batch-translates the visible scraped text into the interface language
+    /// in the background (AI key required; English stays until it arrives).
+    func translateLiveContent() {
+        load()
+        guard AppSettings.shared.language != .english, AppSettings.shared.hasAPIKey else { return }
+        ContentTranslator.shared.translate(translatableTexts())
+    }
+
     // MARK: - History archive
 
     /// Reads the town's results archive in the background: re-lists at most
@@ -253,6 +298,7 @@ final class DataStore {
         }
         historyCache = cache
         LiveCache.save(cache, to: LiveCache.historyFile)
+        translateLiveContent()
     }
 
     var historyYears: [Int] {
@@ -275,6 +321,8 @@ final class DataStore {
             town: TownInfo(name: "Town", state: "Massachusetts"),
             meetings: [], articles: [], historicalVotes: []
         )
+        let nouns = [sources.townName ?? base.town.name]
+        if ContentTranslator.shared.properNouns != nouns { ContentTranslator.shared.properNouns = nouns }
         data = LiveMerger.merge(
             bundled: base,
             snapshot: sources.isConfigured ? snapshot : nil,

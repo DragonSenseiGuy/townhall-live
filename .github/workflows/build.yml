@@ -44,3 +44,4 @@ jobs:
             test -f "$APP/$lang.lproj/Localizable.strings" || { echo "missing $lang.lproj/Localizable.strings"; ls "$APP"; exit 1; }
           done
           plutil -p "$APP/ar.lproj/Localizable.strings" | grep -m 3 "Settings\|Warrants\|History"
+          plutil -p "$APP/es.lproj/Localizable.strings" | grep "Shown in the original English" || { echo "content-localization strings missing"; exit 1; }

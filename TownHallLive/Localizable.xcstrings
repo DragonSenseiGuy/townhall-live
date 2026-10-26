@@ -1,6 +1,111 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ Meeting": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجتماع %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Meeting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reunión de %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ की बैठक"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@会议"
+          }
+        }
+      }
+    },
+    "A no vote rejects the article as written.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التصويت بلا يرفض البند بصيغته المكتوبة."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A no vote rejects the article as written."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un voto en contra rechaza el artículo tal como está redactado."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "विपक्ष में वोट अनुच्छेद को लिखे रूप में अस्वीकार करता है।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投反对票即否决该条款原文。"
+          }
+        }
+      }
+    },
+    "A yes vote approves the article as written in the warrant.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التصويت بنعم يوافق على البند كما ورد في جدول الأعمال."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A yes vote approves the article as written in the warrant."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un voto a favor aprueba el artículo tal como está redactado en la convocatoria."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पक्ष में वोट अनुच्छेद को वारंट में लिखे अनुसार स्वीकृत करता है।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投赞成票即按议案原文批准该条款。"
+          }
+        }
+      }
+    },
     "AI disclosure: AI is used to write plain-English summaries of public warrant articles and to translate them at runtime, and was used to prepare the bundled summaries. All legal text remains sourced from public town documents.": {
       "extractionState": "manual",
       "localizations": {
@@ -176,6 +281,41 @@
         }
       }
     },
+    "Adopted": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعتُمد"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adopted"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adoptado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अंगीकृत"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已采纳"
+          }
+        }
+      }
+    },
     "All years": {
       "extractionState": "manual",
       "localizations": {
@@ -207,6 +347,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "全部年份"
+          }
+        }
+      }
+    },
+    "Annual Town Election": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الانتخابات السنوية للبلدة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annual Town Election"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elección municipal anual"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वार्षिक नगर चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "年度镇选举"
           }
         }
       }
@@ -351,6 +526,41 @@
         }
       }
     },
+    "Approved": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمت الموافقة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approved"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprobado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वीकृत"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已批准"
+          }
+        }
+      }
+    },
     "Article": {
       "extractionState": "manual",
       "localizations": {
@@ -491,6 +701,41 @@
         }
       }
     },
+    "Ballot question": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سؤال على ورقة الاقتراع"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballot question"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta en la boleta"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मतपत्र प्रश्न"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "投票议题"
+          }
+        }
+      }
+    },
     "Base URL": {
       "extractionState": "manual",
       "localizations": {
@@ -522,6 +767,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "基础 URL"
+          }
+        }
+      }
+    },
+    "Board of Assessors": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس المقيّمين"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Board of Assessors"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Tasadores"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कर निर्धारक बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "估税委员会"
+          }
+        }
+      }
+    },
+    "Board of Health": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس الصحة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Board of Health"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Salud"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वास्थ्य बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卫生委员会"
+          }
+        }
+      }
+    },
+    "Board of Library Trustees": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس أمناء المكتبة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Board of Library Trustees"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Síndicos de la Biblioteca"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पुस्तकालय न्यासी बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图书馆理事会"
           }
         }
       }
@@ -596,6 +946,41 @@
         }
       }
     },
+    "Capital Planning Committee": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لجنة تخطيط المشاريع الرأسمالية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capital Planning Committee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el Comité de Planificación de Capital"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूंजीगत योजना समिति"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资本项目规划委员会"
+          }
+        }
+      }
+    },
     "Capital Projects": {
       "extractionState": "manual",
       "localizations": {
@@ -631,37 +1016,72 @@
         }
       }
     },
-    "Changes the whole app right away. With an AI key, plain-English explanations are translated too.": {
+    "Carried": {
       "extractionState": "manual",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يغيّر لغة التطبيق بالكامل فورًا. ومع مفتاح ذكاء اصطناعي، تُترجم الشروحات المبسّطة أيضًا."
+            "value": "أُقرّ"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Changes the whole app right away. With an AI key, plain-English explanations are translated too."
+            "value": "Carried"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cambia toda la app al instante. Con una clave de IA, también se traducen las explicaciones sencillas."
+            "value": "Aprobado"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "पूरा ऐप तुरंत बदल जाता है। AI कुंजी होने पर सरल व्याख्याओं का भी अनुवाद होता है।"
+            "value": "पारित"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "立即切换整个应用的语言。设置 AI 密钥后，通俗说明也会被翻译。"
+            "value": "获得通过"
+          }
+        }
+      }
+    },
+    "Changes the whole app right away, including meeting names, outcomes and dates. With an AI key, titles and plain-English explanations are translated too; official legal text stays in English.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يغيّر لغة التطبيق بالكامل فورًا، بما في ذلك أسماء الاجتماعات والنتائج والتواريخ. ومع مفتاح ذكاء اصطناعي، تُترجم العناوين والشروحات المبسّطة أيضًا؛ ويبقى النص القانوني الرسمي بالإنجليزية."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes the whole app right away, including meeting names, outcomes and dates. With an AI key, titles and plain-English explanations are translated too; official legal text stays in English."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia toda la app al instante, incluidos los nombres de reuniones, los resultados y las fechas. Con una clave de IA, también se traducen los títulos y las explicaciones sencillas; el texto legal oficial se mantiene en inglés."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूरा ऐप तुरंत बदल जाता है, जिसमें बैठकों के नाम, परिणाम और तिथियाँ शामिल हैं। AI कुंजी होने पर शीर्षकों और सरल व्याख्याओं का भी अनुवाद होता है; आधिकारिक कानूनी पाठ अंग्रेज़ी में ही रहता है।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即切换整个应用的语言，包括会议名称、表决结果和日期。设置 AI 密钥后，标题和通俗说明也会被翻译；正式法律文本保留英文原文。"
           }
         }
       }
@@ -736,6 +1156,76 @@
         }
       }
     },
+    "Conservation Commission": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لجنة الحفاظ على البيئة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conservation Commission"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Comisión de Conservación"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "संरक्षण आयोग"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自然保护委员会"
+          }
+        }
+      }
+    },
+    "Continued": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استكمال"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continued"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuación"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जारी सत्र"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "续会"
+          }
+        }
+      }
+    },
     "Couldn't write a plain-English version right now.": {
       "extractionState": "manual",
       "localizations": {
@@ -767,6 +1257,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "暂时无法生成通俗版本。"
+          }
+        }
+      }
+    },
+    "Day %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اليوم %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "दिन %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %@ 天"
           }
         }
       }
@@ -837,6 +1362,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "决议：%@ · 来自镇政府的表决结果档案"
+          }
+        }
+      }
+    },
+    "Defeated": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رُفض"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Defeated"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechazado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पराजित"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "被否决"
+          }
+        }
+      }
+    },
+    "Dismissed": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رُدّ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismissed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desestimado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "खारिज"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已驳回"
+          }
+        }
+      }
+    },
+    "Dollar amount in the article: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المبلغ بالدولار في البند: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dollar amount in the article: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importe en dólares del artículo: %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनुच्छेद में डॉलर राशि: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "条款中的金额：%@"
+          }
+        }
+      }
+    },
+    "Dollar figure stated in the warrant text.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المبلغ بالدولار المذكور في نص جدول الأعمال."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dollar figure stated in the warrant text."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cifra en dólares indicada en el texto de la convocatoria."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वारंट पाठ में बताई गई डॉलर राशि।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "议案原文中列明的金额。"
           }
         }
       }
@@ -981,6 +1646,41 @@
         }
       }
     },
+    "Finance Committee": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لجنة المالية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finance Committee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el Comité de Finanzas"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वित्त समिति"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "财务委员会"
+          }
+        }
+      }
+    },
     "Financial impact": {
       "extractionState": "manual",
       "localizations": {
@@ -1121,6 +1821,41 @@
         }
       }
     },
+    "Historical Commission": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللجنة التاريخية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historical Commission"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Comisión Histórica"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ऐतिहासिक आयोग"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "历史委员会"
+          }
+        }
+      }
+    },
     "History": {
       "extractionState": "manual",
       "localizations": {
@@ -1156,6 +1891,41 @@
         }
       }
     },
+    "Housing Authority": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هيئة الإسكان"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Housing Authority"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Autoridad de Vivienda"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आवास प्राधिकरण"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "住房管理局"
+          }
+        }
+      }
+    },
     "In plain English": {
       "extractionState": "manual",
       "localizations": {
@@ -1187,6 +1957,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "通俗解读"
+          }
+        }
+      }
+    },
+    "Indefinitely Postponed": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أُجّل إلى أجل غير مسمى"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indefinitely Postponed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplazado indefinidamente"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अनिश्चितकाल के लिए स्थगित"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无限期推迟"
           }
         }
       }
@@ -1327,6 +2132,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "语言"
+          }
+        }
+      }
+    },
+    "Largest of %@ dollar figures in the warrant text — see the original text for each line item.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أكبر مبلغ من بين %@ مبالغ بالدولار في نص جدول الأعمال — راجع النص الأصلي لكل بند."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Largest of %@ dollar figures in the warrant text — see the original text for each line item."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mayor de %@ cifras en dólares del texto de la convocatoria; consulte el texto original para cada partida."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वारंट पाठ के %@ डॉलर आँकड़ों में सबसे बड़ा — हर मद के लिए मूल पाठ देखें।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "议案原文中 %@ 个金额里最大的一项——各明细请参阅原文。"
           }
         }
       }
@@ -1646,6 +2486,76 @@
         }
       }
     },
+    "Needs a simple majority to pass": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يحتاج إلى أغلبية بسيطة لإقراره"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs a simple majority to pass"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesita mayoría simple para aprobarse"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पारित होने के लिए साधारण बहुमत चाहिए"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需简单多数票方可通过"
+          }
+        }
+      }
+    },
+    "Needs a two-thirds majority to pass": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يحتاج إلى أغلبية الثلثين لإقراره"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs a two-thirds majority to pass"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesita una mayoría de dos tercios para aprobarse"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पारित होने के लिए दो-तिहाई बहुमत चाहिए"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需三分之二多数票方可通过"
+          }
+        }
+      }
+    },
     "Next meeting": {
       "extractionState": "manual",
       "localizations": {
@@ -1677,6 +2587,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "下次会议"
+          }
+        }
+      }
+    },
+    "Night %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الليلة %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रात %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %@ 晚"
+          }
+        }
+      }
+    },
+    "No Action Taken": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يُتخذ أي إجراء"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Action Taken"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se tomó ninguna medida"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "कोई कार्रवाई नहीं की गई"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未采取行动"
           }
         }
       }
@@ -1782,6 +2762,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "没有符合条件的决议。"
+          }
+        }
+      }
+    },
+    "Not Adopted": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يُعتمد"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Adopted"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No adoptado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "अंगीकृत नहीं"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未获采纳"
+          }
+        }
+      }
+    },
+    "Not Approved": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم تتم الموافقة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Approved"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No aprobado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्वीकृत नहीं"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未获批准"
           }
         }
       }
@@ -2031,6 +3081,41 @@
         }
       }
     },
+    "Part %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الجزء %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Part %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parte %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "भाग %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %@ 部分"
+          }
+        }
+      }
+    },
     "Passed": {
       "extractionState": "manual",
       "localizations": {
@@ -2062,6 +3147,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "已通过"
+          }
+        }
+      }
+    },
+    "Passed Over": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تم تجاوزه"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passed Over"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitido"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "छोड़ दिया गया"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳过审议"
           }
         }
       }
@@ -2101,6 +3221,41 @@
         }
       }
     },
+    "Planning Board": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس التخطيط"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planning Board"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Planificación"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "योजना बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "规划委员会"
+          }
+        }
+      }
+    },
     "Postponed": {
       "extractionState": "manual",
       "localizations": {
@@ -2132,6 +3287,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "已推迟"
+          }
+        }
+      }
+    },
+    "Presidential Primary": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الانتخابات التمهيدية الرئاسية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presidential Primary"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primaria presidencial"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "राष्ट्रपति प्राथमिक चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总统初选"
           }
         }
       }
@@ -2206,6 +3396,41 @@
         }
       }
     },
+    "Recording": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسجيل"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grabación"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "रिकॉर्डिंग"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "录像"
+          }
+        }
+      }
+    },
     "Recordings from Town TV appear here once the channel posts them.": {
       "extractionState": "manual",
       "localizations": {
@@ -2241,6 +3466,41 @@
         }
       }
     },
+    "Referred": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أُحيل"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referred"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remitido"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "भेजा गया"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已移交"
+          }
+        }
+      }
+    },
     "Regenerate with AI": {
       "extractionState": "manual",
       "localizations": {
@@ -2272,6 +3532,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "用 AI 重新生成"
+          }
+        }
+      }
+    },
+    "Regional School Committee": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لجنة المدارس الإقليمية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regional School Committee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el Comité Escolar Regional"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "क्षेत्रीय स्कूल समिति"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地区学校委员会"
           }
         }
       }
@@ -2486,6 +3781,41 @@
         }
       }
     },
+    "School Committee": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لجنة المدارس"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "School Committee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el Comité Escolar"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्कूल समिति"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学校委员会"
+          }
+        }
+      }
+    },
     "Search past town decisions": {
       "extractionState": "manual",
       "localizations": {
@@ -2556,6 +3886,76 @@
         }
       }
     },
+    "See the original warrant text below for the full details": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راجع نص جدول الأعمال الأصلي أدناه للاطلاع على التفاصيل كاملة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See the original warrant text below for the full details"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulte el texto original de la convocatoria abajo para ver todos los detalles"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पूरी जानकारी के लिए नीचे वारंट का मूल पाठ देखें"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完整内容请参阅下方议案原文"
+          }
+        }
+      }
+    },
+    "Select Board": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس إدارة البلدة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select Board"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Selectos"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नगर कार्यकारी बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "镇行政委员会"
+          }
+        }
+      }
+    },
     "Session": {
       "extractionState": "manual",
       "localizations": {
@@ -2587,6 +3987,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "会议"
+          }
+        }
+      }
+    },
+    "Session %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الجلسة %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesión %@"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सत्र %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %@ 场"
           }
         }
       }
@@ -2696,6 +4131,76 @@
         }
       }
     },
+    "Shown in the original English: this is the official legal record.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معروض بالإنجليزية الأصلية: هذا هو السجل القانوني الرسمي."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shown in the original English: this is the official legal record."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se muestra en el inglés original: es el registro legal oficial."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मूल अंग्रेज़ी में दिखाया गया है: यह आधिकारिक कानूनी अभिलेख है।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以英文原文显示：这是正式的法律记录。"
+          }
+        }
+      }
+    },
+    "Special Election": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخابات خاصة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Special Election"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elección especial"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "विशेष चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "特别选举"
+          }
+        }
+      }
+    },
     "Special Town Election": {
       "extractionState": "manual",
       "localizations": {
@@ -2766,6 +4271,76 @@
         }
       }
     },
+    "State Election": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخابات الولاية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "State Election"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elección estatal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "राज्य चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "州选举"
+          }
+        }
+      }
+    },
+    "State Primary": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الانتخابات التمهيدية للولاية"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "State Primary"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primaria estatal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "राज्य प्राथमिक चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "州初选"
+          }
+        }
+      }
+    },
     "Synced with history": {
       "extractionState": "manual",
       "localizations": {
@@ -2797,6 +4372,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "相关历史决议"
+          }
+        }
+      }
+    },
+    "Tabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أُرجئ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tabled"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dejado sobre la mesa"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "विचार टाला गया"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时搁置"
           }
         }
       }
@@ -3042,6 +4652,111 @@
           "stringUnit": {
             "state": "translated",
             "value": "镇务"
+          }
+        }
+      }
+    },
+    "Town Election": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخابات البلدة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Town Election"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elección municipal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नगर चुनाव"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "镇选举"
+          }
+        }
+      }
+    },
+    "Town Meeting": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجتماع البلدة"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Town Meeting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asamblea Municipal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नगर सभा"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "镇民大会"
+          }
+        }
+      }
+    },
+    "Town Meeting results summary, town website (checked %@).": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ملخص نتائج اجتماع البلدة، الموقع الإلكتروني للبلدة (آخر تحقق: %@)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Town Meeting results summary, town website (checked %@)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen de resultados de la Asamblea Municipal, sitio web municipal (consultado: %@)."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "नगर सभा परिणाम सारांश, नगर वेबसाइट (जाँचा गया: %@)।"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "镇民大会结果摘要，镇政府网站（查看于 %@）。"
           }
         }
       }
@@ -3606,6 +5321,111 @@
         }
       }
     },
+    "Water District Annual Meeting": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاجتماع السنوي لمنطقة المياه"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Water District Annual Meeting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reunión anual del distrito de agua"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जल ज़िला वार्षिक बैठक"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "供水区年度会议"
+          }
+        }
+      }
+    },
+    "Water District Meeting": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجتماع منطقة المياه"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Water District Meeting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reunión del distrito de agua"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जल ज़िला बैठक"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "供水区会议"
+          }
+        }
+      }
+    },
+    "Water District Special Meeting": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاجتماع الاستثنائي لمنطقة المياه"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Water District Special Meeting"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reunión extraordinaria del distrito de agua"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जल ज़िला विशेष बैठक"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "供水区特别会议"
+          }
+        }
+      }
+    },
     "Water Infrastructure": {
       "extractionState": "manual",
       "localizations": {
@@ -3707,6 +5527,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "为何至今仍重要"
+          }
+        }
+      }
+    },
+    "Withdrawn": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سُحب"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Withdrawn"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirado"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "वापस लिया गया"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已撤回"
           }
         }
       }
@@ -3882,6 +5737,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "区划"
+          }
+        }
+      }
+    },
+    "Zoning Board of Appeals": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجلس استئناف تقسيم المناطق"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoning Board of Appeals"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la Junta de Apelaciones de Zonificación"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ज़ोनिंग अपील बोर्ड"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分区上诉委员会"
+          }
+        }
+      }
+    },
+    "recently": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مؤخرًا"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "recently"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "recientemente"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हाल ही में"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近"
           }
         }
       }

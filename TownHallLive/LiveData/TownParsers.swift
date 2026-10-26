@@ -166,6 +166,62 @@ nonisolated enum TextClean {
 
 // MARK: - Town Meeting page (HTML)
 
+// MARK: - Vote requirement ("(majority vote)", "(two-thirds vote)", "(2/3 vote)")
+
+/// Warrant titles carry the vote needed to pass as a trailing parenthetical.
+/// PDF text extraction often wraps it ("… Projects (majority" / "vote)") or
+/// even emits the wrapped half first ("vote) … Projects (majority"), so the
+/// pieces are found anywhere in the title, removed, and reassembled.
+nonisolated enum VoteRequirement {
+    /// Words that only ever appear inside a vote-requirement parenthetical.
+    static let words = "vote|majority|two[-\\s]?thirds?|three[-\\s]?fourths?|four[-\\s]?fifths?|nine[-\\s]?tenths?|unanimous|\\d\\s?/\\s?\\d"
+
+    /// (title without the requirement, requirement such as "majority vote").
+    static func split(_ raw: String) -> (title: String, vote: String?) {
+        var title = TextClean.collapse(raw)
+        var pieces: [String] = []
+        // Whole parentheticals anywhere: "(majority vote)", "(2/3 vote)", "(majority)".
+        let whole = "\\(\\s*([^()]*?\\b(?:\(words))\\b[^()]*?)\\s*\\)"
+        while let m = RX.first(whole, in: title, [.caseInsensitive]), let range = Range(m.range, in: title) {
+            if let inner = RX.group(m, 1, in: title) { pieces.append(inner) }
+            title.replaceSubrange(range, with: " ")
+        }
+        // A closing half with no opening before it, at the start: "vote) …", "majority vote) …".
+        if let m = RX.first("^\\s*([^()]{0,40}?\\b(?:\(words)))\\s*\\)\\s*", in: title, [.caseInsensitive]),
+           let range = Range(m.range, in: title) {
+            let tail = RX.group(m, 1, in: title) ?? ""
+            title.removeSubrange(range)
+            // An opening half at the end ("… (majority") pairs with it.
+            if let o = RX.first("\\s*\\(\\s*([^()]{0,40})$", in: title), let oRange = Range(o.range, in: title) {
+                let head = RX.group(o, 1, in: title) ?? ""
+                title.removeSubrange(oRange)
+                pieces.append(head + " " + tail)
+            } else {
+                pieces.append(tail)
+            }
+        }
+        // An opening half with no closing, at the end: "… (majority", "… (two-thirds majority".
+        if let o = RX.first("\\s*\\(\\s*([^()]{0,40}?\\b(?:\(words))\\b[^()]{0,20})$", in: title, [.caseInsensitive]),
+           let oRange = Range(o.range, in: title) {
+            pieces.append(RX.group(o, 1, in: title) ?? "")
+            title.removeSubrange(oRange)
+        }
+        // A dangling closing half left in the middle or end: "… Projects vote)".
+        if let m = RX.first("\\s+\\b(vote)\\s*\\)", in: title, [.caseInsensitive]), let range = Range(m.range, in: title),
+           !title[..<range.lowerBound].contains("(") {
+            pieces.append("vote")
+            title.replaceSubrange(range, with: " ")
+        }
+        title = TextClean.collapse(title)
+        let vote = pieces.map { RX.replace("(\\w)-\\s+(\\w)", in: TextClean.collapse($0), with: "$1-$2") }.filter { !$0.isEmpty }.last.map { piece -> String in
+            // "majority" alone reads as "majority vote".
+            RX.contains("\\bvote\\b", in: piece, [.caseInsensitive]) || RX.contains("unanimous", in: piece, [.caseInsensitive])
+                ? piece : piece + " vote"
+        }
+        return (title, vote)
+    }
+}
+
 nonisolated enum TownMeetingPageParser {
     /// Splits the Town Meeting page into one block per "<year> Annual/Special
     /// Town Meeting" heading and classifies the links inside each block.
@@ -343,12 +399,9 @@ nonisolated enum WarrantParser {
         var title = TextClean.collapse(raw)
         title = RX.replace("^[*\\s]+", in: title, with: "")
         title = RX.replace("[.…\\s]+\\d{0,3}$", in: title, with: "")
-        var vote: String?
-        if let m = RX.first("\\(([^()]*(?:vote|majority)[^()]*)\\)\\s*$", in: title, [.caseInsensitive]),
-           let range = Range(m.range, in: title) {
-            vote = RX.group(m, 1, in: title).map(TextClean.collapse)
-            title = String(title[..<range.lowerBound])
-        }
+        let split = VoteRequirement.split(title)
+        title = split.title
+        let vote = split.vote
         title = title.trimmingCharacters(in: CharacterSet(charactersIn: " .:-–—*…"))
         return (title, vote)
     }
@@ -446,6 +499,28 @@ nonisolated enum ResultsParser {
                     byNumber[n] = outcome(number: n, label: label, yes: RX.group(m, 2, in: text), no: RX.group(m, 3, in: text))
                 }
             }
+        }
+        // Block mode: a row whose title wrapped away from its outcome
+        // ("3 Budget Transfer" / "Approved"), for numbers still missing.
+        let lines = text.components(separatedBy: "\n")
+        var expected = 1
+        var index = 0
+        while index < lines.count {
+            guard let m = RX.first("^[ \\t]*\\*?[ \\t]*(\\d{1,3})[.):]?(?:[ \\t]+\\S.*)?$", in: lines[index]),
+                  let n = RX.group(m, 1, in: lines[index]).flatMap(Int.init), n == expected else { index += 1; continue }
+            expected += 1
+            var end = index + 1
+            while end < lines.count, end - index < 4,
+                  RX.first("^[ \\t]*\\*?[ \\t]*\\d{1,3}[.):]?(?:[ \\t]|$)", in: lines[end]) == nil { end += 1 }
+            if byNumber[n] == nil {
+                for line in lines[index..<end].reversed() {
+                    guard let o = RX.first("(?:^|[ \\t])(\(outcomeWords))\(tallyPattern)[ \\t]*$", in: line, [.caseInsensitive]),
+                          let label = RX.group(o, 1, in: line) else { continue }
+                    byNumber[n] = outcome(number: n, label: label, yes: RX.group(o, 2, in: line), no: RX.group(o, 3, in: line))
+                    break
+                }
+            }
+            index += 1
         }
         return byNumber.values.sorted { $0.number < $1.number }
     }

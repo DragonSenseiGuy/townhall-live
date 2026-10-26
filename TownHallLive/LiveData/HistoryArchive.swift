@@ -133,8 +133,7 @@ nonisolated enum AbstractParser {
     }
 
     static func cleanTitle(_ raw: String) -> String {
-        var t = TextClean.collapse(raw)
-        t = RX.replace("\\([^()]*(vote|majority|2/3)[^()]*\\)?\\s*$", in: t, with: "", [.caseInsensitive])
+        var t = VoteRequirement.split(raw).title
         t = RX.replace("\\([^()]*$", in: t, with: "")
         t = t.trimmingCharacters(in: CharacterSet(charactersIn: " .:-\u{2013}\u{2014}*#"))
         return t.count > 160 ? String(t.prefix(160)) + "…" : t

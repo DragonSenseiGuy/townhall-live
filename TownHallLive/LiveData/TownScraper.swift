@@ -211,11 +211,11 @@ nonisolated struct HistoryScraper: Sendable {
 
 // Caches-directory JSON for the last snapshot and the AI translation cache.
 nonisolated enum LiveCache {
-    static let snapshotFile = "live_snapshot.json"
+    static let snapshotFile = "live_snapshot_v2.json" // v2: vote requirements split out of titles
     static let translationsFile = "plain_english_cache.json"
     static let contentTranslationsFile = "content_translations.json"
     static let textTranslationsFile = "text_translations.json"
-    static let historyFile = "history_archive_v1.json"
+    static let historyFile = "history_archive_v2.json"
 
     static var directory: URL? {
         guard let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }

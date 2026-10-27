@@ -1,6 +1,6 @@
 # TownHall Live
 
-Preserving Civic History & Demystifying Local Democracy for Massachusetts Towns.
+Making Local Democracy and legislation accessible to the common people through education and increased participation for Massachusetts Towns.
 **Congressional App Challenge 2026 entry.** Native SwiftUI iOS app; pilot town: Town, MA.
 
 ## Setup and run

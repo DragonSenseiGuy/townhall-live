@@ -3,15 +3,91 @@
 Preserving Civic History & Demystifying Local Democracy for Massachusetts Towns.
 **Congressional App Challenge 2026 entry.** Native SwiftUI iOS app; pilot town: Town, MA.
 
-## Run it
+## Setup and run
+
+### Requirements
+
+- A Mac with **Xcode 26** or newer (Swift 6.2+ is needed for default MainActor isolation).
+- [Homebrew](https://brew.sh) and **XcodeGen**: `brew install xcodegen`
+- For a real iPhone: iOS 18 or newer, a USB cable, and an Apple ID (a free account works).
+
+### 1. Get the code
 
 ```sh
-xcodegen          # generates TownHallLive.xcodeproj from project.yml
+git clone https://github.com/DragonSenseiGuy/townhall-live.git
+cd townhall-live
+```
+
+### 2. Point it at a town (optional)
+
+Without this step the app runs on its bundled data. To read live data from a town's website:
+
+```sh
+cp TownHallLive/Resources/TownSources.example.plist TownHallLive/Resources/TownSources.plist
+```
+
+Fill in the keys described in [Setting up `TownSources.plist`](#setting-up-townsourcesplist). This file is gitignored: never commit it.
+
+### 3. Generate the Xcode project
+
+```sh
+xcodegen
 open TownHallLive.xcodeproj
 ```
 
-Pick the `TownHallLive` scheme, choose the iPhone simulator (or your device),
-Cmd+R. Everything works offline — no backend, no key. With a `TownSources.plist` (see Live data) it pulls current warrants, results and recordings from the town's website.
+The `.xcodeproj` is generated from `project.yml` and isn't checked in. Re-run `xcodegen` after every pull, and after adding or removing files or the plist.
+
+### 4a. Run in the Simulator
+
+Pick the `TownHallLive` scheme, choose an iPhone simulator, press **Cmd+R**.
+
+### 4b. Run on your iPhone
+
+1. Connect the iPhone and unlock it; tap **Trust** if asked.
+2. In Xcode select the **TownHallLive** target → **Signing & Capabilities** → check **Automatically manage signing** and pick your **Team** (add your Apple ID under Xcode → Settings → Accounts if none appears).
+3. If signing complains the bundle ID is taken, change **Bundle Identifier** to something unique, e.g. `com.yourname.townhalllive`.
+4. Choose your iPhone as the run destination and press **Cmd+R**.
+5. First time only: on the phone, turn on **Settings → Privacy & Security → Developer Mode** (restarts the phone), then trust the developer profile under **Settings → General → VPN & Device Management**.
+
+With a free Apple ID the install expires after 7 days; just run it again from Xcode.
+
+### 5. Add an AI key (optional)
+
+Plain-English explanations and translations of live content need an AI key. Without one the app still works: articles show the official text with a note to add a key.
+
+1. Get a free student key at [ai.hackclub.com](https://ai.hackclub.com) (or use any OpenAI-compatible provider).
+2. In the app open **Settings** (the ☰ button on the Live tab) → **AI endpoint**, paste the key into **API key**, tap **Save key**, and adjust the base URL and model if you're not using the defaults (`https://ai.hackclub.com/proxy/v1`, `openai/gpt-4o-mini`).
+3. Open **Warrants**: explanations are written in the background, one article at a time, and cached.
+
+The key is saved in the iOS **Keychain**, never in code or files.
+
+### Updating to the latest version
+
+```sh
+git fetch origin
+git checkout main
+git pull
+xcodegen
+```
+
+Then in Xcode: **Product → Clean Build Folder** (Shift+Cmd+K), delete the app from the phone or simulator, and run again. Deleting the app clears its caches and settings, but **not** the AI key in the Keychain; remove it in Settings first if you want a true fresh start.
+
+### Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| Old screens or text after pulling | Re-run `xcodegen`, Clean Build Folder, delete the app, run again |
+| Build errors about MainActor or concurrency | Use Xcode 26 or newer |
+| "No account for team" / signing errors | Pick your Team under Signing & Capabilities; change the bundle ID if it's taken |
+| "Untrusted Developer" on the phone | Settings → General → VPN & Device Management → trust your profile |
+| App shows only bundled data | Check `TownSources.plist` exists with real values, then re-run `xcodegen` |
+| No plain-English text | Add an AI key in Settings → AI endpoint; check your network |
+| Explanations or translations stuck | Pull down to refresh, or relaunch the app; failed AI requests retry on relaunch |
+| Wrong language | Settings → Language |
+
+### CI
+
+`.github/workflows/build.yml` runs on every push and pull request: it copies the example plist, runs `xcodegen`, builds for the iOS Simulator without signing, and checks that all five languages are compiled.
 
 ## App map
 
@@ -63,10 +139,10 @@ The app reads the town's own public sources **on the phone** — no backend:
 
 - Launch shows the last saved live data (or the bundled JSON) instantly, then refreshes in the background. Pull down on any tab to refresh; the app also refreshes when it comes back to the foreground after 30 minutes. A small "Updated X ago" line shows freshness.
 - Live data overrides bundled data article by article. Bundled vote counts (only when they agree with the live result) and the curated History entries stay bundled; plain English never comes from the bundle.
-- **History** loads lazily when the tab opens: the archive listing is re-read at most daily, each abstract PDF is downloaded and parsed once (newest first, published as it goes) and cached in `history_archive_v1.json`. PDFs without extractable text are skipped and retried weekly. Pull down on History to re-read the archive.
+- **History** loads lazily when the tab opens: the archive listing is re-read at most daily, each abstract PDF is downloaded and parsed once (newest first, published as it goes) and cached in `history_archive_v2.json`. PDFs without extractable text are skipped and retried weekly. Pull down on History to re-read the archive.
 - **Plain English:** with an AI key set, every article shown (live warrant articles and bundled ones) is written up in the background from its official text through the configured OpenAI-compatible endpoint, one article per request, and cached on disk by a hash of that text. A reply that can't be read is retried (up to 3 tries per article), network failures back off and retry, and each article appears as soon as its version arrives. Without a key, no plain-English version is shown at all, just a note to add a key in Settings; the dollar figure and vote requirement still appear in their own places.
 - **Offline / failures:** every source is fetched and parsed independently. A network error, a moved page or an unreadable PDF is logged (`com.townhalllive` / `live` in Console) and the previous data stays on screen; nothing blanks or crashes. The warrant PDF is only re-downloaded when its link changes.
-- Caches live in the app's Caches directory (`TownHallLive/live_snapshot.json`, `plain_english_cache.json`, `content_translations.json`, `text_translations.json`, `history_archive_v1.json`), so iOS may purge them; the app then falls back to bundled data until the next refresh. Unknown keys in older caches or bundles are ignored when decoding.
+- Caches live in the app's Caches directory (`TownHallLive/live_snapshot_v2.json`, `plain_english_cache.json`, `content_translations.json`, `text_translations.json`, `history_archive_v2.json`), so iOS may purge them; the app then falls back to bundled data until the next refresh. Unknown keys in older caches or bundles are ignored when decoding.
 
 ### Setting up `TownSources.plist`
 
@@ -92,8 +168,6 @@ xcodegen
 | `historyFromYear` | Oldest year the History tab reads (default 2018) |
 
 `TownSources.plist` is gitignored. If it's missing, or still has the placeholder values, the app runs entirely on bundled data. The website base URL and YouTube channel ID can also be changed in **Settings → Live town data** (stored in `UserDefaults`, overriding the plist). Re-run `xcodegen` after adding the plist so it's included in the bundle.
-
-CI (`.github/workflows/build.yml`) copies the example plist, runs `xcodegen` and builds for the iOS Simulator without signing.
 
 ## Data
 
